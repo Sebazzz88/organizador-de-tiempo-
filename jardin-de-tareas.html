@@ -1,5 +1,6 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
 <title>Jardín de Tareas</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23122314'/%3E%3Cpath d='M5 19C5 11 10 5 19 5c0 9-5 14-14 14z' fill='%2368ef3f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
@@ -15,6 +16,7 @@
   --hib:#ff7a6b; --mango:#ffc14d; --lagoon:#5ad8c8;
   --hib-soft:rgba(255,122,107,.14); --mango-soft:rgba(255,193,77,.14); --lagoon-soft:rgba(90,216,200,.14);
   --sprout-soft:rgba(104,239,63,.12); --glass:rgba(255,255,255,.03); --scrim:rgba(0,0,0,.62);
+  --ink-soft:#5d6151; --hib-ink:#c2463a; --tour-dim:rgba(3,8,4,.74);
   --font-display:'Boldonse','Arial Black',Impact,sans-serif;
   --font-ui:'Geist',ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-serif:'Instrument Serif',Georgia,'Times New Roman',serif;
@@ -23,6 +25,7 @@
   --shadow-nav:0 8px 32px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth;scroll-padding-top:96px}
 body{margin:0;background:var(--night);color:var(--white);font-family:var(--font-ui);font-size:16px;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 h1,h2,h3,h4{margin:0;text-wrap:balance}
@@ -68,6 +71,7 @@ svg.ic{width:20px;height:20px;flex:none}
 .announce{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--lichen);border-radius:9999px;padding:4px 16px;font-size:14px;color:var(--white);background:rgba(11,23,13,.5)}
 .announce b{color:var(--sprout);font-weight:500}
 .announce svg{width:14px;height:14px;color:var(--lichen)}
+.greeting{font-family:var(--font-serif);font-style:italic;font-size:clamp(24px,3vw,30px);line-height:1.2;color:var(--mist);margin-bottom:-8px}
 .display{font-family:var(--font-display);font-weight:400;font-size:clamp(34px,6.4vw,72px);line-height:1.08;letter-spacing:-.014em;max-width:14ch}
 .lead{font-size:18px;color:var(--fern);max-width:600px}
 .lead em{font-style:normal;color:var(--white)}
@@ -314,7 +318,102 @@ dialog h3{font-size:24px}
 .toast .t-body{font-size:14px;line-height:1.4;overflow-wrap:anywhere}
 .toast .t-x{background:transparent;border:0;color:#5d6151;font-size:20px;line-height:1;padding:0 4px}
 @keyframes pop{from{transform:translateY(12px) scale(.96);opacity:0}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.toast{animation:none}.btn{transition:none}}
+.toast .t-act{margin-top:8px;background:var(--forest);color:var(--white);border:0;border-radius:40px;padding:4px 14px;font-size:13px;font-weight:500}
+.link-btn{background:none;border:0;padding:4px;font-size:14px;text-decoration:underline;text-underline-offset:3px;color:var(--fern)}
+.link-btn:hover{color:var(--white)}
+
+/* ---------- Bienvenida ---------- */
+.welcome{width:100%;max-width:560px;background:rgba(11,23,13,.78);border:1px solid var(--moss);border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.welcome h3{display:flex;align-items:center;gap:10px;font-size:20px}
+.welcome h3 svg{width:26px;height:26px;color:var(--hib);flex:none}
+.welcome p{color:var(--fern);font-size:15px}
+.welcome .row{display:flex;flex-wrap:wrap;gap:8px}
+.welcome .input{flex:1 1 200px;width:auto}
+.welcome .link-btn{align-self:flex-start}
+
+/* ---------- Anotar rápido ---------- */
+.quick{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;padding:12px;border-radius:16px;background:rgba(104,239,63,.04);border:1px dashed var(--moss)}
+.quick .input{border-radius:14px}
+.quick-hint{font-size:13px;color:var(--fern)}
+.quick-hint.nudge{color:var(--sprout)}
+.quick-cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.qcat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:12px;border:1px solid var(--moss);background:transparent;font-size:13px;font-weight:500;color:var(--white);transition:background .15s ease,border-color .15s ease}
+.qcat svg{width:20px;height:20px}
+.qcat.urgente:hover{background:var(--hib-soft);border-color:var(--hib)}
+.qcat.importante:hover{background:var(--mango-soft);border-color:var(--mango)}
+.qcat.leve:hover{background:var(--lagoon-soft);border-color:var(--lagoon)}
+.quick.pulse .qcat{animation:pulse .6s ease 2}
+@keyframes pulse{50%{transform:scale(1.06);border-color:var(--sprout)}}
+
+/* ---------- Formulario: atajos ---------- */
+.pick-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.pick-chips button{border:1px solid var(--moss);background:transparent;border-radius:40px;padding:4px 12px;font-size:13px;color:var(--fern)}
+.pick-chips button:hover{border-color:var(--sprout);color:var(--white)}
+.cat-help{font-size:14px;color:var(--mist);min-height:21px;margin-top:6px;font-family:var(--font-serif);font-style:italic;font-size:16px}
+
+/* ---------- Tutorial ---------- */
+.tut-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1000px){.tut-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.tut-grid{grid-template-columns:minmax(0,1fr)}}
+.tut{display:flex;flex-direction:column;gap:12px}
+.tut .n{width:36px;height:36px;border-radius:9999px;background:var(--sprout);color:var(--ink);display:grid;place-items:center;font-weight:700;font-variant-numeric:tabular-nums}
+.tut h3{font-size:18px}
+.tut p{font-size:15px;color:var(--fern)}
+.mini{margin-top:auto;border-radius:14px;background:var(--night);border:1px solid var(--moss);padding:12px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.mini-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--white);border-radius:40px;padding:4px 12px;font-weight:500}
+.mini-btn svg{width:14px;height:14px}
+.mini-notif{background:var(--bone);color:var(--ink);border-radius:10px;padding:8px 10px;line-height:1.35}
+.mini-notif b{color:var(--hib-ink);font-weight:600;margin-right:4px}
+.mini-in{border:1px solid var(--sprout);border-radius:10px;padding:6px 10px;color:var(--white)}
+.caret{display:inline-block;width:1.5px;height:14px;background:var(--sprout);margin-left:2px;vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.mini-cats{display:flex;gap:6px}
+.mini-cats span{flex:1;display:grid;place-items:center;padding:6px;border:1px solid var(--moss);border-radius:10px}
+.mini-cats span.on{border-color:var(--mango);background:var(--mango-soft)}
+.mini-cats svg{width:16px;height:16px}
+.mini-task{display:flex;align-items:center;gap:8px;color:var(--mist)}
+.mini-task s{color:var(--lichen)}
+.mini-check{width:16px;height:16px;border-radius:9999px;border:1.5px solid var(--lichen);flex:none}
+.mini-check.on{background:var(--sprout);border-color:var(--sprout)}
+.mini-chips{display:flex;flex-wrap:wrap;gap:6px}
+.mini-chips span{border:1px solid var(--moss);border-radius:40px;padding:3px 10px;color:var(--fern)}
+.mini-chips span.on{border-color:var(--sprout);background:var(--sprout-soft);color:var(--white)}
+.tut-cta{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;margin-top:32px}
+.tut-cta p{color:var(--fern);font-size:15px}
+.faq{margin-top:56px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+@media (max-width:760px){.faq{grid-template-columns:minmax(0,1fr)}}
+.faq h3{grid-column:1/-1;margin-bottom:4px}
+.faq details{border:1px solid var(--moss);border-radius:16px;padding:16px 20px;background:var(--glass)}
+.faq summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--sprout);font-size:20px;line-height:1;flex:none}
+.faq details[open] summary::after{content:"–"}
+.faq details p{color:var(--fern);font-size:15px;margin-top:10px}
+
+/* ---------- Recorrido guiado ---------- */
+.tour{position:fixed;inset:0;z-index:60}
+.tour-spot{position:fixed;border-radius:16px;box-shadow:0 0 0 200vmax var(--tour-dim);outline:2px solid var(--sprout);outline-offset:4px;transition:left .3s ease,top .3s ease,width .3s ease,height .3s ease;pointer-events:none}
+.tour-spot.none{outline:none}
+.tour-pop{position:fixed;left:16px;top:16px;width:min(360px,calc(100% - 32px));background:var(--bone);color:var(--ink);border-radius:20px;padding:20px;box-shadow:var(--shadow-float);display:flex;flex-direction:column;gap:10px}
+.tour-pop .step{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--verdant)}
+.tour-pop h3{font-size:20px}
+.tour-pop p{font-size:15px;color:var(--onyx)}
+.tour-dots{display:flex;gap:6px}
+.tour-dots i{width:8px;height:8px;border-radius:9999px;background:var(--mist);transition:width .2s ease}
+.tour-dots i.on{background:var(--verdant);width:20px}
+.tour-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px}
+.tour-actions div{display:flex;gap:8px}
+.tour-pop .link-btn{color:var(--ink-soft)}
+.tour-pop .btn-quiet{color:var(--ink);border-color:var(--fern)}
+.help-fab{position:fixed;left:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:40;display:inline-flex;align-items:center;gap:8px;background:var(--onyx);color:var(--white);border:1px solid var(--moss);border-radius:9999px;padding:8px 16px 8px 8px;font-size:14px;font-weight:500;box-shadow:var(--shadow-nav)}
+.help-fab span{width:24px;height:24px;border-radius:9999px;background:var(--sprout);color:var(--ink);display:grid;place-items:center;font-weight:700}
+.help-fab:hover{border-color:var(--sprout)}
+
+/* ---------- Pétalos al terminar ---------- */
+.petal{position:fixed;width:10px;height:6px;margin:-3px 0 0 -5px;border-radius:9999px;pointer-events:none;z-index:70;animation:petal .9s ease-out forwards}
+@keyframes petal{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
+
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.toast{animation:none}.btn{transition:none}.caret{animation:none}.quick.pulse .qcat{animation:none}.tour-spot,.tour-dots i{transition:none}}
 </style>
 
 <!-- Íconos -->
@@ -341,8 +440,9 @@ dialog h3{font-size:24px}
 <header class="nav-wrap">
   <nav class="nav" aria-label="Principal">
     <a class="brand" href="#inicio"><svg class="ic"><use href="#i-leaf"/></svg>jardín</a>
-    <span class="tag">para <span class="name-slot">[tu nombre]</span></span>
+    <span class="tag">para <span class="name-slot">ti</span></span>
     <div class="nav-links">
+      <a href="#tutorial">Cómo se usa</a>
       <a href="#calendario">Calendario</a>
       <a href="#avisos">Avisos</a>
       <a href="#ideas">Ideas</a>
@@ -358,19 +458,85 @@ dialog h3{font-size:24px}
   <canvas id="jungle" aria-hidden="true"></canvas>
   <div class="orb" aria-hidden="true"></div>
   <div class="wrap hero-inner">
-    <p class="announce">Hecho con cariño para <b class="name-slot">[tu nombre]</b> <svg><use href="#i-chev"/></svg></p>
+    <p class="announce">Hecho con cariño por <b>Sebas</b> :) <svg><use href="#i-chev"/></svg></p>
+    <p class="greeting"><span id="greet">Hola</span><span class="name-slot" data-prefix=", " data-fallback=""></span></p>
     <h1 class="display">Tu tiempo en <span class="green">flor</span></h1>
-    <p class="lead">Un calendario de recordatorios con tres categorías: <em>urgente</em>, <em>importante</em> y <em>leve</em>. Cada una te avisa a su propio ritmo, para que lo que importa no se escape y lo pequeño no pese.</p>
+    <p class="lead">Anota lo que tienes que hacer y yo te lo recuerdo a tiempo. Cada tarea va en una de tres categorías, <em>urgente</em>, <em>importante</em> o <em>leve</em>, y cada una te avisa a su ritmo.</p>
     <div class="cta-row">
       <button class="btn btn-sprout pill" type="button" data-open-form>Agregar una tarea</button>
       <button class="btn btn-ghost pill" type="button" id="enable-notif"><svg class="ic"><use href="#i-bell"/></svg>Activar avisos</button>
     </div>
     <p class="notif-status" id="notif-status"></p>
+    <div class="welcome" id="welcome" hidden>
+      <h3><svg><use href="#i-hib"/></svg>¡Hola! Qué bueno tenerte aquí</h3>
+      <p>Este jardín te recuerda tus tareas con cariño y sin agobios. Dime tu nombre y te muestro cómo funciona en un minuto.</p>
+      <div class="row">
+        <input class="input" id="w-name" type="text" maxlength="40" placeholder="¿Cómo te llamas?" autocomplete="off" aria-label="Tu nombre">
+        <button class="btn btn-sprout pill" type="button" id="w-start">Ver cómo se usa</button>
+      </div>
+      <button class="link-btn" type="button" id="w-skip">Ahora no, prefiero explorar</button>
+    </div>
     <div class="today-strip" id="today-strip"></div>
   </div>
 </section>
 
-<section class="band" id="calendario">
+<section class="band" id="tutorial">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Cómo se usa</p>
+      <h2>Empieza en 4 pasos</h2>
+      <p class="sub">No necesitas crear una cuenta. Sigue estos pasos una vez y el jardín se encarga del resto.</p>
+    </div>
+    <div class="tut-grid">
+      <article class="card tut">
+        <span class="n">1</span><h3>Activa los avisos</h3>
+        <p>Toca «Activar avisos» arriba y acepta el permiso del navegador. Así te recuerdo cada tarea a tiempo.</p>
+        <div class="mini" aria-hidden="true">
+          <span class="mini-btn"><svg><use href="#i-bell"/></svg>Activar avisos</span>
+          <div class="mini-notif"><b>Urgente</b>«Pagar la luz» es en 30 min.</div>
+        </div>
+      </article>
+      <article class="card tut">
+        <span class="n">2</span><h3>Anota una tarea</h3>
+        <p>Toca un día del calendario, escribe la tarea y toca su categoría. Para elegir hora o repetirla, usa «Nueva tarea».</p>
+        <div class="mini" aria-hidden="true">
+          <span class="mini-in">Llamar a mamá<i class="caret"></i></span>
+          <div class="mini-cats"><span class="c-urgente"><svg><use href="#i-hib"/></svg></span><span class="c-importante on"><svg><use href="#i-mango"/></svg></span><span class="c-leve"><svg><use href="#i-wave"/></svg></span></div>
+        </div>
+      </article>
+      <article class="card tut">
+        <span class="n">3</span><h3>Márcala al terminar</h3>
+        <p>Toca el circulito y la tarea queda hecha. Tu plantita de la semana crece con cada una.</p>
+        <div class="mini" aria-hidden="true">
+          <div class="mini-task"><span class="mini-check on"></span><s>Regar las plantas</s></div>
+          <div class="mini-task"><span class="mini-check"></span>Ordenar el escritorio</div>
+        </div>
+      </article>
+      <article class="card tut">
+        <span class="n">4</span><h3>Ajústalo a tu gusto</h3>
+        <p>Escribe tu nombre, elige tus horas de descanso y decide cuántos avisos quieres de cada tipo.</p>
+        <div class="mini" aria-hidden="true">
+          <div class="mini-chips"><span class="on">1 día antes</span><span>3 horas antes</span><span class="on">A la hora</span></div>
+        </div>
+      </article>
+    </div>
+    <div class="tut-cta">
+      <button class="btn btn-sprout pill" type="button" data-tour>Ver el recorrido guiado</button>
+      <p>Te muestro cada parte de la página, paso a paso. Dura un minuto.</p>
+    </div>
+    <div class="faq">
+      <h3>Preguntas frecuentes</h3>
+      <details><summary>No me llegan los avisos, ¿qué hago?</summary><p>Revisa que hayas tocado «Activar avisos» y aceptado el permiso, y que la página siga abierta (puede estar minimizada). Si el navegador no permite avisos, igual aparecen dentro de la página, en la esquina de abajo.</p></details>
+      <details><summary>¿Dónde se guardan mis tareas?</summary><p>Solo en este navegador, en este dispositivo. Nadie más las ve. Para no perderlas, copia tu respaldo una vez al mes desde «Tus datos», al final de la página.</p></details>
+      <details><summary>¿Cómo cambio o borro una tarea?</summary><p>Toca su nombre para cambiar el día, la hora o la categoría. Para borrarla, toca «Borrar». Si te equivocas, toca «Deshacer» en el aviso que aparece.</p></details>
+      <details><summary>¿Cómo anoto un cumpleaños?</summary><p>Usa «Nueva tarea», elige «Cada año» en «¿Se repite?» y marca «Es una fecha clave». Te aviso con días de anticipación todos los años.</p></details>
+      <details><summary>¿Lo puedo usar en el celular?</summary><p>Sí. Ábrelo en el navegador del celular y agrégalo a la pantalla de inicio. En el celular los avisos aparecen dentro de la página mientras está abierta.</p></details>
+      <details><summary>¿Qué categoría elijo?</summary><p>Urgente si tiene fecha límite hoy o mañana. Importante si te hace crecer o es especial, aunque no corra prisa. Leve si puede esperar sin problema.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="calendario">
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow">El calendario</p>
@@ -402,6 +568,15 @@ dialog h3{font-size:24px}
           <h3 id="day-label"></h3>
           <button class="btn btn-sprout pill btn-mini" type="button" id="add-on-day">+ Tarea</button>
         </div>
+        <div class="quick" id="quick-add">
+          <label class="quick-hint" for="q-title" id="q-hint">Escribe una tarea para este día y toca su categoría para guardarla</label>
+          <input class="input" id="q-title" type="text" maxlength="90" placeholder="Ej. Comprar el regalo de mamá" autocomplete="off">
+          <div class="quick-cats">
+            <button type="button" class="qcat urgente" data-q="urgente"><svg class="c-urgente"><use href="#i-hib"/></svg>Urgente</button>
+            <button type="button" class="qcat importante" data-q="importante"><svg class="c-importante"><use href="#i-mango"/></svg>Importante</button>
+            <button type="button" class="qcat leve" data-q="leve"><svg class="c-leve"><use href="#i-wave"/></svg>Leve</button>
+          </div>
+        </div>
         <ul class="task-list" id="task-list"></ul>
       </aside>
     </div>
@@ -412,7 +587,7 @@ dialog h3{font-size:24px}
   </div>
 </section>
 
-<section class="band alt" id="avisos">
+<section class="band" id="avisos">
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow">Avisos que te cuidan</p>
@@ -431,7 +606,7 @@ dialog h3{font-size:24px}
       <div class="phone" aria-label="Ejemplos de avisos en la pantalla del celular">
         <div class="clock">8:00</div>
         <div class="pdate" id="phone-date"></div>
-        <div class="notif"><div class="nic">☀️</div><div><div class="nhead"><span>Buenos días</span><span>ahora</span></div><p class="nbody">Buenos días, <span class="name-slot">[tu nombre]</span>. Hoy tienes 1 urgente, 2 importantes y 3 leves. Empieza por el hibisco.</p></div></div>
+        <div class="notif"><div class="nic">☀️</div><div><div class="nhead"><span>Buenos días</span><span>ahora</span></div><p class="nbody">Buenos días<span class="name-slot" data-prefix=", " data-fallback=""></span>. Hoy tienes 1 urgente, 2 importantes y 3 leves. Empieza por el hibisco.</p></div></div>
         <div class="notif"><div class="nic">🌺</div><div><div class="nhead"><span>Urgente</span><span>9:30</span></div><p class="nbody">¡Ojo! «Entregar el informe» es en 30 min. Un paso a la vez, tú puedes.</p></div></div>
         <div class="notif"><div class="nic">🥭</div><div><div class="nhead"><span>Importante</span><span>ayer</span></div><p class="nbody">«Cita con la dentista» es mañana a las 10:00. Deja lista la tarjeta del seguro esta noche.</p></div></div>
         <div class="notif"><div class="nic">🌴</div><div><div class="nhead"><span>Fecha clave</span><span>ayer</span></div><p class="nbody">En 3 días es el cumpleaños de [mejor amiga]. ¿Ya pensaste en el regalo?</p></div></div>
@@ -471,7 +646,7 @@ dialog h3{font-size:24px}
   </div>
 </section>
 
-<section class="band" id="ideas">
+<section class="band alt" id="ideas">
   <div class="wrap">
     <div class="matrix-wrap">
       <div class="sec-head" style="margin-bottom:0">
@@ -503,7 +678,7 @@ dialog h3{font-size:24px}
   </div>
 </section>
 
-<section class="band alt" id="cuidarte">
+<section class="band" id="cuidarte">
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow">Motivación sin agotarte</p>
@@ -545,7 +720,7 @@ dialog h3{font-size:24px}
   </div>
 </section>
 
-<section class="band" id="plantilla">
+<section class="band alt" id="plantilla">
   <div class="wrap">
     <div class="sec-head">
       <p class="eyebrow">Plantilla visual</p>
@@ -597,7 +772,7 @@ dialog h3{font-size:24px}
           <li><div><b>Ajusta tus avisos</b>En la sección de avisos, elige cuántos quieres por categoría. Menos avisos también es válido.</div></li>
         </ol>
       </div>
-      <div class="card">
+      <div class="card" id="settings-card">
         <h3 style="margin-bottom:16px">Tus datos</h3>
         <div class="form-grid">
           <div class="field full"><label for="s-name">Tu nombre</label><input class="input" id="s-name" type="text" maxlength="40" placeholder="[tu nombre]" autocomplete="off"></div>
@@ -624,31 +799,34 @@ dialog h3{font-size:24px}
 <footer>
   <div class="wrap">
     <span class="brand"><svg class="ic"><use href="#i-leaf"/></svg>jardín de tareas</span>
-    <span>Hecho con cariño para <span class="name-slot">[tu nombre]</span>.</span>
+    <span>Hecho con cariño por Sebas para <span class="name-slot">ti</span> :)</span>
   </div>
 </footer>
 
 <dialog id="task-dialog" aria-labelledby="dlg-title">
   <form id="task-form" novalidate>
     <h3 id="dlg-title">Nueva tarea</h3>
-    <div class="field"><label for="f-title">¿Qué hay que hacer?</label><input class="input" id="f-title" type="text" maxlength="90" required placeholder="Ej. Pagar el recibo de la luz" autocomplete="off"></div>
-    <div class="field"><span class="lbl">Categoría</span>
+    <div class="field"><label for="f-title">¿Qué tienes que hacer?</label><input class="input" id="f-title" type="text" maxlength="90" required placeholder="Ej. Pagar el recibo de la luz" autocomplete="off"></div>
+    <div class="field"><span class="lbl">¿De qué tipo es?</span>
       <div class="cat-pick">
         <span><input type="radio" name="f-cat" id="f-cat-urgente" value="urgente"><label class="urgente" for="f-cat-urgente"><svg class="c-urgente"><use href="#i-hib"/></svg>Urgente<small>hibisco</small></label></span>
         <span><input type="radio" name="f-cat" id="f-cat-importante" value="importante"><label class="importante" for="f-cat-importante"><svg class="c-importante"><use href="#i-mango"/></svg>Importante<small>mango</small></label></span>
         <span><input type="radio" name="f-cat" id="f-cat-leve" value="leve"><label class="leve" for="f-cat-leve"><svg class="c-leve"><use href="#i-wave"/></svg>Leve<small>laguna</small></label></span>
       </div>
+      <p class="cat-help" id="cat-help"></p>
     </div>
     <div class="form-grid">
-      <div class="field"><label for="f-date">Día</label><input class="input" id="f-date" type="date" required></div>
-      <div class="field"><label for="f-time">Hora</label><input class="input" id="f-time" type="time" required></div>
-      <div class="field"><label for="f-repeat">Se repite</label>
+      <div class="field"><label for="f-date">¿Qué día?</label><input class="input" id="f-date" type="date" required>
+        <div class="pick-chips" data-pick="date"><button type="button" data-v="0">Hoy</button><button type="button" data-v="1">Mañana</button><button type="button" data-v="7">En una semana</button></div></div>
+      <div class="field"><label for="f-time">¿A qué hora?</label><input class="input" id="f-time" type="time" required>
+        <div class="pick-chips" data-pick="time"><button type="button" data-v="09:00">9:00</button><button type="button" data-v="13:00">13:00</button><button type="button" data-v="17:00">17:00</button><button type="button" data-v="20:00">20:00</button></div></div>
+      <div class="field"><label for="f-repeat">¿Se repite?</label>
         <select class="input" id="f-repeat">
           <option value="none">Una sola vez</option><option value="daily">Cada día</option><option value="weekly">Cada semana</option><option value="monthly">Cada mes</option><option value="yearly">Cada año</option>
         </select></div>
       <div class="field" style="justify-content:flex-end"><label class="switch-row" for="f-key"><input type="checkbox" id="f-key">Es una fecha clave</label></div>
     </div>
-    <div class="field"><label for="f-note">Nota (opcional)</label><textarea class="input" id="f-note" rows="2" maxlength="200" placeholder="Ej. Llevar la tarjeta del seguro"></textarea></div>
+    <div class="field"><label for="f-note">¿Quieres anotar algo más? (opcional)</label><textarea class="input" id="f-note" rows="2" maxlength="200" placeholder="Ej. Llevar la tarjeta del seguro"></textarea></div>
     <p class="form-error" id="form-error"></p>
     <div class="dlg-actions">
       <button class="btn btn-quiet pill" type="button" id="dlg-cancel">Cancelar</button>
@@ -658,6 +836,24 @@ dialog h3{font-size:24px}
 </dialog>
 
 <div class="toasts" id="toasts" aria-live="polite"></div>
+
+<div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tour-title">
+  <div class="tour-spot" id="tour-spot"></div>
+  <div class="tour-pop" id="tour-pop">
+    <p class="step" id="tour-step"></p>
+    <h3 id="tour-title"></h3>
+    <p id="tour-body"></p>
+    <div class="tour-dots" id="tour-dots" aria-hidden="true"></div>
+    <div class="tour-actions">
+      <button type="button" class="link-btn" id="tour-skip">Saltar</button>
+      <div>
+        <button type="button" class="btn btn-quiet pill btn-mini" id="tour-prev">Atrás</button>
+        <button type="button" class="btn btn-sprout pill btn-mini" id="tour-next">Siguiente</button>
+      </div>
+    </div>
+  </div>
+</div>
+<button type="button" class="help-fab" id="help-fab"><span aria-hidden="true">?</span>¿Cómo se usa?</button>
 
 <script>
 (() => {
@@ -674,6 +870,7 @@ dialog h3{font-size:24px}
   const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
   const uid = () => Math.random().toString(36).slice(2, 10);
   const plural = (n, a, b) => `${n} ${n === 1 ? a : b}`;
+  const REDUCE = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   const CATS = {
     urgente:    { label: 'Urgente',    nick: 'Hibisco', icon: 'i-hib',   emoji: '🌺', desc: 'Lo que tiene fecha límite hoy o mañana y trae consecuencias si se pasa. Avisa varias veces y, si quieres, insiste cada hora hasta que la marques.' },
@@ -687,7 +884,7 @@ dialog h3{font-size:24px}
   ];
   const REPEAT = { none: 'Una vez', daily: 'Cada día', weekly: 'Cada semana', monthly: 'Cada mes', yearly: 'Cada año' };
   const DEFAULTS = {
-    name: '', morning: '08:00', quietFrom: '22:30', quietTo: '07:00',
+    name: '', welcomed: false, morning: '08:00', quietFrom: '22:30', quietTo: '07:00',
     cats: { urgente: { offsets: [1440, 180, 30, 0], nag: true }, importante: { offsets: [4320, 1440, 60] }, leve: { offsets: [0] } }
   };
   const KEY = 'jardin-tareas-v1';
@@ -754,8 +951,11 @@ dialog h3{font-size:24px}
   const nameHi = () => state.settings.name ? `, ${state.settings.name}` : '';
 
   /* ---------- Render ---------- */
+  function greeting() { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; }
   function renderNames() {
-    $$('.name-slot').forEach(el => { el.textContent = state.settings.name || '[tu nombre]'; });
+    const n = state.settings.name;
+    $$('.name-slot').forEach(el => { el.textContent = n ? (el.dataset.prefix || '') + n : (el.dataset.fallback ?? 'ti'); });
+    $('#greet').textContent = greeting();
   }
 
   function renderToday() {
@@ -923,13 +1123,14 @@ dialog h3{font-size:24px}
       : 'Toca «Activar avisos» para recibirlos también fuera de la página.';
   }
 
-  function toast(title, body, cat, ms) {
+  function toast(title, body, cat, ms, action) {
     const box = $('#toasts');
     const icon = cat && CATS[cat] ? CATS[cat].icon : cat === 'key' ? 'i-spark' : cat === 'brief' ? 'i-sun' : 'i-leaf';
     const el = document.createElement('div');
     el.className = 'toast ' + (cat || '');
-    el.innerHTML = `<div class="tic"><svg><use href="#${icon}"/></svg></div><div><p class="t-title">${esc(title)}</p><p class="t-body">${esc(body)}</p></div><button type="button" class="t-x" aria-label="Cerrar aviso">×</button>`;
+    el.innerHTML = `<div class="tic"><svg><use href="#${icon}"/></svg></div><div><p class="t-title">${esc(title)}</p><p class="t-body">${esc(body)}</p>${action ? `<button type="button" class="t-act">${esc(action.label)}</button>` : ''}</div><button type="button" class="t-x" aria-label="Cerrar aviso">×</button>`;
     el.querySelector('.t-x').addEventListener('click', () => el.remove());
+    if (action) el.querySelector('.t-act').addEventListener('click', () => { el.remove(); action.fn(); });
     box.append(el);
     while (box.children.length > 4) box.firstElementChild.remove();
     setTimeout(() => el.remove(), ms || (cat === 'urgente' ? 15000 : 9000));
@@ -1020,6 +1221,7 @@ dialog h3{font-size:24px}
     $('#f-key').checked = task ? !!task.key : false;
     $('#f-note').value = task ? task.note : '';
     $(`#f-cat-${task ? task.cat : 'importante'}`).checked = true;
+    updateCatHelp();
     $('#form-error').textContent = '';
     if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
     setTimeout(() => $('#f-title').focus(), 30);
@@ -1047,6 +1249,18 @@ dialog h3{font-size:24px}
     renderAll();
     toast(editing ? 'Tarea actualizada' : 'Tarea guardada', `«${title}» quedó en tu calendario.`, data.cat, 5000);
   });
+  const CAT_HELP = {
+    urgente: 'Tiene fecha límite hoy o mañana. Te aviso varias veces para que no se pase.',
+    importante: 'Te hace crecer o es especial. Te aviso con días de anticipación.',
+    leve: 'Puede esperar. Te doy un solo aviso suave.'
+  };
+  function updateCatHelp() { const c = ($('input[name="f-cat"]:checked') || {}).value; $('#cat-help').textContent = c ? CAT_HELP[c] : ''; }
+  $$('input[name="f-cat"]').forEach(r => r.addEventListener('change', updateCatHelp));
+  $$('.pick-chips').forEach(box => box.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (box.dataset.pick === 'date') $('#f-date').value = ymd(addDays(new Date(), Number(b.dataset.v)));
+    else $('#f-time').value = b.dataset.v;
+  }));
   $('#dlg-cancel').addEventListener('click', closeForm);
   dlg.addEventListener('click', e => { if (e.target === dlg) closeForm(); });
   $$('[data-open-form]').forEach(b => b.addEventListener('click', () => openForm(null, view.sel)));
@@ -1069,7 +1283,11 @@ dialog h3{font-size:24px}
     if (e.target.type !== 'checkbox') return;
     const li = e.target.closest('.task'), t = state.tasks.find(x => x.id === li.dataset.id); if (!t) return;
     t.done = t.done || {};
-    if (e.target.checked) { t.done[view.sel] = 1; toast('¡Hecho!', CHEERS[Math.floor(Math.random() * CHEERS.length)], null, 4500); }
+    if (e.target.checked) {
+      t.done[view.sel] = 1;
+      const r = e.target.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2);
+      toast('¡Hecho!', CHEERS[Math.floor(Math.random() * CHEERS.length)], null, 4500);
+    }
     else delete t.done[view.sel];
     save(); renderAll();
   });
@@ -1077,17 +1295,14 @@ dialog h3{font-size:24px}
     const li = e.target.closest('.task'); if (!li) return;
     const t = state.tasks.find(x => x.id === li.dataset.id); if (!t) return;
     if (e.target.closest('[data-edit]')) { openForm(t); return; }
-    const del = e.target.closest('[data-del]');
-    if (del) {
-      if (!del.classList.contains('confirm')) {
-        del.classList.add('confirm');
-        del.textContent = t.repeat !== 'none' ? '¿Borrar todas las repeticiones?' : '¿Seguro?';
-        setTimeout(() => { if (del.isConnected) { del.classList.remove('confirm'); del.textContent = 'Borrar'; } }, 4000);
-        return;
-      }
-      state.tasks = state.tasks.filter(x => x.id !== t.id);
+    if (e.target.closest('[data-del]')) {
+      const idx = state.tasks.indexOf(t);
+      state.tasks.splice(idx, 1);
       save(); renderAll();
-      toast('Tarea borrada', `«${t.title}» salió del calendario.`, null, 4000);
+      toast('Tarea borrada', t.repeat !== 'none' ? `«${t.title}» salió del calendario, con todas sus repeticiones.` : `«${t.title}» salió del calendario.`, null, 8000, {
+        label: 'Deshacer',
+        fn: () => { state.tasks.splice(Math.min(idx, state.tasks.length), 0, t); save(); renderAll(); toast('Listo', `«${t.title}» volvió a su lugar.`, t.cat, 3500); }
+      });
     }
   });
   $('#clear-examples').addEventListener('click', () => {
@@ -1159,6 +1374,126 @@ dialog h3{font-size:24px}
     toast('Respaldo restaurado', `Volvieron ${plural(state.tasks.length, 'tarea', 'tareas')}.`, null, 5000);
   });
 
+  /* ---------- Anotar rápido ---------- */
+  const qHint = $('#q-hint'), Q_HINT = qHint.textContent;
+  let hintTimer;
+  function hint(msg) {
+    qHint.textContent = msg; qHint.classList.add('nudge');
+    clearTimeout(hintTimer); hintTimer = setTimeout(() => { qHint.textContent = Q_HINT; qHint.classList.remove('nudge'); }, 3500);
+  }
+  function dayWord(ds) {
+    const n = dayDiff(ymd(new Date()), ds);
+    if (n === 0) return 'hoy';
+    if (n === 1) return 'mañana';
+    return 'el ' + parseYmd(ds).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' });
+  }
+  function quickAdd(cat) {
+    const inp = $('#q-title'), title = inp.value.trim();
+    if (!title) { hint('Primero escribe qué tienes que hacer.'); inp.focus(); return; }
+    let time = '09:00';
+    if (view.sel === ymd(new Date())) time = pad(Math.min(new Date().getHours() + 1, 23)) + ':00';
+    state.tasks.push({ id: uid(), title, date: view.sel, time, cat, repeat: 'none', key: false, note: '', done: {}, ex: false });
+    save(); inp.value = ''; renderAll();
+    toast('¡Anotada!', `«${title}» quedó para ${dayWord(view.sel)} a las ${time}. Toca su nombre si quieres cambiar algo.`, cat, 6500);
+  }
+  $('#quick-add').addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (b) quickAdd(b.dataset.q); });
+  $('#q-title').addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (!e.target.value.trim()) return;
+    hint('Ahora toca su categoría: urgente, importante o leve.');
+    const q = $('#quick-add'); q.classList.remove('pulse'); void q.offsetWidth; q.classList.add('pulse');
+  });
+
+  /* ---------- Pétalos al terminar ---------- */
+  function burst(x, y) {
+    if (REDUCE) return;
+    const cols = ['var(--sprout)', 'var(--hib)', 'var(--mango)', 'var(--lagoon)'];
+    for (let i = 0; i < 12; i++) {
+      const p = document.createElement('span'), a = Math.random() * 6.283, d = 28 + Math.random() * 44;
+      p.className = 'petal';
+      p.style.cssText = `left:${x}px;top:${y}px;background:${cols[i % 4]};--dx:${(Math.cos(a) * d).toFixed(1)}px;--dy:${(Math.sin(a) * d - 18).toFixed(1)}px;--r:${Math.round(Math.random() * 360)}deg`;
+      document.body.append(p);
+      setTimeout(() => p.remove(), 950);
+    }
+  }
+
+  /* ---------- Recorrido guiado ---------- */
+  const TOUR = [
+    { sel: null, title: 'Un recorrido de un minuto', body: 'Te muestro lo básico en pocos pasos. Puedes salir cuando quieras con «Saltar».' },
+    { sel: '#enable-notif', title: 'Activa los avisos', body: 'Toca este botón y acepta el permiso. Así te recuerdo tus tareas aunque estés en otra pestaña.' },
+    { sel: '#cal-grid', title: 'Tu calendario', body: 'Cada puntito es una tarea: rojo urgente, dorado importante, turquesa leve. Toca un día para ver qué tiene.' },
+    { sel: '#quick-add', title: 'Anota en un segundo', body: 'Escribe la tarea y toca su categoría. Se guarda en el día que elegiste en el calendario.' },
+    { sel: '#task-list', title: 'Marca lo que terminas', body: 'Toca el circulito cuando acabes. Si tocas el nombre, puedes cambiar la hora, el día o la categoría.' },
+    { sel: '#cat-grid', title: 'Elige cuándo te aviso', body: 'Cada categoría tiene su ritmo. Enciende o apaga los momentos que prefieras.' },
+    { sel: '#garden', title: 'Tu jardín crece contigo', body: 'Cada tarea hecha hace crecer tu plantita de la semana. Lo que cuenta es avanzar, no hacerlo perfecto.' },
+    { sel: '#settings-card', title: 'Hazlo tuyo', body: 'Aquí cambias tu nombre, la hora del saludo de la mañana y tus horas de descanso.' },
+    { sel: null, title: '¡Todo listo!', body: 'Si se te olvida algo, toca «¿Cómo se usa?» abajo a la izquierda y repetimos el recorrido.' }
+  ];
+  const tour = { i: 0, el: $('#tour'), spot: $('#tour-spot'), pop: $('#tour-pop'), back: null };
+  function placeTour() {
+    const s = TOUR[tour.i], t = s.sel && $(s.sel), pop = tour.pop, spot = tour.spot;
+    const vw = window.innerWidth, vh = window.innerHeight, m = 16, pw = pop.offsetWidth, ph = pop.offsetHeight;
+    if (!t) {
+      spot.classList.add('none');
+      spot.style.cssText = `left:${vw / 2}px;top:${vh / 2}px;width:0;height:0`;
+      pop.style.left = `${Math.max(m, (vw - pw) / 2)}px`; pop.style.top = `${Math.max(m, (vh - ph) / 2)}px`;
+      return;
+    }
+    spot.classList.remove('none');
+    const r = t.getBoundingClientRect(), pd = 8;
+    const top = Math.max(r.top - pd, 4), bottom = Math.min(r.bottom + pd, vh - 4);
+    spot.style.cssText = `left:${r.left - pd}px;top:${top}px;width:${r.width + pd * 2}px;height:${Math.max(0, bottom - top)}px`;
+    let y;
+    if (vh - bottom >= ph + m + 12) y = bottom + 12;
+    else if (top >= ph + m + 12) y = top - ph - 12;
+    else y = vh - ph - m;
+    pop.style.left = `${Math.min(Math.max(m, r.left + r.width / 2 - pw / 2), vw - pw - m)}px`;
+    pop.style.top = `${Math.max(m, y)}px`;
+  }
+  function showStep() {
+    const s = TOUR[tour.i];
+    $('#tour-step').textContent = `Paso ${tour.i + 1} de ${TOUR.length}`;
+    $('#tour-title').textContent = s.title;
+    $('#tour-body').textContent = s.body;
+    $('#tour-dots').innerHTML = TOUR.map((_, k) => `<i class="${k === tour.i ? 'on' : ''}"></i>`).join('');
+    $('#tour-prev').hidden = tour.i === 0;
+    $('#tour-next').textContent = tour.i === TOUR.length - 1 ? '¡A empezar!' : 'Siguiente';
+    const t = s.sel && $(s.sel);
+    if (t) { t.scrollIntoView({ block: 'center', behavior: REDUCE ? 'auto' : 'smooth' }); setTimeout(placeTour, REDUCE ? 30 : 480); }
+    placeTour();
+    $('#tour-next').focus({ preventScroll: true });
+  }
+  function startTour() { tour.back = document.activeElement; tour.i = 0; tour.el.hidden = false; showStep(); }
+  function endTour() { tour.el.hidden = true; if (tour.back && tour.back.focus) tour.back.focus({ preventScroll: true }); }
+  $$('[data-tour]').forEach(b => b.addEventListener('click', startTour));
+  $('#help-fab').addEventListener('click', startTour);
+  $('#tour-next').addEventListener('click', () => { if (tour.i < TOUR.length - 1) { tour.i++; showStep(); } else endTour(); });
+  $('#tour-prev').addEventListener('click', () => { if (tour.i > 0) { tour.i--; showStep(); } });
+  $('#tour-skip').addEventListener('click', endTour);
+  document.addEventListener('keydown', e => {
+    if (tour.el.hidden) return;
+    if (e.key === 'Escape') endTour();
+    else if (e.key === 'ArrowRight') $('#tour-next').click();
+    else if (e.key === 'ArrowLeft' && tour.i > 0) $('#tour-prev').click();
+  });
+  let tourRaf;
+  const replaceTour = () => { if (tour.el.hidden) return; cancelAnimationFrame(tourRaf); tourRaf = requestAnimationFrame(placeTour); };
+  window.addEventListener('scroll', replaceTour, { passive: true });
+  window.addEventListener('resize', replaceTour);
+
+  /* ---------- Bienvenida ---------- */
+  function closeWelcome(thenTour) {
+    const n = $('#w-name').value.trim();
+    if (n) { state.settings.name = n; $('#s-name').value = n; }
+    state.settings.welcomed = true; save(); renderNames();
+    $('#welcome').hidden = true;
+    if (thenTour) startTour();
+  }
+  $('#w-start').addEventListener('click', () => closeWelcome(true));
+  $('#w-skip').addEventListener('click', () => closeWelcome(false));
+  $('#w-name').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); closeWelcome(true); } });
+
   /* ---------- Selva de noche (hero) ---------- */
   function jungle() {
     const c = $('#jungle'); if (!c || !c.getContext) return;
@@ -1213,6 +1548,7 @@ dialog h3{font-size:24px}
   /* ---------- Inicio ---------- */
   $('#phone-date').textContent = new Date().toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' });
   renderCats(); renderSwatches(); renderSettings(); renderAll(); notifStatus(); jungle();
+  $('#welcome').hidden = !!state.settings.welcomed;
   if (firstRun) { tick(true); save(); } else tick(false);
   setInterval(() => { tick(false); renderToday(); }, 30000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(false); renderAll(); } });
