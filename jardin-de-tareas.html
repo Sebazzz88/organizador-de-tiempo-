@@ -1,0 +1,1221 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Jardín de Tareas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Boldonse&family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+/* Layout: invernadero tropical de noche. Nav en píldora flotante, hero con hojas de palma y luciérnagas,
+   bandas oscuras que alternan noche / bosque, contenedor de 1200px. Un solo color de acción (brote eléctrico);
+   hibisco, mango y laguna solo marcan categorías. */
+:root{
+  color-scheme: dark;
+  --night:#0b170d; --forest:#122314; --forest-2:#172b19; --moss:#273f2b; --onyx:#30322a;
+  --lichen:#8a907c; --fern:#b7bda5; --mist:#d9deca; --bone:#f2f5eb; --white:#ffffff; --ink:#30322a;
+  --sprout:#68ef3f; --verdant:#26a200; --wash:#e7f9dd;
+  --hib:#ff7a6b; --mango:#ffc14d; --lagoon:#5ad8c8;
+  --hib-soft:rgba(255,122,107,.14); --mango-soft:rgba(255,193,77,.14); --lagoon-soft:rgba(90,216,200,.14);
+  --sprout-soft:rgba(104,239,63,.12); --glass:rgba(255,255,255,.03); --scrim:rgba(0,0,0,.62);
+  --font-display:'Boldonse','Arial Black',Impact,sans-serif;
+  --font-ui:'Geist',ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-serif:'Instrument Serif',Georgia,'Times New Roman',serif;
+  --r-pill:28px; --r-card:20px; --r-btn:8px;
+  --shadow-float:0 24px 60px rgba(0,0,0,.45),0 4px 12px rgba(0,0,0,.3);
+  --shadow-nav:0 8px 32px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{margin:0;background:var(--night);color:var(--white);font-family:var(--font-ui);font-size:16px;line-height:1.5;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--sprout);outline-offset:2px}
+.wrap{max-width:1232px;margin-inline:auto;padding-inline:16px}
+.green{color:var(--sprout)}
+svg.ic{width:20px;height:20px;flex:none}
+
+/* ---------- Botones ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:var(--r-btn);padding:8px 20px;font-weight:500;font-size:15px;line-height:1.4;white-space:nowrap;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.btn:active{transform:translateY(1px)}
+.pill{border-radius:var(--r-pill)}
+.btn-sprout{background:var(--sprout);color:var(--ink)}
+.btn-sprout:hover{background:#7ff55c}
+.btn-ghost{background:transparent;border-color:var(--white);color:var(--white)}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
+.btn-quiet{background:transparent;border-color:var(--moss);color:var(--fern)}
+.btn-quiet:hover{border-color:var(--fern);color:var(--white)}
+.btn-mini{padding:4px 12px;font-size:13px}
+
+/* ---------- Nav ---------- */
+.nav-wrap{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);z-index:20;padding-inline:16px;margin-top:16px}
+.nav{max-width:1200px;margin-inline:auto;display:flex;align-items:center;gap:16px;background:rgba(48,50,42,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--r-pill);padding:8px 8px 8px 20px;box-shadow:var(--shadow-nav)}
+.brand{display:flex;align-items:center;gap:8px;color:var(--white);text-decoration:none;font-weight:700;font-size:18px;letter-spacing:-.03em}
+.brand svg{color:var(--sprout)}
+.tag{background:var(--sprout);color:var(--ink);font-size:12px;font-weight:500;padding:4px 12px;border-radius:40px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-links{display:flex;gap:4px;margin-left:auto}
+.nav-links a{color:var(--fern);text-decoration:none;font-size:14px;font-weight:500;padding:8px 12px;border-radius:var(--r-btn)}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,.05)}
+.nav .btn{margin-left:8px}
+@media (max-width:900px){.nav-links{display:none}.nav .btn{margin-left:auto}}
+@media (max-width:440px){.tag{display:none}}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;overflow:hidden;margin-top:-72px;padding-top:168px;padding-bottom:96px;background:var(--forest)}
+#jungle{position:absolute;inset:0;width:100%;height:100%;display:block}
+.orb{position:absolute;width:600px;height:600px;max-width:none;border-radius:9999px;right:-180px;top:-120px;background:radial-gradient(circle at 38% 38%,rgba(104,239,63,.32),rgba(39,63,43,.55) 42%,rgba(0,0,0,0) 70%);opacity:.75;pointer-events:none}
+.orb::after{content:"";position:absolute;inset:0;border-radius:inherit;opacity:.35;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.hero-inner{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:24px}
+.announce{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--lichen);border-radius:9999px;padding:4px 16px;font-size:14px;color:var(--white);background:rgba(11,23,13,.5)}
+.announce b{color:var(--sprout);font-weight:500}
+.announce svg{width:14px;height:14px;color:var(--lichen)}
+.display{font-family:var(--font-display);font-weight:400;font-size:clamp(34px,6.4vw,72px);line-height:1.08;letter-spacing:-.014em;max-width:14ch}
+.lead{font-size:18px;color:var(--fern);max-width:600px}
+.lead em{font-style:normal;color:var(--white)}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px}
+.notif-status{font-size:14px;color:var(--fern);max-width:560px;min-height:21px}
+.today-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.today-strip .label{font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--mist);margin-right:4px}
+.next-up{width:100%;font-size:14px;color:var(--fern)}
+.next-up b{color:var(--white);font-weight:500}
+
+/* ---------- Chips y categorías ---------- */
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:40px;padding:4px 12px;font-size:13px;font-weight:500;line-height:1.4;white-space:nowrap}
+.chip svg{width:14px;height:14px}
+.chip.urgente{background:var(--hib-soft);color:var(--hib)}
+.chip.importante{background:var(--mango-soft);color:var(--mango)}
+.chip.leve{background:var(--lagoon-soft);color:var(--lagoon)}
+.chip.key{background:var(--sprout-soft);color:var(--sprout)}
+.c-urgente{color:var(--hib)} .c-importante{color:var(--mango)} .c-leve{color:var(--lagoon)}
+
+/* ---------- Bandas ---------- */
+.band{padding-block:96px}
+.band.alt{background:var(--forest)}
+.sec-head{display:flex;flex-direction:column;gap:12px;margin-bottom:40px;max-width:720px}
+.eyebrow{font-family:var(--font-serif);font-style:italic;font-size:20px;color:var(--sprout);letter-spacing:.01em}
+h2{font-size:clamp(28px,4vw,40px);line-height:1.15;font-weight:700;letter-spacing:-.031em}
+.sub{color:var(--fern);font-size:17px;max-width:620px}
+h3{font-size:20px;font-weight:600;letter-spacing:-.02em;line-height:1.35}
+.card{background:var(--glass);border:1px solid var(--moss);border-radius:var(--r-card);padding:24px}
+@media (max-width:640px){.band{padding-block:64px}.card{padding:16px}}
+
+/* ---------- Calendario ---------- */
+.example-banner{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;border:1px dashed var(--lichen);border-radius:16px;padding:12px 16px;margin-bottom:24px;color:var(--mist);font-size:15px}
+.cal-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:920px){.cal-layout{grid-template-columns:minmax(0,1fr)}}
+.cal-top{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.cal-top h3{flex:1;font-size:22px;text-transform:capitalize}
+.icon-btn{width:40px;height:40px;border-radius:9999px;border:1px solid var(--moss);background:transparent;display:grid;place-items:center;color:var(--fern)}
+.icon-btn:hover{border-color:var(--sprout);color:var(--sprout)}
+.icon-btn svg{width:18px;height:18px}
+.flip{transform:scaleX(-1)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--fern);margin-bottom:16px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:9999px;display:inline-block;flex:none}
+.dot.urgente{background:var(--hib)} .dot.importante{background:var(--mango)} .dot.leve{background:var(--lagoon)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal-dow{text-align:center;font-size:12px;letter-spacing:.14em;color:var(--lichen);padding-bottom:4px;font-weight:500}
+.cal-day{position:relative;min-height:88px;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:4px;text-align:left;padding:8px;border-radius:12px;border:1px solid transparent;background:rgba(255,255,255,.025);color:var(--white);font-variant-numeric:tabular-nums}
+.cal-day:hover{border-color:var(--moss)}
+.cal-day.out{opacity:.38}
+.cal-day.today .num{background:var(--sprout);color:var(--ink)}
+.cal-day.sel{border-color:var(--sprout);background:var(--sprout-soft)}
+.cal-day .num{font-size:14px;font-weight:600;width:26px;height:26px;border-radius:9999px;display:grid;place-items:center}
+.cal-day .dots{display:flex;gap:4px;flex-wrap:wrap}
+.cal-day .peek{font-size:12px;line-height:1.35;color:var(--fern);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-day .peek.urgente{color:var(--hib)}
+.cal-day .star{position:absolute;top:8px;right:8px;width:13px;height:13px;color:var(--sprout)}
+.cal-day.done-all .num{text-decoration:line-through;text-decoration-color:var(--lichen)}
+@media (max-width:700px){.cal-day{min-height:56px;padding:6px 4px;align-items:center}.cal-day .peek{display:none}.cal-day .dots{justify-content:center}.cal-grid{gap:4px}.cal-day .star{top:4px;right:4px;width:10px;height:10px}}
+
+.day-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.day-head h3{text-transform:none}
+.day-head small{display:block;font-size:13px;color:var(--fern);font-weight:400;margin-top:2px}
+.task-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--moss);border-left-width:4px}
+.task.urgente{border-left-color:var(--hib)} .task.importante{border-left-color:var(--mango)} .task.leve{border-left-color:var(--lagoon)}
+.task input[type=checkbox]{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:2px 0 0;border-radius:9999px;border:1.5px solid var(--lichen);display:grid;place-items:center;cursor:pointer;background:transparent}
+.task input[type=checkbox]:checked{background:var(--sprout);border-color:var(--sprout)}
+.task input[type=checkbox]:checked::after{content:"";width:6px;height:11px;border:solid var(--ink);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.task-title{all:unset;cursor:pointer;font-weight:500;line-height:1.4;overflow-wrap:anywhere}
+.task-title:hover{text-decoration:underline;text-decoration-color:var(--lichen)}
+.task-title:focus-visible{outline:2px solid var(--sprout);outline-offset:2px;border-radius:4px}
+.task.done .task-title{text-decoration:line-through;color:var(--lichen)}
+.task-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13px;color:var(--fern);margin-top:6px}
+.task-note{font-family:var(--font-serif);font-style:italic;font-size:16px;color:var(--mist);margin-top:6px;overflow-wrap:anywhere}
+.del{background:transparent;border:1px solid transparent;color:var(--lichen);border-radius:var(--r-btn);padding:4px 8px;font-size:13px}
+.del:hover{color:var(--hib);border-color:var(--moss)}
+.del.confirm{color:var(--hib);border-color:var(--hib)}
+.empty{color:var(--fern);font-size:15px;padding:24px 8px;text-align:center;border:1px dashed var(--moss);border-radius:14px}
+.empty b{display:block;font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:22px;color:var(--mist);margin-bottom:4px}
+
+.key-dates{margin-top:24px}
+.key-list{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.key-list li{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--moss);border-radius:14px;min-width:0}
+.key-list .when{font-variant-numeric:tabular-nums;font-weight:600;color:var(--sprout);font-size:14px;white-space:nowrap}
+.key-list .what{min-width:0;overflow-wrap:anywhere;font-size:15px}
+.key-list .what small{display:block;color:var(--fern);font-size:13px}
+
+/* ---------- Avisos ---------- */
+.cat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.cat-grid{grid-template-columns:minmax(0,1fr)}}
+.cat-card{display:flex;flex-direction:column;gap:16px}
+.cat-card header{display:flex;align-items:center;gap:12px}
+.cat-badge{width:44px;height:44px;border-radius:9999px;display:grid;place-items:center;flex:none}
+.cat-badge svg{width:24px;height:24px}
+.cat-badge.urgente{background:var(--hib-soft);color:var(--hib)}
+.cat-badge.importante{background:var(--mango-soft);color:var(--mango)}
+.cat-badge.leve{background:var(--lagoon-soft);color:var(--lagoon)}
+.cat-card .nick{font-family:var(--font-serif);font-style:italic;font-size:17px;color:var(--fern);letter-spacing:.02em}
+.cat-card p.desc{font-size:15px;color:var(--mist)}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.check{position:relative}
+.check input{position:absolute;opacity:0;width:1px;height:1px}
+.check label{display:inline-block;cursor:pointer;font-size:13px;padding:6px 12px;border-radius:40px;border:1px solid var(--moss);color:var(--fern)}
+.check input:checked + label{background:var(--sprout-soft);border-color:var(--sprout);color:var(--white)}
+.check input:focus-visible + label{outline:2px solid var(--sprout);outline-offset:2px}
+.cat-card .btn{align-self:flex-start;margin-top:auto}
+.switch-row{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mist)}
+.switch-row input{width:18px;height:18px;accent-color:var(--sprout)}
+
+.avisos-split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:center;margin-top:64px}
+@media (max-width:900px){.avisos-split{grid-template-columns:minmax(0,1fr)}}
+.how{display:flex;flex-direction:column;gap:20px}
+.how-item{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px}
+.how-item svg{width:22px;height:22px;color:var(--sprout);margin-top:2px}
+.how-item h4{font-size:17px;font-weight:600;margin-bottom:4px}
+.how-item p{color:var(--fern);font-size:15px}
+.phone{width:min(100%,360px);margin-inline:auto;border-radius:44px;background:#050c06;border:1px solid var(--moss);padding:32px 14px 24px;transform:rotate(-3deg);box-shadow:var(--shadow-float)}
+.phone .clock{text-align:center;font-weight:600;font-size:56px;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.phone .pdate{text-align:center;color:var(--fern);font-size:14px;margin:6px 0 20px;text-transform:capitalize}
+.notif{background:var(--bone);color:var(--ink);border-radius:18px;padding:12px 14px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;margin-top:8px}
+.notif .nic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--forest);font-size:16px}
+.notif .nhead{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#5d6151;font-weight:500}
+.notif .nbody{font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+
+.examples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:64px}
+@media (max-width:900px){.examples{grid-template-columns:minmax(0,1fr)}}
+.examples ul{margin:12px 0 0;padding-left:18px;color:var(--mist);font-size:15px;display:flex;flex-direction:column;gap:6px}
+.examples li::marker{color:var(--lichen)}
+.examples .when-tag{color:var(--fern);font-size:13px}
+
+/* ---------- Ideas ---------- */
+.matrix-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:48px;align-items:center}
+@media (max-width:960px){.matrix-wrap{grid-template-columns:minmax(0,1fr)}}
+.matrix{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) minmax(0,1fr);gap:8px}
+.axis{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--lichen);font-weight:500;display:flex;align-items:center;justify-content:center}
+.axis.v{writing-mode:vertical-rl;transform:rotate(180deg)}
+.quad{border-radius:16px;padding:16px;border:1px solid var(--moss);display:flex;flex-direction:column;gap:6px;min-width:0}
+.quad h4{font-size:17px;font-weight:600}
+.quad p{font-size:14px;color:var(--fern)}
+.quad.q1{background:var(--hib-soft);border-color:rgba(255,122,107,.4)}
+.quad.q2{background:var(--mango-soft);border-color:rgba(255,193,77,.4)}
+.quad.q3{background:rgba(255,255,255,.03)}
+.quad.q4{background:var(--lagoon-soft);border-color:rgba(90,216,200,.35)}
+.quad .chip{align-self:flex-start}
+@media (max-width:560px){.matrix{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.axis{display:none}}
+.ideas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:64px}
+@media (max-width:1000px){.ideas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.ideas{grid-template-columns:minmax(0,1fr)}}
+.idea{display:flex;flex-direction:column;gap:8px}
+.idea svg{width:24px;height:24px;color:var(--sprout);margin-bottom:4px}
+.idea h3{font-size:18px}
+.idea p{font-size:15px;color:var(--fern)}
+.idea .try{font-family:var(--font-serif);font-style:italic;color:var(--mist);font-size:16px;margin-top:auto;padding-top:8px}
+
+/* ---------- Cuidarte ---------- */
+.care{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:24px;align-items:start}
+@media (max-width:900px){.care{grid-template-columns:minmax(0,1fr)}}
+.garden{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.garden svg.plant{width:180px;height:200px}
+.garden .stage{font-family:var(--font-serif);font-style:italic;font-size:30px;line-height:1.2;color:var(--white)}
+.garden .count{color:var(--fern);font-size:15px}
+.week{display:flex;gap:8px;justify-content:center;margin-top:4px}
+.week span{width:30px;height:30px;border-radius:9999px;border:1px solid var(--moss);display:grid;place-items:center;font-size:12px;color:var(--lichen);font-weight:500;text-transform:uppercase}
+.week span.on{background:var(--sprout);border-color:var(--sprout);color:var(--ink)}
+.tips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:560px){.tips{grid-template-columns:minmax(0,1fr)}}
+.tip h3{font-size:17px;margin-bottom:6px}
+.tip p{font-size:15px;color:var(--fern)}
+.signs{margin-top:24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){.signs{grid-template-columns:minmax(0,1fr)}}
+.signs ul{margin:12px 0 0;padding-left:18px;color:var(--mist);font-size:15px;display:flex;flex-direction:column;gap:6px}
+.quote{font-family:var(--font-serif);font-style:italic;font-size:clamp(24px,3vw,32px);line-height:1.3;color:var(--mist);max-width:760px;margin:64px auto 0;text-align:center;text-wrap:balance}
+.quote span{color:var(--sprout)}
+
+/* ---------- Plantilla ---------- */
+.swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.swatches{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sw{border:1px solid var(--moss);border-radius:16px;overflow:hidden;min-width:0}
+.sw .chipc{height:72px;border-bottom:1px solid var(--moss)}
+.sw .info{padding:12px}
+.sw .info b{display:block;font-weight:600;font-size:15px}
+.sw .info code{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--fern)}
+.sw .info p{font-size:13px;color:var(--fern);margin-top:4px}
+.kit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+@media (max-width:900px){.kit{grid-template-columns:minmax(0,1fr)}}
+.icons-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px}
+.icons-row figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--fern);width:64px;text-align:center}
+.icons-row figure div{width:48px;height:48px;border-radius:9999px;display:grid;place-items:center;border:1px solid var(--moss)}
+.icons-row svg{width:24px;height:24px}
+.type-sample{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.type-sample .d{font-family:var(--font-display);font-size:24px;line-height:1.1}
+.type-sample .s{font-family:var(--font-serif);font-style:italic;font-size:24px;color:var(--mist)}
+.type-sample small{display:block;color:var(--fern);font-size:13px;font-family:var(--font-ui);font-style:normal}
+.kit ul{margin:12px 0 0;padding-left:18px;color:var(--mist);font-size:15px;display:flex;flex-direction:column;gap:6px}
+
+.personal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:48px;margin-top:80px;align-items:start}
+@media (max-width:960px){.personal{grid-template-columns:minmax(0,1fr)}}
+.steps{margin:24px 0 0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:16px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;color:var(--mist);font-size:15px}
+.steps li::before{content:counter(s);width:32px;height:32px;border-radius:9999px;border:1px solid var(--sprout);color:var(--sprout);display:grid;place-items:center;font-weight:600;font-size:14px}
+.steps b{color:var(--white);font-weight:600;display:block}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:560px){.form-grid{grid-template-columns:minmax(0,1fr)}}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label,.field .lbl{font-size:13px;font-weight:500;color:var(--fern)}
+.input,select.input,textarea.input{width:100%;background:var(--night);border:1px solid var(--moss);border-radius:24px;padding:12px 16px;font-size:15px;color:var(--white);min-width:0}
+textarea.input{border-radius:16px;resize:vertical;min-height:80px}
+.input:focus{outline:none;border-color:var(--sprout)}
+.input::placeholder{color:var(--lichen)}
+.saved-note{font-size:13px;color:var(--sprout);min-height:20px}
+.backup{margin-top:24px;padding-top:24px;border-top:1px solid var(--moss);display:flex;flex-direction:column;gap:12px}
+.backup .row{display:flex;flex-wrap:wrap;gap:8px}
+.backup p{font-size:14px;color:var(--fern)}
+
+footer{padding-block:48px;border-top:1px solid var(--moss);color:var(--fern);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+footer .brand{font-size:16px}
+
+/* ---------- Diálogo ---------- */
+dialog{border:1px solid var(--moss);background:var(--forest);color:var(--white);border-radius:24px;padding:0;width:min(560px,calc(100% - 32px));max-height:calc(100% - 32px);box-shadow:var(--shadow-float)}
+dialog::backdrop{background:var(--scrim)}
+dialog form{padding:24px;display:flex;flex-direction:column;gap:16px}
+dialog h3{font-size:24px}
+.cat-pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cat-pick input{position:absolute;opacity:0;width:1px;height:1px}
+.cat-pick label{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border:1px solid var(--moss);border-radius:16px;cursor:pointer;font-size:14px;font-weight:500;text-align:center}
+.cat-pick label small{font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:14px;color:var(--fern)}
+.cat-pick label svg{width:22px;height:22px}
+.cat-pick input:checked + label.urgente{border-color:var(--hib);background:var(--hib-soft)}
+.cat-pick input:checked + label.importante{border-color:var(--mango);background:var(--mango-soft)}
+.cat-pick input:checked + label.leve{border-color:var(--lagoon);background:var(--lagoon-soft)}
+.cat-pick input:focus-visible + label{outline:2px solid var(--sprout);outline-offset:2px}
+.dlg-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.form-error{color:var(--hib);font-size:14px;min-height:0}
+
+/* ---------- Avisos en pantalla ---------- */
+.toasts{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:50;display:flex;flex-direction:column;gap:8px;width:min(380px,calc(100% - 32px));pointer-events:none}
+.toast{pointer-events:auto;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;background:var(--bone);color:var(--ink);border-radius:18px;padding:14px;box-shadow:var(--shadow-float);animation:pop .35s cubic-bezier(.2,.9,.3,1.2)}
+.toast .tic{width:32px;height:32px;border-radius:10px;background:var(--forest);display:grid;place-items:center;color:var(--sprout)}
+.toast.urgente .tic{color:var(--hib)} .toast.importante .tic{color:var(--mango)} .toast.leve .tic{color:var(--lagoon)}
+.toast .tic svg{width:18px;height:18px}
+.toast .t-title{font-weight:600;font-size:14px}
+.toast .t-body{font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.toast .t-x{background:transparent;border:0;color:#5d6151;font-size:20px;line-height:1;padding:0 4px}
+@keyframes pop{from{transform:translateY(12px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.toast{animation:none}.btn{transition:none}}
+</style>
+
+<!-- Íconos -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-hib" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="12" cy="6.6" rx="3.5" ry="5"/><ellipse cx="12" cy="6.6" rx="3.5" ry="5" transform="rotate(72 12 12)"/><ellipse cx="12" cy="6.6" rx="3.5" ry="5" transform="rotate(144 12 12)"/><ellipse cx="12" cy="6.6" rx="3.5" ry="5" transform="rotate(216 12 12)"/><ellipse cx="12" cy="6.6" rx="3.5" ry="5" transform="rotate(288 12 12)"/></g><circle cx="12" cy="12" r="2.3" fill="#0b170d"/><path d="M12 12l4.5-4.5" stroke="#0b170d" stroke-width="1.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-mango" viewBox="0 0 24 24"><path fill="currentColor" d="M5.5 15.2c0-5.1 4-9.2 9-9.2 2.6 0 4 2 4 4.6 0 5.5-4.6 9.9-9 9.9-2.6 0-4-2.2-4-5.3z"/><path fill="currentColor" opacity=".7" d="M13.6 6.2c-.2-2.2 1.4-4 4.2-4.1-.2 2.4-1.8 3.9-4.2 4.1z"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 9.5c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 15.5c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M4 20C4 10.5 10 4 20 4c0 10-6.5 16-16 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M4 20l9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.3 7.7L22 12l-7.7 2.3L12 22l-2.3-7.7L2 12l7.7-2.3z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-window" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-three" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.6" fill="currentColor"/><circle cx="12" cy="12" r="2.6" fill="currentColor" opacity=".7"/><circle cx="18" cy="12" r="2.6" fill="currentColor" opacity=".4"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 13V9M9.5 2.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="13" y="13" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-hands" viewBox="0 0 24 24"><path d="M3 13l4-4 3 2 3-3 3 2 5-4M3 19h18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-steps" viewBox="0 0 24 24"><path d="M4 20h5v-5h5v-5h5V5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L5 14h6l-1 8 8-12h-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="nav-wrap">
+  <nav class="nav" aria-label="Principal">
+    <a class="brand" href="#inicio"><svg class="ic"><use href="#i-leaf"/></svg>jardín</a>
+    <span class="tag">para <span class="name-slot">[tu nombre]</span></span>
+    <div class="nav-links">
+      <a href="#calendario">Calendario</a>
+      <a href="#avisos">Avisos</a>
+      <a href="#ideas">Ideas</a>
+      <a href="#cuidarte">Cuidarte</a>
+      <a href="#plantilla">Plantilla</a>
+    </div>
+    <button class="btn btn-sprout pill" type="button" data-open-form>Nueva tarea</button>
+  </nav>
+</header>
+
+<main>
+<section class="hero" id="inicio">
+  <canvas id="jungle" aria-hidden="true"></canvas>
+  <div class="orb" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <p class="announce">Hecho con cariño para <b class="name-slot">[tu nombre]</b> <svg><use href="#i-chev"/></svg></p>
+    <h1 class="display">Tu tiempo en <span class="green">flor</span></h1>
+    <p class="lead">Un calendario de recordatorios con tres categorías: <em>urgente</em>, <em>importante</em> y <em>leve</em>. Cada una te avisa a su propio ritmo, para que lo que importa no se escape y lo pequeño no pese.</p>
+    <div class="cta-row">
+      <button class="btn btn-sprout pill" type="button" data-open-form>Agregar una tarea</button>
+      <button class="btn btn-ghost pill" type="button" id="enable-notif"><svg class="ic"><use href="#i-bell"/></svg>Activar avisos</button>
+    </div>
+    <p class="notif-status" id="notif-status"></p>
+    <div class="today-strip" id="today-strip"></div>
+  </div>
+</section>
+
+<section class="band" id="calendario">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">El calendario</p>
+      <h2>Tu mes, de un vistazo</h2>
+      <p class="sub">Toca un día para ver sus tareas. Los puntitos de colores te dicen qué tipo de tareas hay y el destello marca las fechas clave.</p>
+    </div>
+    <div class="example-banner" id="example-banner" hidden>
+      <span>Estas tareas son de ejemplo, para que veas cómo funciona todo.</span>
+      <button class="btn btn-quiet pill btn-mini" type="button" id="clear-examples">Borrar ejemplos y empezar</button>
+    </div>
+    <div class="cal-layout">
+      <div class="card">
+        <div class="cal-top">
+          <button class="icon-btn" type="button" id="prev-m" aria-label="Mes anterior"><svg class="flip"><use href="#i-chev"/></svg></button>
+          <h3 id="month-label"></h3>
+          <button class="btn btn-quiet pill btn-mini" type="button" id="go-today">Hoy</button>
+          <button class="icon-btn" type="button" id="next-m" aria-label="Mes siguiente"><svg><use href="#i-chev"/></svg></button>
+        </div>
+        <div class="legend">
+          <span><i class="dot urgente"></i>Urgente</span>
+          <span><i class="dot importante"></i>Importante</span>
+          <span><i class="dot leve"></i>Leve</span>
+          <span><svg class="ic" style="width:13px;height:13px;color:var(--sprout)"><use href="#i-spark"/></svg>Fecha clave</span>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <aside class="card" aria-live="polite">
+        <div class="day-head">
+          <h3 id="day-label"></h3>
+          <button class="btn btn-sprout pill btn-mini" type="button" id="add-on-day">+ Tarea</button>
+        </div>
+        <ul class="task-list" id="task-list"></ul>
+      </aside>
+    </div>
+    <div class="card key-dates">
+      <h3>Fechas clave que vienen</h3>
+      <ul class="key-list" id="key-list"></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="avisos">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Avisos que te cuidan</p>
+      <h2>Cada categoría avisa a su ritmo</h2>
+      <p class="sub">Elige cuándo quieres que te avise cada tipo de tarea. Toca «Probar aviso» para ver cómo se siente.</p>
+    </div>
+    <div class="cat-grid" id="cat-grid"></div>
+
+    <div class="avisos-split">
+      <div class="how">
+        <div class="how-item"><svg><use href="#i-sun"/></svg><div><h4>Resumen de la mañana</h4><p>A la hora que elijas llega un saludo con cuántas tareas tienes hoy de cada tipo, para empezar el día sabiendo por dónde ir.</p></div></div>
+        <div class="how-item"><svg><use href="#i-moon"/></svg><div><h4>Horas de descanso</h4><p>Durante tus horas de descanso solo suenan las urgentes. Lo importante y lo leve espera a que despiertes.</p></div></div>
+        <div class="how-item"><svg><use href="#i-spark"/></svg><div><h4>Fechas clave</h4><p>Cumpleaños, aniversarios y pagos que se repiten cada mes o cada año. Aparecen con su destello y te avisan con días de anticipación.</p></div></div>
+        <div class="how-item"><svg><use href="#i-window"/></svg><div><h4>Deja la página abierta</h4><p>Los avisos llegan mientras esta página esté abierta, aunque esté minimizada. Si los avisos del sistema no se pueden activar, igual aparecen aquí dentro, en la esquina.</p></div></div>
+      </div>
+      <div class="phone" aria-label="Ejemplos de avisos en la pantalla del celular">
+        <div class="clock">8:00</div>
+        <div class="pdate" id="phone-date"></div>
+        <div class="notif"><div class="nic">☀️</div><div><div class="nhead"><span>Buenos días</span><span>ahora</span></div><p class="nbody">Buenos días, <span class="name-slot">[tu nombre]</span>. Hoy tienes 1 urgente, 2 importantes y 3 leves. Empieza por el hibisco.</p></div></div>
+        <div class="notif"><div class="nic">🌺</div><div><div class="nhead"><span>Urgente</span><span>9:30</span></div><p class="nbody">¡Ojo! «Entregar el informe» es en 30 min. Un paso a la vez, tú puedes.</p></div></div>
+        <div class="notif"><div class="nic">🥭</div><div><div class="nhead"><span>Importante</span><span>ayer</span></div><p class="nbody">«Cita con la dentista» es mañana a las 10:00. Deja lista la tarjeta del seguro esta noche.</p></div></div>
+        <div class="notif"><div class="nic">🌴</div><div><div class="nhead"><span>Fecha clave</span><span>ayer</span></div><p class="nbody">En 3 días es el cumpleaños de [mejor amiga]. ¿Ya pensaste en el regalo?</p></div></div>
+        <div class="notif"><div class="nic">🌊</div><div><div class="nhead"><span>Leve</span><span>lun</span></div><p class="nbody">Cuando tengas un ratito: «Regar las plantas». Sin prisa.</p></div></div>
+      </div>
+    </div>
+
+    <div class="examples">
+      <div class="card">
+        <span class="chip urgente"><svg><use href="#i-hib"/></svg>Urgente · Hibisco</span>
+        <ul>
+          <li>Entregar un trabajo que vence hoy <span class="when-tag">· avisa 1 día, 3 h y 30 min antes</span></li>
+          <li>Pagar un recibo que vence mañana</li>
+          <li>Responder un correo con fecha límite</li>
+          <li>Recoger una receta en la farmacia</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="chip importante"><svg><use href="#i-mango"/></svg>Importante · Mango</span>
+        <ul>
+          <li>Estudiar para el examen del próximo mes <span class="when-tag">· avisa 3 días y 1 día antes</span></li>
+          <li>Cita médica de control</li>
+          <li>Apartar dinero para el viaje</li>
+          <li>Cumpleaños, aniversarios y pagos mensuales</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="chip leve"><svg><use href="#i-wave"/></svg>Leve · Laguna</span>
+        <ul>
+          <li>Regar las plantas <span class="when-tag">· un solo aviso, a la hora</span></li>
+          <li>Ordenar el armario</li>
+          <li>Llamar a una amiga para ponerse al día</li>
+          <li>Comprar velas o flores para la casa</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="ideas">
+  <div class="wrap">
+    <div class="matrix-wrap">
+      <div class="sec-head" style="margin-bottom:0">
+        <p class="eyebrow">Ideas para organizarte</p>
+        <h2>¿Urgente, importante o leve?</h2>
+        <p class="sub">Antes de anotar algo, hazte dos preguntas: ¿tiene fecha límite cercana? ¿me acerca a algo que quiero? Las respuestas te dicen en qué categoría va y qué hacer con ella.</p>
+      </div>
+      <div class="matrix">
+        <span></span><span class="axis">Urgente</span><span class="axis">No urgente</span>
+        <span class="axis v">Importante</span>
+        <div class="quad q1"><span class="chip urgente">Urgente</span><h4>Hazlo hoy</h4><p>Tiene fecha encima y consecuencias. Va primero en la mañana, cuando tienes más energía.</p></div>
+        <div class="quad q2"><span class="chip importante">Importante</span><h4>Agéndalo</h4><p>Aquí vive lo que te hace crecer. Dale día y hora para que no se vuelva urgente.</p></div>
+        <span class="axis v">No importante</span>
+        <div class="quad q3"><span class="chip urgente" style="background:rgba(255,255,255,.06);color:var(--mist)">Delegar</span><h4>Pide ayuda</h4><p>Corre prisa pero no tiene que ser tuyo. ¿Quién más puede hacerlo o ayudarte?</p></div>
+        <div class="quad q4"><span class="chip leve">Leve</span><h4>Cuando haya un ratito</h4><p>Suma, pero puede esperar. Si lleva semanas moviéndose, está bien soltarlo.</p></div>
+      </div>
+    </div>
+
+    <div class="ideas">
+      <article class="card idea"><svg><use href="#i-three"/></svg><h3>Las 3 flores del día</h3><p>Cada mañana elige solo tres tareas. Si las haces, el día ya valió la pena. Todo lo demás es extra.</p><p class="try">«Hoy: el informe, la dentista, regar las plantas.»</p></article>
+      <article class="card idea"><svg><use href="#i-bolt"/></svg><h3>La regla de los 2 minutos</h3><p>Si algo se hace en menos de dos minutos, hazlo ya. No lo anotes: anotarlo toma casi lo mismo.</p><p class="try">Responder ese mensaje, guardar la ropa.</p></article>
+      <article class="card idea"><svg><use href="#i-blocks"/></svg><h3>Bloques de tiempo</h3><p>Reserva bloques fijos: mañanas para lo que pide concentración, tardes para recados y llamadas.</p><p class="try">9 a 11: estudiar. 17 a 18: pendientes.</p></article>
+      <article class="card idea"><svg><use href="#i-timer"/></svg><h3>Ratitos de 25 minutos</h3><p>Trabaja 25 minutos sin distracciones y descansa 5. Después de cuatro rondas, un descanso largo.</p><p class="try">Ideal para lo que da pereza empezar.</p></article>
+      <article class="card idea"><svg><use href="#i-hands"/></svg><h3>Delegar con cariño</h3><p>Pide ayuda con algo concreto y con fecha. Decir qué, para cuándo y por qué facilita que te digan que sí.</p><p class="try">«¿Me ayudas a comprar el regalo antes del viernes?»</p></article>
+      <article class="card idea"><svg><use href="#i-steps"/></svg><h3>Partir lo grande</h3><p>Una tarea enorme asusta. Divídela en pasos que quepan en una hora y anota solo el siguiente.</p><p class="try">«Tesis» se vuelve «leer 2 artículos».</p></article>
+      <article class="card idea"><svg><use href="#i-cal"/></svg><h3>Revisión del domingo</h3><p>15 minutos el domingo para mirar la semana: qué viene, qué se mueve y qué fechas clave se acercan.</p><p class="try">Con un café y música tranquila.</p></article>
+      <article class="card idea"><svg><use href="#i-leaf"/></svg><h3>Agrupar lo parecido</h3><p>Junta tareas del mismo tipo: todas las llamadas seguidas, todos los pagos el mismo día, todas las compras en una salida.</p><p class="try">Martes de recados, viernes de pagos.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="cuidarte">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Motivación sin agotarte</p>
+      <h2>Un jardín crece a su ritmo</h2>
+      <p class="sub">Cada tarea que marcas como hecha hace crecer tu plantita de la semana. Lo que cuenta es que avances, no que llegues perfecta.</p>
+    </div>
+    <div class="care">
+      <div class="card garden" id="garden"></div>
+      <div class="tips">
+        <div class="card tip"><h3>Celebra lo pequeño</h3><p>Al terminar algo, haz una pausa de diez segundos para notarlo. Una tarea leve hecha también es una flor.</p></div>
+        <div class="card tip"><h3>Máximo 3 urgentes al día</h3><p>Si tienes más, algo no es tan urgente como parece. Muévelo a importante y dale otra fecha.</p></div>
+        <div class="card tip"><h3>Días isla</h3><p>Un día al mes sin tareas, marcado en el calendario como cualquier cita. Descansar también se agenda.</p></div>
+        <div class="card tip"><h3>Pausas de agua</h3><p>Cada 90 minutos: agua, estirarte y mirar algo lejos de la pantalla. Cinco minutos bastan.</p></div>
+        <div class="card tip"><h3>Premios pequeños</h3><p>Un mango, un capítulo de tu serie, un paseo al atardecer. Ponle premio a las tareas que más pesan.</p></div>
+        <div class="card tip"><h3>Decir que no</h3><p>Cada «sí» ocupa un espacio en tu calendario. Antes de aceptar algo, mira si cabe sin quitarle tiempo al descanso.</p></div>
+      </div>
+    </div>
+    <div class="signs">
+      <div class="card">
+        <h3>Señales de que vas muy rápido</h3>
+        <ul>
+          <li>Todo te parece urgente.</li>
+          <li>Duermes menos para que te alcance el día.</li>
+          <li>Ya no disfrutas lo que antes te gustaba.</li>
+          <li>Te irritas por cosas pequeñas.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Qué hacer cuando aparecen</h3>
+        <ul>
+          <li>Pasa todas las tareas leves a la próxima semana.</li>
+          <li>Quédate solo con las 3 flores del día.</li>
+          <li>Pide ayuda con una tarea concreta.</li>
+          <li>Agenda un día isla lo antes posible.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="quote">«Las palmeras no crecen en un día, y aun así <span>tocan el cielo</span>.»</p>
+  </div>
+</section>
+
+<section class="band" id="plantilla">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Plantilla visual</p>
+      <h2>Selva de noche, en colores</h2>
+      <p class="sub">La paleta, los íconos y las letras de este calendario, por si quieres llevarlo a una agenda de papel, a stickers o a un fondo de pantalla.</p>
+    </div>
+    <div class="swatches" id="swatches"></div>
+    <div class="kit">
+      <div class="card">
+        <h3>Íconos</h3>
+        <div class="icons-row">
+          <figure><div class="c-urgente"><svg><use href="#i-hib"/></svg></div>Hibisco<br>urgente</figure>
+          <figure><div class="c-importante"><svg><use href="#i-mango"/></svg></div>Mango<br>importante</figure>
+          <figure><div class="c-leve"><svg><use href="#i-wave"/></svg></div>Laguna<br>leve</figure>
+          <figure><div class="green"><svg><use href="#i-spark"/></svg></div>Destello<br>fecha clave</figure>
+          <figure><div class="green"><svg><use href="#i-leaf"/></svg></div>Hoja<br>hecho</figure>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Letras</h3>
+        <div class="type-sample">
+          <p class="d">Títulos<small>Boldonse, solo para frases cortas</small></p>
+          <p>Todo lo demás, claro y fácil de leer<small>Geist, para tareas, botones y textos</small></p>
+          <p class="s">Notas con cariño<small>Instrument Serif en cursiva, para frases y detalles</small></p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Elementos sugeridos</h3>
+        <ul>
+          <li>Hojas de palma y monstera asomando por las esquinas.</li>
+          <li>Luciérnagas verdes sobre fondo oscuro.</li>
+          <li>Stickers de frutas para marcar lo hecho: mango, piña, coco.</li>
+          <li>Flores de hibisco en cumpleaños y aniversarios.</li>
+          <li>Un atardecer en la playa para los días isla.</li>
+          <li>Bordes redondeados y suaves, nada de esquinas duras.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="personal">
+      <div>
+        <p class="eyebrow">Hazlo tuyo</p>
+        <h2>Personalízalo en 5 pasos</h2>
+        <ol class="steps">
+          <li><div><b>Escribe tu nombre</b>Aparece en el saludo y en los avisos.</div></li>
+          <li><div><b>Elige tus horarios</b>La hora del resumen de la mañana y tus horas de descanso.</div></li>
+          <li><div><b>Borra los ejemplos</b>Con el botón que aparece arriba del calendario.</div></li>
+          <li><div><b>Agrega tus fechas clave</b>Cumpleaños, aniversario y pagos. Márcalas como «fecha clave» y elige «cada año» o «cada mes».</div></li>
+          <li><div><b>Ajusta tus avisos</b>En la sección de avisos, elige cuántos quieres por categoría. Menos avisos también es válido.</div></li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:16px">Tus datos</h3>
+        <div class="form-grid">
+          <div class="field full"><label for="s-name">Tu nombre</label><input class="input" id="s-name" type="text" maxlength="40" placeholder="[tu nombre]" autocomplete="off"></div>
+          <div class="field full"><label for="s-morning">Hora del resumen de la mañana</label><input class="input" id="s-morning" type="time"></div>
+          <div class="field"><label for="s-qfrom">Descanso desde</label><input class="input" id="s-qfrom" type="time"></div>
+          <div class="field"><label for="s-qto">Descanso hasta</label><input class="input" id="s-qto" type="time"></div>
+        </div>
+        <p class="saved-note" id="saved-note"></p>
+        <div class="backup">
+          <h3>Copia de seguridad</h3>
+          <p>Todo se guarda solo en este navegador. Una vez al mes, copia tu respaldo y guárdalo en tus notas o envíatelo por mensaje. Para recuperarlo, pégalo abajo.</p>
+          <div class="row">
+            <button class="btn btn-quiet pill btn-mini" type="button" id="copy-backup">Copiar mi respaldo</button>
+            <button class="btn btn-quiet pill btn-mini" type="button" id="restore-backup">Restaurar desde el texto</button>
+          </div>
+          <textarea class="input" id="backup-text" rows="3" placeholder="Pega aquí tu respaldo"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><svg class="ic"><use href="#i-leaf"/></svg>jardín de tareas</span>
+    <span>Hecho con cariño para <span class="name-slot">[tu nombre]</span>.</span>
+  </div>
+</footer>
+
+<dialog id="task-dialog" aria-labelledby="dlg-title">
+  <form id="task-form" novalidate>
+    <h3 id="dlg-title">Nueva tarea</h3>
+    <div class="field"><label for="f-title">¿Qué hay que hacer?</label><input class="input" id="f-title" type="text" maxlength="90" required placeholder="Ej. Pagar el recibo de la luz" autocomplete="off"></div>
+    <div class="field"><span class="lbl">Categoría</span>
+      <div class="cat-pick">
+        <span><input type="radio" name="f-cat" id="f-cat-urgente" value="urgente"><label class="urgente" for="f-cat-urgente"><svg class="c-urgente"><use href="#i-hib"/></svg>Urgente<small>hibisco</small></label></span>
+        <span><input type="radio" name="f-cat" id="f-cat-importante" value="importante"><label class="importante" for="f-cat-importante"><svg class="c-importante"><use href="#i-mango"/></svg>Importante<small>mango</small></label></span>
+        <span><input type="radio" name="f-cat" id="f-cat-leve" value="leve"><label class="leve" for="f-cat-leve"><svg class="c-leve"><use href="#i-wave"/></svg>Leve<small>laguna</small></label></span>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label for="f-date">Día</label><input class="input" id="f-date" type="date" required></div>
+      <div class="field"><label for="f-time">Hora</label><input class="input" id="f-time" type="time" required></div>
+      <div class="field"><label for="f-repeat">Se repite</label>
+        <select class="input" id="f-repeat">
+          <option value="none">Una sola vez</option><option value="daily">Cada día</option><option value="weekly">Cada semana</option><option value="monthly">Cada mes</option><option value="yearly">Cada año</option>
+        </select></div>
+      <div class="field" style="justify-content:flex-end"><label class="switch-row" for="f-key"><input type="checkbox" id="f-key">Es una fecha clave</label></div>
+    </div>
+    <div class="field"><label for="f-note">Nota (opcional)</label><textarea class="input" id="f-note" rows="2" maxlength="200" placeholder="Ej. Llevar la tarjeta del seguro"></textarea></div>
+    <p class="form-error" id="form-error"></p>
+    <div class="dlg-actions">
+      <button class="btn btn-quiet pill" type="button" id="dlg-cancel">Cancelar</button>
+      <button class="btn btn-sprout pill" type="submit">Guardar tarea</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const pad = n => String(n).padStart(2, '0');
+  const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const parseYmd = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const toMin = t => { const [h, m] = (t || '0:0').split(':').map(Number); return h * 60 + m; };
+  const dayDiff = (a, b) => Math.round((parseYmd(b) - parseYmd(a)) / 864e5);
+  const at = (ds, time) => { const d = parseYmd(ds); const [h, m] = (time || '09:00').split(':').map(Number); d.setHours(h, m, 0, 0); return d; };
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  const plural = (n, a, b) => `${n} ${n === 1 ? a : b}`;
+
+  const CATS = {
+    urgente:    { label: 'Urgente',    nick: 'Hibisco', icon: 'i-hib',   emoji: '🌺', desc: 'Lo que tiene fecha límite hoy o mañana y trae consecuencias si se pasa. Avisa varias veces y, si quieres, insiste cada hora hasta que la marques.' },
+    importante: { label: 'Importante', nick: 'Mango',   icon: 'i-mango', emoji: '🥭', desc: 'Lo que te hace crecer pero no grita: estudios, salud, metas, fechas especiales. Avisa con días de anticipación para que llegues con calma.' },
+    leve:       { label: 'Leve',       nick: 'Laguna',  icon: 'i-wave',  emoji: '🌊', desc: 'Lo que suma pero puede esperar. Un solo aviso suave, sin presión.' }
+  };
+  const ORDER = ['urgente', 'importante', 'leve'];
+  const OFFSETS = [
+    { v: 4320, l: '3 días antes' }, { v: 1440, l: '1 día antes' }, { v: 180, l: '3 horas antes' },
+    { v: 60, l: '1 hora antes' }, { v: 30, l: '30 min antes' }, { v: 0, l: 'A la hora' }
+  ];
+  const REPEAT = { none: 'Una vez', daily: 'Cada día', weekly: 'Cada semana', monthly: 'Cada mes', yearly: 'Cada año' };
+  const DEFAULTS = {
+    name: '', morning: '08:00', quietFrom: '22:30', quietTo: '07:00',
+    cats: { urgente: { offsets: [1440, 180, 30, 0], nag: true }, importante: { offsets: [4320, 1440, 60] }, leve: { offsets: [0] } }
+  };
+  const KEY = 'jardin-tareas-v1';
+
+  function seed() {
+    const d0 = new Date(), D = n => ymd(addDays(d0, n));
+    const nextMonth1 = ymd(new Date(d0.getFullYear(), d0.getMonth() + 1, 1));
+    const tasks = [
+      { title: 'Entregar el informe de la universidad', date: D(0), time: '18:00', cat: 'urgente' },
+      { title: 'Pagar el recibo de la luz', date: D(1), time: '12:00', cat: 'urgente', note: 'Vence mañana a mediodía' },
+      { title: 'Pagar el arriendo', date: nextMonth1, time: '10:00', cat: 'urgente', repeat: 'monthly', key: true },
+      { title: 'Cita con la dentista', date: D(3), time: '10:00', cat: 'importante', note: 'Llevar la tarjeta del seguro' },
+      { title: 'Estudiar 1 hora para el examen final', date: D(-7), time: '20:00', cat: 'importante', repeat: 'weekly' },
+      { title: 'Avanzar el proyecto personal', date: D(5), time: '17:00', cat: 'importante' },
+      { title: 'Cumpleaños de [mejor amiga]', date: D(9), time: '09:00', cat: 'importante', repeat: 'yearly', key: true, note: 'Pensar el regalo con tiempo' },
+      { title: 'Nuestro aniversario', date: D(20), time: '09:00', cat: 'importante', repeat: 'yearly', key: true },
+      { title: 'Tomar un vaso de agua al despertar', date: D(-6), time: '07:30', cat: 'leve', repeat: 'daily', done: { [D(-6)]: 1, [D(-5)]: 1, [D(-3)]: 1, [D(-2)]: 1, [D(-1)]: 1 } },
+      { title: 'Regar las plantas', date: D(-4), time: '09:00', cat: 'leve', repeat: 'weekly', done: { [D(-4)]: 1 } },
+      { title: 'Llamar a mamá', date: D(2), time: '19:30', cat: 'leve' },
+      { title: 'Ordenar el escritorio', date: D(4), time: '16:00', cat: 'leve' }
+    ].map(t => ({ id: uid(), repeat: 'none', note: '', key: false, done: {}, ex: true, ...t }));
+    return { settings: structuredClone(DEFAULTS), tasks, fired: {} };
+  }
+
+  function load() {
+    try { const raw = localStorage.getItem(KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+    return null;
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function normalize(s) {
+    if (!s || !Array.isArray(s.tasks)) return null;
+    const st = s.settings || {};
+    s.settings = { ...DEFAULTS, ...st, cats: {
+      urgente: { ...DEFAULTS.cats.urgente, ...(st.cats?.urgente) },
+      importante: { ...DEFAULTS.cats.importante, ...(st.cats?.importante) },
+      leve: { ...DEFAULTS.cats.leve, ...(st.cats?.leve) } } };
+    s.tasks = s.tasks.filter(t => t && t.title && t.date && CATS[t.cat]).map(t => ({ repeat: 'none', note: '', key: false, done: {}, time: '09:00', ...t, id: t.id || uid() }));
+    s.fired = s.fired || {};
+    return s;
+  }
+
+  let firstRun = false;
+  let state = normalize(load());
+  if (!state) { state = seed(); firstRun = true; }
+
+  const today0 = new Date();
+  const view = { month: new Date(today0.getFullYear(), today0.getMonth(), 1), sel: ymd(today0) };
+
+  function occursOn(t, ds) {
+    if (ds < t.date) return false;
+    if (ds === t.date) return true;
+    const a = parseYmd(t.date), b = parseYmd(ds);
+    switch (t.repeat) {
+      case 'daily': return true;
+      case 'weekly': return dayDiff(t.date, ds) % 7 === 0;
+      case 'monthly': return a.getDate() === b.getDate();
+      case 'yearly': return a.getDate() === b.getDate() && a.getMonth() === b.getMonth();
+      default: return false;
+    }
+  }
+  const tasksOn = ds => state.tasks.filter(t => occursOn(t, ds))
+    .sort((x, y) => ORDER.indexOf(x.cat) - ORDER.indexOf(y.cat) || toMin(x.time) - toMin(y.time));
+  const isDone = (t, ds) => !!(t.done && t.done[ds]);
+  const nameHi = () => state.settings.name ? `, ${state.settings.name}` : '';
+
+  /* ---------- Render ---------- */
+  function renderNames() {
+    $$('.name-slot').forEach(el => { el.textContent = state.settings.name || '[tu nombre]'; });
+  }
+
+  function renderToday() {
+    const ds = ymd(new Date());
+    const list = tasksOn(ds).filter(t => !isDone(t, ds));
+    const c = { urgente: 0, importante: 0, leve: 0 };
+    list.forEach(t => c[t.cat]++);
+    const now = new Date();
+    const next = list.filter(t => at(ds, t.time) >= now).sort((a, b) => toMin(a.time) - toMin(b.time))[0];
+    $('#today-strip').innerHTML =
+      `<span class="label">Hoy tienes</span>` +
+      ORDER.map(k => `<span class="chip ${k}"><svg><use href="#${CATS[k].icon}"/></svg>${plural(c[k], CATS[k].label.toLowerCase(), CATS[k].label.toLowerCase() + 's')}</span>`).join('') +
+      `<p class="next-up">${next ? `Lo siguiente: <b>${esc(next.title)}</b> a las ${esc(next.time)}.` : (list.length ? 'Lo de hoy ya pasó su hora. Márcalo cuando lo termines.' : 'Nada pendiente hoy. Disfruta el día.')}</p>`;
+  }
+
+  function renderCalendar() {
+    const m = view.month;
+    $('#month-label').textContent = m.toLocaleDateString('es', { month: 'long', year: 'numeric' });
+    const offset = (m.getDay() + 6) % 7;
+    const dim = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
+    const cells = Math.ceil((offset + dim) / 7) * 7;
+    const start = addDays(m, -offset);
+    const todayS = ymd(new Date());
+    let html = ['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(d => `<div class="cal-dow" aria-hidden="true">${d}</div>`).join('');
+    for (let i = 0; i < cells; i++) {
+      const d = addDays(start, i), ds = ymd(d);
+      const list = tasksOn(ds);
+      const cats = ORDER.filter(k => list.some(t => t.cat === k));
+      const hasKey = list.some(t => t.key);
+      const allDone = list.length && list.every(t => isDone(t, ds));
+      const cls = ['cal-day', d.getMonth() !== m.getMonth() && 'out', ds === todayS && 'today', ds === view.sel && 'sel', allDone && 'done-all'].filter(Boolean).join(' ');
+      const label = `${d.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' })}, ${list.length ? plural(list.length, 'tarea', 'tareas') : 'sin tareas'}`;
+      html += `<button type="button" class="${cls}" data-date="${ds}" aria-label="${esc(label)}" aria-pressed="${ds === view.sel}">
+        <span class="num">${d.getDate()}</span>
+        ${hasKey ? '<svg class="star" aria-hidden="true"><use href="#i-spark"/></svg>' : ''}
+        <span class="dots">${cats.map(k => `<i class="dot ${k}"></i>`).join('')}</span>
+        ${list.slice(0, 2).map(t => `<span class="peek ${t.cat}">${esc(t.title)}</span>`).join('')}
+      </button>`;
+    }
+    $('#cal-grid').innerHTML = html;
+  }
+
+  function renderDay() {
+    const ds = view.sel, d = parseYmd(ds);
+    const todayS = ymd(new Date());
+    const rel = ds === todayS ? 'Hoy' : ds === ymd(addDays(new Date(), 1)) ? 'Mañana' : ds === ymd(addDays(new Date(), -1)) ? 'Ayer' : '';
+    $('#day-label').innerHTML = `${esc(cap(d.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' })))}${rel ? `<small>${rel}</small>` : ''}`;
+    const list = tasksOn(ds);
+    if (!list.length) {
+      $('#task-list').innerHTML = `<li class="empty"><b>Día libre</b>Disfrútalo, o agrega algo con «+ Tarea».</li>`;
+      return;
+    }
+    $('#task-list').innerHTML = list.map(t => {
+      const done = isDone(t, ds);
+      return `<li class="task ${t.cat}${done ? ' done' : ''}" data-id="${t.id}">
+        <input type="checkbox" id="chk-${t.id}" ${done ? 'checked' : ''} aria-label="Marcar «${esc(t.title)}» como hecha">
+        <div>
+          <button type="button" class="task-title" data-edit>${esc(t.title)}</button>
+          <div class="task-meta">
+            <span class="chip ${t.cat}"><svg><use href="#${CATS[t.cat].icon}"/></svg>${CATS[t.cat].label}</span>
+            <span>${esc(t.time)}</span>
+            ${t.repeat !== 'none' ? `<span>${REPEAT[t.repeat]}</span>` : ''}
+            ${t.key ? '<span class="chip key"><svg><use href="#i-spark"/></svg>Fecha clave</span>' : ''}
+            ${t.ex ? '<span>· ejemplo</span>' : ''}
+          </div>
+          ${t.note ? `<p class="task-note">${esc(t.note)}</p>` : ''}
+        </div>
+        <button type="button" class="del" data-del>Borrar</button>
+      </li>`;
+    }).join('');
+  }
+
+  function nextOccurrence(t, fromDs, maxDays = 400) {
+    const base = parseYmd(fromDs);
+    for (let i = 0; i <= maxDays; i++) { const ds = ymd(addDays(base, i)); if (occursOn(t, ds)) return ds; }
+    return null;
+  }
+
+  function renderKeys() {
+    const todayS = ymd(new Date());
+    const items = state.tasks.filter(t => t.key).map(t => ({ t, ds: nextOccurrence(t, todayS) })).filter(x => x.ds)
+      .sort((a, b) => a.ds < b.ds ? -1 : 1).slice(0, 6);
+    if (!items.length) {
+      $('#key-list').innerHTML = `<li style="grid-column:1/-1;color:var(--fern)">Todavía no hay fechas clave. Al crear una tarea, marca «Es una fecha clave».</li>`;
+      return;
+    }
+    $('#key-list').innerHTML = items.map(({ t, ds }) => {
+      const n = dayDiff(todayS, ds);
+      const when = n === 0 ? 'Hoy' : n === 1 ? 'Mañana' : `En ${n} días`;
+      return `<li><svg class="ic c-${t.cat}"><use href="#i-spark"/></svg><span class="when">${when}</span><span class="what">${esc(t.title)}<small>${esc(parseYmd(ds).toLocaleDateString('es', { day: 'numeric', month: 'long' }))} · ${REPEAT[t.repeat]}</small></span></li>`;
+    }).join('');
+  }
+
+  function renderBanner() { $('#example-banner').hidden = !state.tasks.some(t => t.ex); }
+
+  function plantSVG(n) {
+    const k = Math.min(n, 14);
+    const stemTop = 150 - (16 + k * 7);
+    let leaves = '';
+    for (let i = 0; i < Math.min(k, 12); i++) {
+      const y = 146 - (i + 1) * ((150 - stemTop) / (Math.min(k, 12) + 1));
+      const left = i % 2 === 0;
+      const x = left ? 90 - 14 : 90 + 14;
+      leaves += `<ellipse cx="${x}" cy="${y.toFixed(1)}" rx="15" ry="7" fill="var(--sprout)" opacity="${(0.55 + i * 0.035).toFixed(2)}" transform="rotate(${left ? 28 : -28} ${x} ${y.toFixed(1)})"/>`;
+    }
+    const flower = n >= 9 ? `<g transform="translate(90 ${stemTop}) scale(1.1)"><use href="#i-hib" x="-12" y="-14" width="24" height="24" style="color:var(--hib)"/></g>` : '';
+    const seed = n === 0 ? `<ellipse cx="90" cy="148" rx="6" ry="4" fill="var(--mango)"/>` : `<path d="M90 150 Q${n % 2 ? 94 : 86} ${(150 + stemTop) / 2} 90 ${stemTop}" stroke="var(--verdant)" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+    return `<svg class="plant" viewBox="0 0 180 200" role="img" aria-label="Plantita de la semana">
+      <ellipse cx="90" cy="190" rx="60" ry="6" fill="rgba(0,0,0,.35)"/>
+      ${seed}${leaves}${flower}
+      <path d="M52 150h76l-10 40H62z" fill="var(--moss)" stroke="var(--lichen)" stroke-width="1.5" stroke-linejoin="round"/>
+      <rect x="48" y="144" width="84" height="12" rx="6" fill="var(--forest-2)" stroke="var(--lichen)" stroke-width="1.5"/>
+    </svg>`;
+  }
+
+  function renderGarden() {
+    const now = new Date();
+    const days = [...Array(7)].map((_, i) => ymd(addDays(now, i - 6)));
+    let total = 0; const on = {};
+    state.tasks.forEach(t => days.forEach(ds => { if (isDone(t, ds)) { total++; on[ds] = 1; } }));
+    const stage = total === 0 ? 'Semillita' : total <= 3 ? 'Brote' : total <= 8 ? 'Plantita' : total <= 14 ? 'Hibisco en flor' : 'Palmera';
+    const msg = total === 0 ? 'Marca tu primera tarea y verás cómo brota.' : `${plural(total, 'tarea hecha', 'tareas hechas')} en los últimos 7 días.`;
+    $('#garden').innerHTML = `<p class="eyebrow" style="font-size:17px">Tu jardín de la semana</p>${plantSVG(total)}
+      <p class="stage">${stage}</p><p class="count">${msg}</p>
+      <div class="week" aria-label="Días con tareas hechas">${days.map(ds => `<span class="${on[ds] ? 'on' : ''}" title="${ds}">${parseYmd(ds).toLocaleDateString('es', { weekday: 'narrow' })}</span>`).join('')}</div>`;
+  }
+
+  function renderCats() {
+    const s = state.settings.cats;
+    $('#cat-grid').innerHTML = ORDER.map(k => `<article class="card cat-card">
+      <header><div class="cat-badge ${k}"><svg><use href="#${CATS[k].icon}"/></svg></div><div><h3>${CATS[k].label}</h3><p class="nick">${CATS[k].nick}</p></div></header>
+      <p class="desc">${CATS[k].desc}</p>
+      <div class="checks" role="group" aria-label="Cuándo avisar: ${CATS[k].label}">
+        ${OFFSETS.map(o => `<span class="check"><input type="checkbox" id="off-${k}-${o.v}" data-cat="${k}" data-off="${o.v}" ${s[k].offsets.includes(o.v) ? 'checked' : ''}><label for="off-${k}-${o.v}">${o.l}</label></span>`).join('')}
+      </div>
+      ${k === 'urgente' ? `<label class="switch-row" for="nag-urgente"><input type="checkbox" id="nag-urgente" ${s.urgente.nag ? 'checked' : ''}>Insistir cada hora si se pasa la hora y sigue pendiente</label>` : ''}
+      <button class="btn btn-quiet pill btn-mini" type="button" data-test="${k}"><svg class="ic" style="width:16px;height:16px"><use href="#i-bell"/></svg>Probar aviso</button>
+    </article>`).join('');
+  }
+
+  function renderSwatches() {
+    const sw = [
+      ['Noche de selva', '#0b170d', 'Fondo principal'], ['Bosque profundo', '#122314', 'Tarjetas y bandas'],
+      ['Musgo', '#273f2b', 'Bordes y líneas'], ['Helecho pálido', '#b7bda5', 'Texto suave'],
+      ['Brote eléctrico', '#68ef3f', 'Botones y el día de hoy'], ['Hibisco', '#ff7a6b', 'Urgente'],
+      ['Mango', '#ffc14d', 'Importante'], ['Laguna', '#5ad8c8', 'Leve']
+    ];
+    $('#swatches').innerHTML = sw.map(([n, h, u]) => `<div class="sw"><div class="chipc" style="background:${h}"></div><div class="info"><b>${n}</b><code>${h}</code><p>${u}</p></div></div>`).join('');
+  }
+
+  function renderSettings() {
+    const s = state.settings;
+    $('#s-name').value = s.name; $('#s-morning').value = s.morning; $('#s-qfrom').value = s.quietFrom; $('#s-qto').value = s.quietTo;
+  }
+
+  function renderAll() { renderNames(); renderToday(); renderCalendar(); renderDay(); renderKeys(); renderGarden(); renderBanner(); }
+
+  /* ---------- Avisos ---------- */
+  function notifStatus() {
+    const el = $('#notif-status');
+    if (!('Notification' in window)) { el.textContent = 'Aquí no se pueden mostrar avisos del sistema. Los verás dentro de la página, en la esquina, mientras esté abierta.'; return; }
+    const p = Notification.permission;
+    el.textContent = p === 'granted' ? 'Avisos activados. Deja esta página abierta (puede estar minimizada) para recibirlos.'
+      : p === 'denied' ? 'Los avisos del sistema están bloqueados aquí. Igual verás los avisos dentro de la página mientras esté abierta.'
+      : 'Toca «Activar avisos» para recibirlos también fuera de la página.';
+  }
+
+  function toast(title, body, cat, ms) {
+    const box = $('#toasts');
+    const icon = cat && CATS[cat] ? CATS[cat].icon : cat === 'key' ? 'i-spark' : cat === 'brief' ? 'i-sun' : 'i-leaf';
+    const el = document.createElement('div');
+    el.className = 'toast ' + (cat || '');
+    el.innerHTML = `<div class="tic"><svg><use href="#${icon}"/></svg></div><div><p class="t-title">${esc(title)}</p><p class="t-body">${esc(body)}</p></div><button type="button" class="t-x" aria-label="Cerrar aviso">×</button>`;
+    el.querySelector('.t-x').addEventListener('click', () => el.remove());
+    box.append(el);
+    while (box.children.length > 4) box.firstElementChild.remove();
+    setTimeout(() => el.remove(), ms || (cat === 'urgente' ? 15000 : 9000));
+  }
+
+  function notify(title, body, cat, emoji) {
+    toast(title, body, cat);
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') new Notification(`${emoji || '🌿'} ${title}`, { body });
+    } catch (e) {}
+  }
+
+  function whenText(t, ds, msLeft) {
+    if (msLeft <= 60e3) return 'ahora';
+    if (msLeft < 3600e3) return `en ${Math.round(msLeft / 60e3)} min`;
+    const todayS = ymd(new Date());
+    if (ds === todayS) return `hoy a las ${t.time}`;
+    if (ds === ymd(addDays(new Date(), 1))) return `mañana a las ${t.time}`;
+    return `en ${dayDiff(todayS, ds)} días`;
+  }
+
+  function messageFor(t, ds, msLeft) {
+    const when = whenText(t, ds, msLeft);
+    if (t.key) return { title: 'Fecha clave', body: `${cap(when)}: «${t.title}». ¿Ya tienes todo listo?`, emoji: '🌴', cat: 'key' };
+    if (t.cat === 'urgente') return { title: 'Urgente', body: `¡Ojo${nameHi()}! «${t.title}» es ${when}. Un paso a la vez, tú puedes.`, emoji: CATS.urgente.emoji, cat: 'urgente' };
+    if (t.cat === 'importante') return { title: 'Importante', body: `«${t.title}» llega ${when}. Buen momento para prepararte con calma.`, emoji: CATS.importante.emoji, cat: 'importante' };
+    return { title: 'Leve', body: `Cuando tengas un ratito${nameHi()}: «${t.title}». Sin prisa.`, emoji: CATS.leve.emoji, cat: 'leve' };
+  }
+
+  function briefText() {
+    const ds = ymd(new Date()); const c = { urgente: 0, importante: 0, leve: 0 };
+    tasksOn(ds).filter(t => !isDone(t, ds)).forEach(t => c[t.cat]++);
+    return `Buenos días${nameHi()}. Hoy tienes ${plural(c.urgente, 'urgente', 'urgentes')}, ${plural(c.importante, 'importante', 'importantes')} y ${plural(c.leve, 'leve', 'leves')}.` +
+      (c.urgente ? ' Empieza por el hibisco.' : ' Día tranquilo: buen momento para lo importante.');
+  }
+
+  function inQuiet(now) {
+    const a = toMin(state.settings.quietFrom), b = toMin(state.settings.quietTo), m = now.getHours() * 60 + now.getMinutes();
+    if (a === b) return false;
+    return a < b ? (m >= a && m < b) : (m >= a || m < b);
+  }
+
+  function tick(silent) {
+    const now = new Date(), nowMs = +now, s = state.settings, quiet = inQuiet(now), todayS = ymd(now);
+    let changed = false;
+    const bk = 'brief|' + todayS, bt = +at(todayS, s.morning);
+    if (!quiet && !state.fired[bk] && nowMs >= bt && nowMs < bt + 4 * 3600e3) {
+      state.fired[bk] = nowMs; changed = true;
+      if (!silent) notify('Buenos días', briefText(), 'brief', '☀️');
+    }
+    for (const t of state.tasks) {
+      const offs = s.cats[t.cat].offsets;
+      for (let k = -1; k <= 3; k++) {
+        const ds = ymd(addDays(now, k));
+        if (!occursOn(t, ds) || isDone(t, ds)) continue;
+        const atMs = +at(ds, t.time);
+        const due = offs.filter(o => nowMs >= atMs - o * 60e3 && nowMs < atMs + 3600e3);
+        const unfired = due.filter(o => !state.fired[`${t.id}|${ds}|${o}`]);
+        if (unfired.length && (!quiet || t.cat === 'urgente')) {
+          unfired.forEach(o => { state.fired[`${t.id}|${ds}|${o}`] = nowMs; });
+          changed = true;
+          if (!silent) { const m = messageFor(t, ds, atMs - nowMs); notify(m.title, m.body, m.cat, m.emoji); }
+        }
+        if (t.cat === 'urgente' && s.cats.urgente.nag && ds === todayS && nowMs > atMs + 3600e3 && !quiet) {
+          const nk = `${t.id}|${ds}|nag|${Math.floor((nowMs - atMs) / 3600e3)}`;
+          if (!state.fired[nk]) {
+            state.fired[nk] = nowMs; changed = true;
+            if (!silent) notify('Sigue pendiente', `«${t.title}» todavía espera${nameHi()}. ¿Le damos 15 minutos ahora?`, 'urgente', '🌺');
+          }
+        }
+      }
+    }
+    const cutoff = nowMs - 8 * 864e5;
+    for (const key in state.fired) if (state.fired[key] < cutoff) { delete state.fired[key]; changed = true; }
+    if (changed) save();
+  }
+
+  /* ---------- Formulario ---------- */
+  const dlg = $('#task-dialog');
+  let editing = null;
+  function openForm(task, date) {
+    editing = task ? task.id : null;
+    $('#dlg-title').textContent = task ? 'Editar tarea' : 'Nueva tarea';
+    $('#f-title').value = task ? task.title : '';
+    $('#f-date').value = task ? task.date : (date || view.sel);
+    $('#f-time').value = task ? task.time : '09:00';
+    $('#f-repeat').value = task ? task.repeat : 'none';
+    $('#f-key').checked = task ? !!task.key : false;
+    $('#f-note').value = task ? task.note : '';
+    $(`#f-cat-${task ? task.cat : 'importante'}`).checked = true;
+    $('#form-error').textContent = '';
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    setTimeout(() => $('#f-title').focus(), 30);
+  }
+  function closeForm() { if (dlg.open) dlg.close(); }
+
+  $('#task-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = $('#f-title').value.trim(), date = $('#f-date').value, time = $('#f-time').value || '09:00';
+    const cat = ($('input[name="f-cat"]:checked') || {}).value;
+    if (!title) { $('#form-error').textContent = 'Escribe qué hay que hacer.'; $('#f-title').focus(); return; }
+    if (!date) { $('#form-error').textContent = 'Elige un día para la tarea.'; $('#f-date').focus(); return; }
+    const data = { title, date, time, cat: cat || 'importante', repeat: $('#f-repeat').value, key: $('#f-key').checked, note: $('#f-note').value.trim() };
+    if (editing) {
+      const t = state.tasks.find(x => x.id === editing);
+      if (t) {
+        Object.assign(t, data, { ex: false });
+        for (const key in state.fired) if (key.startsWith(t.id + '|')) delete state.fired[key];
+      }
+    } else {
+      state.tasks.push({ id: uid(), done: {}, ex: false, ...data });
+    }
+    save(); closeForm();
+    view.sel = date; const d = parseYmd(date); view.month = new Date(d.getFullYear(), d.getMonth(), 1);
+    renderAll();
+    toast(editing ? 'Tarea actualizada' : 'Tarea guardada', `«${title}» quedó en tu calendario.`, data.cat, 5000);
+  });
+  $('#dlg-cancel').addEventListener('click', closeForm);
+  dlg.addEventListener('click', e => { if (e.target === dlg) closeForm(); });
+  $$('[data-open-form]').forEach(b => b.addEventListener('click', () => openForm(null, view.sel)));
+  $('#add-on-day').addEventListener('click', () => openForm(null, view.sel));
+
+  /* ---------- Eventos ---------- */
+  $('#cal-grid').addEventListener('click', e => {
+    const b = e.target.closest('[data-date]'); if (!b) return;
+    view.sel = b.dataset.date;
+    const d = parseYmd(view.sel);
+    if (d.getMonth() !== view.month.getMonth() || d.getFullYear() !== view.month.getFullYear()) view.month = new Date(d.getFullYear(), d.getMonth(), 1);
+    renderCalendar(); renderDay();
+  });
+  $('#prev-m').addEventListener('click', () => { view.month = new Date(view.month.getFullYear(), view.month.getMonth() - 1, 1); renderCalendar(); });
+  $('#next-m').addEventListener('click', () => { view.month = new Date(view.month.getFullYear(), view.month.getMonth() + 1, 1); renderCalendar(); });
+  $('#go-today').addEventListener('click', () => { const n = new Date(); view.month = new Date(n.getFullYear(), n.getMonth(), 1); view.sel = ymd(n); renderCalendar(); renderDay(); });
+
+  const CHEERS = ['Una flor más en tu jardín.', 'Pasito a pasito. Bien hecho.', 'Eso ya no te pesa. A respirar.', 'Lo lograste. Date un momento para notarlo.'];
+  $('#task-list').addEventListener('change', e => {
+    if (e.target.type !== 'checkbox') return;
+    const li = e.target.closest('.task'), t = state.tasks.find(x => x.id === li.dataset.id); if (!t) return;
+    t.done = t.done || {};
+    if (e.target.checked) { t.done[view.sel] = 1; toast('¡Hecho!', CHEERS[Math.floor(Math.random() * CHEERS.length)], null, 4500); }
+    else delete t.done[view.sel];
+    save(); renderAll();
+  });
+  $('#task-list').addEventListener('click', e => {
+    const li = e.target.closest('.task'); if (!li) return;
+    const t = state.tasks.find(x => x.id === li.dataset.id); if (!t) return;
+    if (e.target.closest('[data-edit]')) { openForm(t); return; }
+    const del = e.target.closest('[data-del]');
+    if (del) {
+      if (!del.classList.contains('confirm')) {
+        del.classList.add('confirm');
+        del.textContent = t.repeat !== 'none' ? '¿Borrar todas las repeticiones?' : '¿Seguro?';
+        setTimeout(() => { if (del.isConnected) { del.classList.remove('confirm'); del.textContent = 'Borrar'; } }, 4000);
+        return;
+      }
+      state.tasks = state.tasks.filter(x => x.id !== t.id);
+      save(); renderAll();
+      toast('Tarea borrada', `«${t.title}» salió del calendario.`, null, 4000);
+    }
+  });
+  $('#clear-examples').addEventListener('click', () => {
+    state.tasks = state.tasks.filter(t => !t.ex); save(); renderAll();
+    toast('Listo para empezar', 'Los ejemplos se borraron. Agrega tu primera tarea.', null, 5000);
+  });
+
+  $('#cat-grid').addEventListener('change', e => {
+    const el = e.target;
+    if (el.id === 'nag-urgente') { state.settings.cats.urgente.nag = el.checked; save(); return; }
+    if (!el.dataset.cat) return;
+    const c = state.settings.cats[el.dataset.cat], v = Number(el.dataset.off);
+    c.offsets = el.checked ? [...new Set([...c.offsets, v])].sort((a, b) => b - a) : c.offsets.filter(x => x !== v);
+    save();
+  });
+  $('#cat-grid').addEventListener('click', e => {
+    const b = e.target.closest('[data-test]'); if (!b) return;
+    const k = b.dataset.test, now = new Date();
+    let sample = null, sds = null;
+    for (let i = 0; i < 30 && !sample; i++) {
+      const ds = ymd(addDays(now, i));
+      sample = tasksOn(ds).find(t => t.cat === k && !t.key && !isDone(t, ds) && at(ds, t.time) > now);
+      if (sample) sds = ds;
+    }
+    if (!sample) { sample = { title: { urgente: 'Pagar el recibo de la luz', importante: 'Cita con la dentista', leve: 'Regar las plantas' }[k], time: '10:00', cat: k }; sds = ymd(addDays(now, 1)); }
+    const m = messageFor(sample, sds, +at(sds, sample.time) - +now);
+    notify(m.title, m.body, m.cat, m.emoji);
+  });
+
+  $('#enable-notif').addEventListener('click', async () => {
+    if (!('Notification' in window)) { notifStatus(); toast('Avisos dentro de la página', 'Aquí no hay avisos del sistema, pero los verás en esta esquina.', null, 6000); return; }
+    try {
+      const r = Notification.requestPermission();
+      if (r && r.then) await r;
+    } catch (e) {}
+    notifStatus();
+    if (Notification.permission === 'granted') notify('Avisos activados', `Listo${nameHi()}. Así se verán tus recordatorios.`, null, '🌿');
+    else toast('Avisos dentro de la página', 'Los avisos del sistema no se activaron, pero igual los verás aquí mientras la página esté abierta.', null, 7000);
+  });
+
+  let savedTimer;
+  function bindSetting(id, key) {
+    $(id).addEventListener('input', e => {
+      const v = e.target.value; if (key !== 'name' && !v) return;
+      state.settings[key] = key === 'name' ? v.trim() : v;
+      save(); renderNames(); renderToday();
+      $('#saved-note').textContent = 'Guardado';
+      clearTimeout(savedTimer); savedTimer = setTimeout(() => { $('#saved-note').textContent = ''; }, 1800);
+    });
+  }
+  bindSetting('#s-name', 'name'); bindSetting('#s-morning', 'morning'); bindSetting('#s-qfrom', 'quietFrom'); bindSetting('#s-qto', 'quietTo');
+
+  $('#copy-backup').addEventListener('click', () => {
+    const text = JSON.stringify({ settings: state.settings, tasks: state.tasks });
+    const ta = $('#backup-text');
+    const fallback = () => { ta.value = text; ta.focus(); ta.select(); toast('Respaldo listo', 'Quedó seleccionado abajo. Cópialo y guárdalo en un lugar seguro.', null, 6000); };
+    try {
+      navigator.clipboard.writeText(text).then(() => toast('Respaldo copiado', 'Pégalo en tus notas o envíatelo por mensaje.', null, 5000), fallback);
+    } catch (e) { fallback(); }
+  });
+  $('#restore-backup').addEventListener('click', () => {
+    const raw = $('#backup-text').value.trim();
+    if (!raw) { toast('Falta el respaldo', 'Pega primero el texto de tu respaldo en el recuadro.', null, 5000); return; }
+    let s = null;
+    try { s = normalize(JSON.parse(raw)); } catch (e) {}
+    if (!s) { toast('No se pudo restaurar', 'El texto no parece un respaldo de este calendario. Revisa que lo hayas copiado completo.', 'urgente', 7000); return; }
+    s.fired = {}; state = s; save(); renderSettings(); renderCats(); renderAll();
+    $('#backup-text').value = '';
+    toast('Respaldo restaurado', `Volvieron ${plural(state.tasks.length, 'tarea', 'tareas')}.`, null, 5000);
+  });
+
+  /* ---------- Selva de noche (hero) ---------- */
+  function jungle() {
+    const c = $('#jungle'); if (!c || !c.getContext) return;
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ctx = c.getContext('2d');
+    let w = 0, h = 0, dpr = 1, layer = null, flies = [];
+    function frond(g, x, y, ang, len, bend, col) {
+      const N = 34; let px = x, py = y, dir = ang; const pts = [];
+      for (let i = 0; i <= N; i++) { pts.push([px, py, dir]); const step = len / N; px += Math.cos(dir) * step; py += Math.sin(dir) * step; dir += bend / N; }
+      g.strokeStyle = col; g.fillStyle = col; g.lineWidth = 3; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(x, y); pts.forEach(p => g.lineTo(p[0], p[1])); g.stroke();
+      for (let i = 3; i < N; i++) {
+        const [bx, by, d] = pts[i], t = i / N, L = len * 0.34 * Math.sin(Math.PI * (0.12 + 0.88 * t)) * (1 - 0.35 * t);
+        for (const side of [-1, 1]) {
+          const a = d + side * (1.05 - 0.35 * t);
+          const tx = bx + Math.cos(a) * L, ty = by + Math.sin(a) * L + L * 0.18;
+          const mx = (bx + tx) / 2, my = (by + ty) / 2, nx = -Math.sin(a) * L * 0.1, ny = Math.cos(a) * L * 0.1;
+          g.beginPath(); g.moveTo(bx, by); g.quadraticCurveTo(mx + nx, my + ny, tx, ty); g.quadraticCurveTo(mx - nx, my - ny, bx, by); g.fill();
+        }
+      }
+    }
+    function build() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2); w = c.clientWidth; h = c.clientHeight;
+      c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+      layer = document.createElement('canvas'); layer.width = c.width; layer.height = c.height;
+      const g = layer.getContext('2d'); g.scale(dpr, dpr);
+      const L = Math.max(220, Math.min(w * 0.42, 460));
+      frond(g, w + 30, h * 0.08, Math.PI - 0.15, L, -0.9, 'rgba(39,63,43,.95)');
+      frond(g, w + 40, h * 0.55, Math.PI + 0.35, L * 0.9, 0.8, 'rgba(30,52,34,.9)');
+      frond(g, w * 0.92, h + 30, -Math.PI / 2 - 0.5, L * 0.85, -0.7, 'rgba(39,63,43,.75)');
+      if (w > 760) {
+        frond(g, -40, h * 0.95, -0.55, L * 0.75, -0.6, 'rgba(30,52,34,.7)');
+        frond(g, w * 0.62, -30, Math.PI / 2 + 0.6, L * 0.6, 0.6, 'rgba(39,63,43,.5)');
+      }
+      flies = [...Array(w > 760 ? 28 : 14)].map(() => ({ x: Math.random() * w, y: Math.random() * h, r: 1 + Math.random() * 1.8, p: Math.random() * 6.28, s: 0.4 + Math.random() * 0.8, vx: (Math.random() - .5) * .15, vy: (Math.random() - .5) * .1 }));
+    }
+    function draw(t) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, c.width, c.height);
+      ctx.drawImage(layer, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      for (const f of flies) {
+        const a = 0.25 + 0.75 * Math.max(0, Math.sin(f.p + t / 1000 * f.s));
+        if (!reduce) { f.x += f.vx; f.y += f.vy; if (f.x < 0) f.x = w; if (f.x > w) f.x = 0; if (f.y < 0) f.y = h; if (f.y > h) f.y = 0; }
+        ctx.beginPath(); ctx.fillStyle = `rgba(104,239,63,${(a * 0.18).toFixed(3)})`; ctx.arc(f.x, f.y, f.r * 4, 0, 6.283); ctx.fill();
+        ctx.beginPath(); ctx.fillStyle = `rgba(190,255,160,${a.toFixed(3)})`; ctx.arc(f.x, f.y, f.r, 0, 6.283); ctx.fill();
+      }
+      if (!reduce) requestAnimationFrame(draw);
+    }
+    build(); requestAnimationFrame(draw);
+    let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); if (reduce) draw(0); }, 150); });
+  }
+
+  /* ---------- Inicio ---------- */
+  $('#phone-date').textContent = new Date().toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' });
+  renderCats(); renderSwatches(); renderSettings(); renderAll(); notifStatus(); jungle();
+  if (firstRun) { tick(true); save(); } else tick(false);
+  setInterval(() => { tick(false); renderToday(); }, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(false); renderAll(); } });
+})();
+</script>
+</body></html>
