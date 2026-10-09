@@ -15,7 +15,7 @@ Calendario de recordatorios con estilo tropical oscuro y vidrio líquido. Cada t
 Hay dos versiones:
 
 - **App para Android (APK)**. Es la recomendada: los avisos llegan aunque la app esté cerrada.
-- **Página web**, el archivo `jardin-de-tareas.html`. Es la versión web anterior, con el nombre Jardín de Tareas. Se abre en cualquier navegador.
+- **Página web**, el archivo `agendita.html`. Es la versión web anterior, con el nombre Jardín de Tareas. Se abre en cualquier navegador.
 
 ---
 
@@ -167,7 +167,7 @@ Sirve para usar el calendario en la computadora o en un iPhone. Es la versión w
 1. Entra a https://github.com/Sebazzz88/organizador-de-tiempo-
 2. Toca el botón verde **Code** y luego **Download ZIP**.
 3. Busca el ZIP en tu carpeta de Descargas, haz clic derecho y elige **Extraer todo**.
-4. Abre la carpeta y haz doble clic en `jardin-de-tareas.html`. Se abre en tu navegador.
+4. Abre la carpeta y haz doble clic en `agendita.html`. Se abre en tu navegador.
 5. Guárdalo en favoritos (Ctrl + D) para abrirlo rápido la próxima vez.
 
 Si usas git, también puedes descargarlo con:
@@ -185,7 +185,7 @@ Primero hay que publicar la página con GitHub Pages (solo se hace una vez):
 1. En el repositorio, entra a **Settings** y luego a **Pages**.
 2. En **Source**, elige **Deploy from a branch**. En **Branch**, elige `main` y la carpeta `/ (root)`. Toca **Save**.
 3. Espera uno o dos minutos. La página queda en:
-   https://sebazzz88.github.io/organizador-de-tiempo-/jardin-de-tareas.html
+   https://sebazzz88.github.io/organizador-de-tiempo-/agendita.html
 
 Después, en el celular:
 
