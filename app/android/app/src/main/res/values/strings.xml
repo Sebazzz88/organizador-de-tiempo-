@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Jardín de Tareas</string>
+    <string name="title_activity_main">Jardín de Tareas</string>
+    <string name="package_name">com.sebas.jardindetareas</string>
+    <string name="custom_url_scheme">com.sebas.jardindetareas</string>
+</resources>

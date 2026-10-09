@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b170d">
+<meta name="color-scheme" content="dark">
+<title>Jardín de Tareas</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-hib" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="12" cy="6.6" rx="3.5" ry="5"/><ellipse cx="12" cy="6.6" rx="3.5" ry="5" transform="rotate(72 12 12)"/><ellipse cx="12" cy="6.6" rx="3.5" ry="5" transform="rotate(144 12 12)"/><ellipse cx="12" cy="6.6" rx="3.5" ry="5" transform="rotate(216 12 12)"/><ellipse cx="12" cy="6.6" rx="3.5" ry="5" transform="rotate(288 12 12)"/></g><circle cx="12" cy="12" r="2.3" fill="#0b170d"/></symbol>
+  <symbol id="i-mango" viewBox="0 0 24 24"><path fill="currentColor" d="M5.5 15.2c0-5.1 4-9.2 9-9.2 2.6 0 4 2 4 4.6 0 5.5-4.6 9.9-9 9.9-2.6 0-4-2.2-4-5.3z"/><path fill="currentColor" opacity=".7" d="M13.6 6.2c-.2-2.2 1.4-4 4.2-4.1-.2 2.4-1.8 3.9-4.2 4.1z"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 9.5c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 15.5c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M4 20C4 10.5 10 4 20 4c0 10-6.5 16-16 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M4 20l9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l2.3 7.7L22 12l-7.7 2.3L12 22l-2.3-7.7L2 12l7.7-2.3z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 3h6l-1 6 3.5 3.5V14H13v6l-1 1.5L11 20v-6H6.5v-1.5L10 9z" fill="currentColor"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3v5h5M9 12.5h7M9 16.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 11L12 4l8.5 7v9h-5.5v-6h-6v6H3.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="18.5" cy="12" r="2" fill="currentColor"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M17 3l3 3-3 3M4 12v-2a4 4 0 0 1 4-4h12M7 21l-3-3 3-3M20 12v2a4 4 0 0 1-4 4H4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.1 4.1 0 0 1 12 7.3a4.1 4.1 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.6v.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20.5c1.3-3.8 4.2-5.5 7.5-5.5s6.2 1.7 7.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M7 20h10M5 7h14M5 7l-3 6h6zM19 7l-3 6h6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+</svg>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="orb" aria-hidden="true"></div>
+
+<div class="shell">
+  <header class="topbar">
+    <span class="brand"><svg><use href="#i-leaf"/></svg>jardín</span>
+    <span class="tag">hecho con cariño por Sebas :)</span>
+  </header>
+
+  <!-- HOY -->
+  <section class="screen" id="s-hoy" aria-label="Hoy">
+    <div class="screen-head">
+      <button type="button" class="announce" id="announce"></button>
+      <p class="greeting" style="margin-top:8px"><span id="greet">Hola</span><span class="name-slot" data-prefix=", " data-fallback=""></span></p>
+      <h1 class="display">Hoy es<br>tu <span class="green">día</span></h1>
+      <p class="lead" id="today-lead" style="margin-top:8px"></p>
+    </div>
+
+    <div class="card banner" id="perm-banner" hidden>
+      <svg><use href="#i-bell"/></svg>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div><h3>Activa los avisos</h3><p class="muted">Así te recuerdo tus tareas aunque la app esté cerrada.</p></div>
+        <button class="btn btn-sprout btn-sm" type="button" data-action="perm" style="align-self:flex-start">Activar avisos</button>
+      </div>
+    </div>
+
+    <div class="mock-wrap">
+      <p class="label">Tus próximos avisos</p>
+      <div class="mock-stack" id="mock-stack"></div>
+    </div>
+
+    <div class="card quick" id="quick-card">
+      <div class="card-head"><h3><svg><use href="#i-plus"/></svg>Anotar rápido</h3>
+        <div class="mini-chips" id="quick-day" role="group" aria-label="Día de la tarea">
+          <button type="button" data-d="0" aria-pressed="true">Hoy</button><button type="button" data-d="1" aria-pressed="false">Mañana</button>
+        </div>
+      </div>
+      <input class="input" id="q-title" type="text" maxlength="90" placeholder="Escribe una tarea…" autocomplete="off" aria-describedby="q-hint">
+      <p class="hint" id="q-hint">Escríbela y toca su categoría para guardarla.</p>
+      <div class="quick-cats">
+        <button type="button" class="qcat" data-q="urgente"><svg class="c-urgente"><use href="#i-hib"/></svg>Urgente</button>
+        <button type="button" class="qcat" data-q="importante"><svg class="c-importante"><use href="#i-mango"/></svg>Importante</button>
+        <button type="button" class="qcat" data-q="leve"><svg class="c-leve"><use href="#i-wave"/></svg>Leve</button>
+      </div>
+    </div>
+
+    <div class="card" id="today-list-card">
+      <div class="card-head"><h3><svg><use href="#i-sun"/></svg>Para hoy</h3><button class="btn btn-quiet btn-sm" type="button" data-action="new-task">+ Tarea</button></div>
+      <div id="today-list"></div>
+      <div id="today-note"></div>
+    </div>
+
+    <div class="card" id="upcoming-card">
+      <div class="card-head"><h3><svg><use href="#i-clock"/></svg>Lo que viene</h3></div>
+      <ul class="key-list" id="upcoming"></ul>
+    </div>
+
+    <div class="card garden" id="garden"></div>
+  </section>
+
+  <!-- CALENDARIO -->
+  <section class="screen" id="s-cal" aria-label="Calendario" hidden>
+    <div class="screen-head">
+      <p class="eyebrow">Calendario</p>
+      <h2>Tu mes, de un vistazo</h2>
+    </div>
+    <div class="card tight">
+      <div class="cal-top">
+        <button class="icon-btn" type="button" id="prev-m" aria-label="Mes anterior"><svg class="flip"><use href="#i-chev"/></svg></button>
+        <h3 id="month-label"></h3>
+        <button class="btn btn-quiet btn-sm" type="button" id="go-today">Hoy</button>
+        <button class="icon-btn" type="button" id="next-m" aria-label="Mes siguiente"><svg><use href="#i-chev"/></svg></button>
+      </div>
+      <div class="legend">
+        <span><i class="dot urgente"></i>Urgente</span><span><i class="dot importante"></i>Importante</span><span><i class="dot leve"></i>Leve</span>
+        <span><svg class="c-fija"><use href="#i-pin"/></svg>Fijas</span><span><svg style="color:var(--mango)"><use href="#i-note"/></svg>Nota</span>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+
+    <div class="card" id="day-card">
+      <div class="day-head">
+        <h3 id="day-label"></h3>
+        <button class="btn btn-sprout btn-sm" type="button" data-action="new-task">+ Tarea</button>
+      </div>
+      <div id="day-note"></div>
+      <div id="day-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3><svg><use href="#i-spark"/></svg>Fechas clave que vienen</h3></div>
+      <ul class="key-list" id="key-list"></ul>
+    </div>
+  </section>
+
+  <!-- FIJAS -->
+  <section class="screen" id="s-fijas" aria-label="Tareas fijas" hidden>
+    <div class="screen-head">
+      <p class="eyebrow">Tareas fijas</p>
+      <h2>Lo que sí o sí haces cada día</h2>
+      <p class="sub">Las tareas fijas aparecen todos los días en tu calendario. Puedes elegir si quieres un aviso diario de cada una.</p>
+    </div>
+    <div class="card" id="fixed-ask" hidden>
+      <h3>¿Quieres fijar tareas que sí o sí tienes que hacer?</h3>
+      <p class="muted">Por ejemplo: tomar tu pastilla, estudiar una hora o sacar a pasear al perro. No es obligatorio.</p>
+      <div class="row">
+        <button class="btn btn-sprout" type="button" id="fixed-yes">Sí, quiero fijar</button>
+        <button class="btn btn-quiet" type="button" id="fixed-no">No, por ahora</button>
+      </div>
+    </div>
+    <div class="card" id="fixed-card">
+      <div class="card-head"><h3><svg><use href="#i-pin"/></svg>Tus tareas fijas</h3></div>
+      <div id="fixed-list"></div>
+      <button class="btn btn-sprout btn-block" type="button" data-action="new-fixed"><svg><use href="#i-plus"/></svg>Agregar tarea fija</button>
+      <button class="btn btn-danger btn-block" type="button" id="fixed-clear" hidden>Eliminar todas las tareas fijas</button>
+    </div>
+  </section>
+
+  <!-- AVISOS -->
+  <section class="screen" id="s-avisos" aria-label="Avisos" hidden>
+    <div class="screen-head">
+      <p class="eyebrow">Avisos que te cuidan</p>
+      <h2>Tú decides cuándo te aviso</h2>
+    </div>
+
+    <div class="card" id="perm-card">
+      <div class="card-head"><h3><svg><use href="#i-bell"/></svg>Permisos</h3></div>
+      <p class="muted" id="perm-status"></p>
+      <div class="row" id="perm-actions"></div>
+    </div>
+
+    <div class="card" id="lead-card">
+      <div class="card-head"><h3><svg><use href="#i-clock"/></svg>¿Con cuánta anticipación?</h3></div>
+      <p class="muted">Elige uno o varios momentos para cada tipo de tarea. Si una tarea tiene su propia anticipación, uso esa.</p>
+      <div id="lead-cats"></div>
+    </div>
+
+    <div class="card" id="after-card">
+      <div class="card-head"><h3><svg><use href="#i-repeat"/></svg>Después del evento</h3></div>
+      <p class="muted">Si no marcas una tarea como hecha, ¿cuántas horas después te la recuerdo? Esto vale para todos tus eventos.</p>
+      <div class="hours" id="after-hours" role="group" aria-label="Horas después del evento"></div>
+      <label class="switch" for="after-repeat"><span>Repetir cada vez que pase ese tiempo, hasta que la marque (máximo 24 horas)</span><input type="checkbox" id="after-repeat"></label>
+      <label class="switch" for="after-skip-fixed"><span>No insistir con mis tareas fijas</span><input type="checkbox" id="after-skip-fixed"></label>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3><svg><use href="#i-sun"/></svg>Resumen de la mañana</h3></div>
+      <label class="switch" for="brief-on"><span>Recibir un resumen de mis tareas cada mañana</span><input type="checkbox" id="brief-on"></label>
+      <div class="field"><label for="brief-time">Hora del resumen</label><input class="input" type="time" id="brief-time"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3><svg><use href="#i-moon"/></svg>Horas de descanso</h3></div>
+      <p class="muted">En estas horas solo suenan las urgentes y tus tareas fijas. Los demás avisos esperan a que termine tu descanso.</p>
+      <div class="grid2">
+        <div class="field"><label for="quiet-from">Desde</label><input class="input" type="time" id="quiet-from"></div>
+        <div class="field"><label for="quiet-to">Hasta</label><input class="input" type="time" id="quiet-to"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3><svg><use href="#i-spark"/></svg>Probar</h3></div>
+      <p class="muted">Te mando un aviso de prueba en 5 segundos. Puedes cerrar la app para ver cómo llega.</p>
+      <button class="btn btn-quiet" type="button" id="test-notif">Enviar aviso de prueba</button>
+      <p class="muted small" id="sync-info"></p>
+    </div>
+  </section>
+
+  <!-- MÁS -->
+  <section class="screen" id="s-mas" aria-label="Más" hidden>
+    <div class="screen-head">
+      <p class="eyebrow">Más</p>
+      <h2>Tu jardín, a tu manera</h2>
+    </div>
+
+    <details class="acc" open>
+      <summary><svg><use href="#i-user"/></svg>Tus datos</summary>
+      <div class="acc-body">
+        <div class="field"><label for="s-name">Tu nombre</label><input class="input" id="s-name" type="text" maxlength="40" placeholder="¿Cómo te llamas?" autocomplete="off"></div>
+        <h4>Copia de seguridad</h4>
+        <p>Tus tareas se guardan solo en este teléfono. Una vez al mes, copia tu respaldo y guárdalo en tus notas o envíatelo por mensaje.</p>
+        <div class="row">
+          <button class="btn btn-quiet btn-sm" type="button" id="copy-backup">Copiar mi respaldo</button>
+          <button class="btn btn-quiet btn-sm" type="button" id="restore-backup">Restaurar desde el texto</button>
+        </div>
+        <textarea class="input" id="backup-text" rows="3" placeholder="Pega aquí tu respaldo"></textarea>
+      </div>
+    </details>
+
+    <details class="acc" id="help-acc">
+      <summary><svg><use href="#i-help"/></svg>Cómo se usa</summary>
+      <div class="acc-body">
+        <ol class="steps">
+          <li><div><b>Activa los avisos</b>Acepta el permiso de notificaciones. Te llegan aunque la app esté cerrada.</div></li>
+          <li><div><b>Anota tus tareas</b>En «Hoy», escribe la tarea y toca su categoría. Con el botón + eliges día, hora, anticipación y si se repite.</div></li>
+          <li><div><b>Fija lo de todos los días</b>En «Fijas» agregas lo que sí o sí haces cada día. Aparece en todo el calendario.</div></li>
+          <li><div><b>Escribe notas en tus días</b>En el calendario, toca un día y luego «Agregar nota». Si la nota es larga, toca el papelito para leerla completa.</div></li>
+          <li><div><b>Marca lo que terminas</b>Toca el circulito. Dejo de recordarte esa tarea y tu plantita crece.</div></li>
+        </ol>
+        <button class="btn btn-sprout" type="button" data-action="tour">Ver el recorrido guiado</button>
+        <h4>Preguntas frecuentes</h4>
+        <div class="tip"><b>No me llegan los avisos</b>Revisa en «Avisos» que los permisos estén activos. En algunos teléfonos también hay que quitar el ahorro de batería para Jardín de Tareas: Ajustes › Aplicaciones › Jardín de Tareas › Batería › Sin restricciones.</div>
+        <div class="tip"><b>¿Tengo que abrir la app?</b>No para recibir avisos. Igual ábrela al menos una vez cada dos semanas, así dejo programados los avisos que vienen.</div>
+        <div class="tip"><b>¿Cómo dejo de recibir avisos de una tarea?</b>Márcala como hecha, o bórrala. Para las fijas, apaga su aviso diario en «Fijas».</div>
+        <div class="tip"><b>¿Qué categoría elijo?</b>Urgente si tiene fecha límite hoy o mañana. Importante si te hace crecer o es especial. Leve si puede esperar.</div>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><svg><use href="#i-bulb"/></svg>Ideas para organizarte</summary>
+      <div class="acc-body">
+        <div class="matrix">
+          <div class="quad"><h4><i class="dot urgente"></i>Urgente e importante</h4><p>Hazlo hoy, temprano.</p></div>
+          <div class="quad"><h4><i class="dot importante"></i>Importante, sin prisa</h4><p>Agéndalo con día y hora.</p></div>
+          <div class="quad"><h4><i class="dot" style="background:var(--pale-fern)"></i>Urgente, no importante</h4><p>Pide ayuda o delega.</p></div>
+          <div class="quad"><h4><i class="dot leve"></i>Ni lo uno ni lo otro</h4><p>Leve, o suéltalo.</p></div>
+        </div>
+        <div class="tip"><b>Las 3 flores del día</b>Cada mañana elige solo tres tareas. Si las haces, el día ya valió la pena.</div>
+        <div class="tip"><b>La regla de los 2 minutos</b>Si algo se hace en menos de dos minutos, hazlo ya, sin anotarlo.</div>
+        <div class="tip"><b>Bloques de tiempo</b>Mañanas para lo que pide concentración, tardes para recados y llamadas.</div>
+        <div class="tip"><b>Ratitos de 25 minutos</b>Trabaja 25 minutos sin distracciones y descansa 5.</div>
+        <div class="tip"><b>Delegar con cariño</b>Pide ayuda con algo concreto y con fecha: qué, para cuándo y por qué.</div>
+        <div class="tip"><b>Partir lo grande</b>Divide lo enorme en pasos de una hora y anota solo el siguiente.</div>
+        <div class="tip"><b>Revisión del domingo</b>15 minutos para mirar la semana y mover lo leve.</div>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><svg><use href="#i-heart"/></svg>Cuídate</summary>
+      <div class="acc-body">
+        <div class="tip"><b>Celebra lo pequeño</b>Una tarea leve hecha también es una flor.</div>
+        <div class="tip"><b>Máximo 3 urgentes al día</b>Si tienes más, algo no es tan urgente como parece.</div>
+        <div class="tip"><b>Días isla</b>Un día al mes sin tareas. Descansar también se agenda.</div>
+        <div class="tip"><b>Pausas de agua</b>Cada 90 minutos: agua, estirarte y mirar lejos de la pantalla.</div>
+        <div class="tip"><b>Decir que no</b>Cada «sí» ocupa un espacio en tu calendario.</div>
+        <div class="tip"><b>Señales de que vas muy rápido</b>Todo te parece urgente, duermes menos o te irritas por cosas pequeñas. Pasa lo leve a la próxima semana y quédate con las 3 flores del día.</div>
+      </div>
+    </details>
+
+    <details class="acc">
+      <summary><svg><use href="#i-shield"/></svg>Permisos de la app</summary>
+      <div class="acc-body">
+        <div class="perm"><svg><use href="#i-bell"/></svg><div><b>Mostrar notificaciones</b><p>Para enviarte los recordatorios de tus tareas.</p></div></div>
+        <div class="perm"><svg><use href="#i-clock"/></svg><div><b>Alarmas exactas</b><p>Para que cada aviso llegue a la hora justa y no con minutos de retraso.</p></div></div>
+        <div class="perm"><svg><use href="#i-repeat"/></svg><div><b>Iniciar al encender el teléfono</b><p>Para volver a programar tus avisos si reinicias el teléfono.</p></div></div>
+        <div class="perm"><svg><use href="#i-sun"/></svg><div><b>Mantener activo el teléfono</b><p>Para que el aviso alcance a mostrarse aunque la pantalla esté apagada.</p></div></div>
+        <p>La app no usa tu ubicación, cámara, micrófono ni contactos. Tus tareas no salen de tu teléfono.</p>
+      </div>
+    </details>
+
+    <details class="acc" id="licenses-acc">
+      <summary><svg><use href="#i-scale"/></svg>Licencias</summary>
+      <div class="acc-body">
+        <div class="tip"><b>Jardín de Tareas</b>Licencia MIT. Copyright (c) 2026 Sebas.</div>
+        <div class="tip"><b>Capacitor y sus complementos</b>Licencia MIT. Copyright Drifty Co. (Ionic).</div>
+        <div class="tip"><b>Bibliotecas AndroidX</b>Apache License 2.0. Copyright The Android Open Source Project.</div>
+        <div class="tip"><b>Tipografías Boldonse, Geist e Instrument Serif</b>SIL Open Font License 1.1. Copyright de los autores de cada proyecto.</div>
+        <div class="row">
+          <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/MIT-jardin.txt">Licencia MIT (app)</button>
+          <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/MIT-capacitor.txt">Licencia MIT (Capacitor)</button>
+          <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/Apache-2.0.txt">Apache 2.0</button>
+          <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/OFL-1.1.txt">SIL OFL 1.1</button>
+        </div>
+      </div>
+    </details>
+
+    <div class="about"><b>Hecho con cariño por Sebas :)</b>Jardín de Tareas · versión <span id="app-version">1.0</span></div>
+  </section>
+</div>
+
+<button class="fab" type="button" data-action="new-task" aria-label="Nueva tarea"><svg><use href="#i-plus"/></svg></button>
+
+<nav class="tabbar" aria-label="Secciones">
+  <div class="tabs">
+    <button class="tab" type="button" data-tab="hoy" aria-current="page"><span class="tab-ic"><svg><use href="#i-home"/></svg></span>Hoy</button>
+    <button class="tab" type="button" data-tab="cal"><span class="tab-ic"><svg><use href="#i-cal"/></svg></span>Calendario</button>
+    <button class="tab" type="button" data-tab="fijas"><span class="tab-ic"><svg><use href="#i-pin"/></svg></span>Fijas</button>
+    <button class="tab" type="button" data-tab="avisos"><span class="tab-ic"><svg><use href="#i-bell"/></svg></span>Avisos</button>
+    <button class="tab" type="button" data-tab="mas"><span class="tab-ic"><svg><use href="#i-more"/></svg></span>Más</button>
+  </div>
+</nav>
+
+<!-- Hoja: tarea -->
+<div class="sheet" id="task-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="t-head">
+  <form class="sheet-panel" id="task-form" novalidate>
+    <h3 id="t-head">Nueva tarea</h3>
+    <div class="field"><label for="t-title">¿Qué tienes que hacer?</label><input class="input" id="t-title" type="text" maxlength="90" placeholder="Ej. Pagar el recibo de la luz" autocomplete="off"></div>
+    <div class="field"><span class="lbl">¿De qué tipo es?</span>
+      <div class="cat-pick" id="t-cat">
+        <button type="button" class="urgente" data-cat="urgente" aria-pressed="false"><svg class="c-urgente"><use href="#i-hib"/></svg>Urgente<small>hibisco</small></button>
+        <button type="button" class="importante" data-cat="importante" aria-pressed="true"><svg class="c-importante"><use href="#i-mango"/></svg>Importante<small>mango</small></button>
+        <button type="button" class="leve" data-cat="leve" aria-pressed="false"><svg class="c-leve"><use href="#i-wave"/></svg>Leve<small>laguna</small></button>
+      </div>
+      <p class="help" id="t-cat-help"></p>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="t-date">¿Qué día?</label><input class="input" id="t-date" type="date">
+        <div class="mini-chips" data-pick="date"><button type="button" data-v="0">Hoy</button><button type="button" data-v="1">Mañana</button><button type="button" data-v="7">En 1 semana</button></div></div>
+      <div class="field"><label for="t-time">¿A qué hora?</label><input class="input" id="t-time" type="time">
+        <div class="mini-chips" data-pick="time"><button type="button" data-v="09:00">9:00</button><button type="button" data-v="13:00">13:00</button><button type="button" data-v="17:00">17:00</button><button type="button" data-v="20:00">20:00</button></div></div>
+    </div>
+    <div class="field"><label for="t-lead">¿Con cuánta anticipación te aviso?</label>
+      <select class="input" id="t-lead">
+        <option value="cat">Lo que elegí para su categoría</option>
+        <option value="0">Solo a la hora</option>
+        <option value="30">30 minutos antes</option>
+        <option value="60">1 hora antes</option>
+        <option value="180">3 horas antes</option>
+        <option value="1440">1 día antes</option>
+        <option value="2880">2 días antes</option>
+        <option value="4320">3 días antes</option>
+        <option value="10080">1 semana antes</option>
+        <option value="custom">Otra anticipación…</option>
+      </select>
+      <div class="grid2" id="t-lead-custom" hidden>
+        <input class="input" id="t-lead-n" type="number" min="1" max="90" value="4" inputmode="numeric" aria-label="Cantidad">
+        <select class="input" id="t-lead-u" aria-label="Unidad"><option value="60">horas antes</option><option value="1440" selected>días antes</option><option value="10080">semanas antes</option></select>
+      </div>
+    </div>
+    <div class="field"><label for="t-repeat">¿Se repite?</label>
+      <select class="input" id="t-repeat"><option value="none">Una sola vez</option><option value="weekly">Cada semana</option><option value="monthly">Cada mes</option><option value="yearly">Cada año</option></select>
+    </div>
+    <label class="switch" for="t-key"><span>Es una fecha clave (cumpleaños, aniversario, pago)</span><input type="checkbox" id="t-key"></label>
+    <div class="field"><label for="t-note">¿Quieres anotar algo más? (opcional)</label><textarea class="input" id="t-note" maxlength="1000" placeholder="Ej. Llevar la tarjeta del seguro"></textarea></div>
+    <p class="error" id="t-error"></p>
+    <div class="sheet-actions">
+      <button class="btn btn-quiet" type="button" data-close>Cancelar</button>
+      <button class="btn btn-sprout" type="submit">Guardar tarea</button>
+    </div>
+  </form>
+</div>
+
+<!-- Hoja: tarea fija -->
+<div class="sheet" id="fixed-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="f-head">
+  <form class="sheet-panel" id="fixed-form" novalidate>
+    <h3 id="f-head">Nueva tarea fija</h3>
+    <p class="muted">Aparecerá todos los días en tu calendario.</p>
+    <div class="field"><label for="f-title">¿Qué haces sí o sí cada día?</label><input class="input" id="f-title" type="text" maxlength="90" placeholder="Ej. Tomar mi pastilla" autocomplete="off"></div>
+    <div class="field"><label for="f-time">¿A qué hora?</label><input class="input" id="f-time" type="time" value="08:00"></div>
+    <div class="field"><span class="lbl">¿Quieres que te avise todos los días de esta tarea?</span>
+      <div class="choices" id="f-daily">
+        <button type="button" class="choice" data-v="1" aria-pressed="true">Sí, todos los días</button>
+        <button type="button" class="choice" data-v="0" aria-pressed="false">No, solo mostrarla</button>
+      </div>
+    </div>
+    <p class="error" id="f-error"></p>
+    <div class="sheet-actions">
+      <button class="btn btn-quiet" type="button" data-close>Cancelar</button>
+      <button class="btn btn-sprout" type="submit">Guardar tarea fija</button>
+    </div>
+  </form>
+</div>
+
+<!-- Hoja: escribir nota -->
+<div class="sheet" id="note-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="n-head">
+  <form class="sheet-panel" id="note-form" novalidate>
+    <h3 id="n-head">Nota del día</h3>
+    <p class="muted" id="n-date"></p>
+    <textarea class="input" id="n-text" maxlength="3000" rows="7" placeholder="Escribe lo que quieras recordar de este día" aria-labelledby="n-head"></textarea>
+    <div class="sheet-actions">
+      <button class="btn btn-danger" type="button" id="n-delete">Borrar nota</button>
+      <button class="btn btn-quiet" type="button" data-close>Cancelar</button>
+      <button class="btn btn-sprout" type="submit">Guardar nota</button>
+    </div>
+  </form>
+</div>
+
+<!-- Hoja: leer -->
+<div class="sheet" id="reader-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="r-head">
+  <div class="sheet-panel">
+    <p class="eyebrow" id="r-eyebrow"></p>
+    <h3 id="r-head"></h3>
+    <div class="reader-text" id="r-text"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-quiet" type="button" id="r-edit">Editar</button>
+      <button class="btn btn-sprout" type="button" data-close>Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hoja: confirmar -->
+<div class="sheet" id="confirm-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="c-head">
+  <div class="sheet-panel">
+    <h3 id="c-head"></h3>
+    <p class="muted" id="c-body"></p>
+    <div class="sheet-actions">
+      <button class="btn btn-quiet" type="button" data-close>Cancelar</button>
+      <button class="btn btn-danger" type="button" id="c-ok"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Bienvenida -->
+<div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="Bienvenida">
+  <div class="onb-inner">
+    <div class="onb-card" id="onb-card"></div>
+    <div class="onb-dots" id="onb-dots" aria-hidden="true"></div>
+  </div>
+</div>
+
+<div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tour-title">
+  <div class="tour-spot" id="tour-spot"></div>
+  <div class="tour-pop" id="tour-pop">
+    <p class="step" id="tour-step"></p>
+    <h3 id="tour-title"></h3>
+    <p id="tour-body"></p>
+    <div class="tour-actions">
+      <button type="button" class="link-btn" id="tour-skip">Saltar</button>
+      <div>
+        <button type="button" class="btn btn-quiet btn-sm" id="tour-prev">Atrás</button>
+        <button type="button" class="btn btn-sprout btn-sm" id="tour-next">Siguiente</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="vendor/capacitor.js"></script>
+<script src="vendor/local-notifications.js"></script>
+<script src="vendor/app.js"></script>
+<script src="vendor/preferences.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

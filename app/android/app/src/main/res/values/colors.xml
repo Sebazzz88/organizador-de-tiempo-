@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="jardin_night">#0B170D</color>
+    <color name="jardin_forest">#122314</color>
+    <color name="jardin_sprout">#68EF3F</color>
+    <color name="colorPrimary">#122314</color>
+    <color name="colorPrimaryDark">#0B170D</color>
+    <color name="colorAccent">#68EF3F</color>
+</resources>
