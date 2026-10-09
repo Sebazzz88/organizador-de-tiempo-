@@ -135,8 +135,8 @@
   <section class="screen" id="s-fijas" aria-label="Tareas fijas" hidden>
     <div class="screen-head">
       <p class="eyebrow">Tareas fijas</p>
-      <h2>Lo que sí o sí haces cada día</h2>
-      <p class="sub">Las tareas fijas aparecen todos los días en tu calendario. Puedes elegir si quieres un aviso diario de cada una.</p>
+      <h2>Lo que sí o sí tienes que hacer</h2>
+      <p class="sub">Elige los días de la semana en que te toca cada tarea fija y se marca en esos días de todo el año. Puedes pedir un aviso para cada una.</p>
     </div>
     <div class="card" id="fixed-ask" hidden>
       <h3>¿Quieres fijar tareas que sí o sí tienes que hacer?</h3>
@@ -231,7 +231,7 @@
         <ol class="steps">
           <li><div><b>Activa los avisos</b>Acepta el permiso de notificaciones. Te llegan aunque la app esté cerrada.</div></li>
           <li><div><b>Anota tus tareas</b>En «Hoy», escribe la tarea y toca su categoría. Con el botón + eliges día, hora, anticipación y si se repite.</div></li>
-          <li><div><b>Fija lo de todos los días</b>En «Fijas» agregas lo que sí o sí haces cada día. Aparece en todo el calendario.</div></li>
+          <li><div><b>Fija lo que sí o sí te toca</b>En «Fijas» agregas una tarea y eliges sus días, por ejemplo los lunes. Se marca en esos días de todo el año.</div></li>
           <li><div><b>Escribe notas en tus días</b>En el calendario, toca un día y luego «Agregar nota». Si la nota es larga, toca el papelito para leerla completa.</div></li>
           <li><div><b>Marca lo que terminas</b>Toca el circulito. Dejo de recordarte esa tarea y tu plantita crece.</div></li>
         </ol>
@@ -305,7 +305,7 @@
     <details class="acc" id="update-acc">
       <summary><svg><use href="#i-repeat"/></svg>Actualizaciones</summary>
       <div class="acc-body">
-        <p>Tienes la versión <b id="app-version-2" style="color:var(--pure-white);font-weight:600">1.1</b>. Toca el botón para ver si hay una nueva. Solo se consulta GitHub cuando lo tocas.</p>
+        <p>Tienes la versión <b id="app-version-2" style="color:var(--pure-white);font-weight:600">1.2</b>. Toca el botón para ver si hay una nueva. Solo se consulta GitHub cuando lo tocas.</p>
         <div class="row">
           <button class="btn btn-ghost btn-sm" type="button" id="check-update"><svg><use href="#i-repeat"/></svg>Buscar actualizaciones</button>
           <a class="btn btn-sprout btn-sm" id="get-update" href="#" hidden>Descargar la actualización</a>
@@ -314,7 +314,7 @@
       </div>
     </details>
 
-    <div class="about"><img class="logo-lg" src="img/logo-256.png" alt="Logo de Agendita"><b>Agendita</b>by Sebastian · hecho con cariño :) · versión <span id="app-version">1.1</span></div>
+    <div class="about"><img class="logo-lg" src="img/logo-256.png" alt="Logo de Agendita"><b>Agendita</b>by Sebastian · hecho con cariño :) · versión <span id="app-version">1.2</span></div>
   </section>
 </div>
 
@@ -385,12 +385,13 @@
 <div class="sheet" id="fixed-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="f-head">
   <form class="sheet-panel" id="fixed-form" novalidate>
     <h3 id="f-head">Nueva tarea fija</h3>
-    <p class="muted">Aparecerá todos los días en tu calendario.</p>
-    <div class="field"><label for="f-title">¿Qué haces sí o sí cada día?</label><input class="input" id="f-title" type="text" maxlength="90" placeholder="Ej. Tomar mi pastilla" autocomplete="off"></div>
+    <p class="muted">Se marcará en los días de la semana que elijas, durante todo el año.</p>
+    <div class="field"><label for="f-title">¿Qué tienes que hacer sí o sí?</label><input class="input" id="f-title" type="text" maxlength="90" placeholder="Ej. Clases de baile" autocomplete="off"></div>
     <div class="field"><label for="f-time">¿A qué hora?</label><input class="input" id="f-time" type="time" value="08:00"></div>
-    <div class="field"><span class="lbl">¿Quieres que te avise todos los días de esta tarea?</span>
+    <div class="field"><span class="lbl">¿Qué días te toca?</span><div id="f-days-box"></div></div>
+    <div class="field"><span class="lbl">¿Quieres que te avise esos días?</span>
       <div class="choices" id="f-daily">
-        <button type="button" class="choice" data-v="1" aria-pressed="true">Sí, todos los días</button>
+        <button type="button" class="choice" data-v="1" aria-pressed="true">Sí, avísame</button>
         <button type="button" class="choice" data-v="0" aria-pressed="false">No, solo mostrarla</button>
       </div>
     </div>

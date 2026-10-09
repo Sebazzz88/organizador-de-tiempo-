@@ -509,6 +509,10 @@ a.btn{text-decoration:none}
 .cell.sel:not(.today) .num{color:var(--electric-sprout);font-weight:700}
 .note-dot{width:22px;height:22px;background:var(--sprout-glass);color:var(--pure-white);box-shadow:var(--sprout-glass-edge),0 0 0 2px rgba(14,28,16,.8)}
 
+/* Días de la semana de las tareas fijas */
+.days-pick{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.day-chip{justify-content:center;padding:0;min-height:40px;font-variant-numeric:tabular-nums}
+
 @media (prefers-reduced-motion:reduce){
   .tab-indicator,.tab,.tabbar,.tab-label,.day,.btn,.link-btn,.more,.del,.choice,.mini-chips button,.cat-pick button,.qcat,.announce,.icon-btn,.fab,.note-dot,.toast .t-act{transition:none}
 }

@@ -37,9 +37,16 @@
   };
   const ORDER = ['urgente', 'importante', 'leve'];
   const LEAD_PRESETS = [10080, 4320, 2880, 1440, 180, 60, 30, 0];
+  const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
+  const WEEK = [
+    { d: 1, s: 'L', one: 'lunes', many: 'lunes' }, { d: 2, s: 'M', one: 'martes', many: 'martes' },
+    { d: 3, s: 'X', one: 'miércoles', many: 'miércoles' }, { d: 4, s: 'J', one: 'jueves', many: 'jueves' },
+    { d: 5, s: 'V', one: 'viernes', many: 'viernes' }, { d: 6, s: 'S', one: 'sábado', many: 'sábados' },
+    { d: 0, s: 'D', one: 'domingo', many: 'domingos' }
+  ];
   const REPEAT = { none: 'Una vez', daily: 'Cada día', weekly: 'Cada semana', monthly: 'Cada mes', yearly: 'Cada año' };
   const KEY = 'jardin-app-v1';
-  const APP = { version: '1.1', build: 2 };
+  const APP = { version: '1.2', build: 3 };
   const VERSION_URL = 'https://raw.githubusercontent.com/Sebazzz88/organizador-de-tiempo-/main/version.json';
   const HORIZON_DAYS = 21, MAX_NOTIFS = 400, TEST_ID = 2000000001;
 
@@ -79,6 +86,7 @@
     }));
     out.fixed = (Array.isArray(s.fixed) ? s.fixed : []).filter(f => f && typeof f.title === 'string').map(f => ({
       id: String(f.id || uid()), title: f.title.slice(0, 90), time: validTime(f.time) ? f.time : '08:00', daily: f.daily !== false,
+      days: Array.isArray(f.days) && f.days.length ? [...new Set(f.days.map(Number).filter(d => Number.isInteger(d) && d >= 0 && d <= 6))].sort((a, b) => a - b) : ALL_DAYS.slice(),
       start: isYmd(f.start) ? f.start : todayS(), done: f.done && typeof f.done === 'object' ? f.done : {}
     }));
     if (s.notes && typeof s.notes === 'object') for (const [k, v] of Object.entries(s.notes)) if (isYmd(k) && typeof v === 'string' && v.trim()) out.notes[k] = v.slice(0, 3000);
@@ -111,7 +119,30 @@
     }
   }
   const tasksOn = ds => state.tasks.filter(t => occursOn(t, ds)).sort((x, y) => ORDER.indexOf(x.cat) - ORDER.indexOf(y.cat) || toMin(x.time) - toMin(y.time));
-  const fixedOn = ds => state.fixed.filter(f => ds >= f.start).sort((a, b) => toMin(a.time) - toMin(b.time));
+  const fixedOccurs = (f, ds) => ds >= f.start && (f.days || ALL_DAYS).includes(parseYmd(ds).getDay());
+  const fixedOn = ds => state.fixed.filter(f => fixedOccurs(f, ds)).sort((a, b) => toMin(a.time) - toMin(b.time));
+  // «Todos los días», «De lunes a viernes», «Los lunes y miércoles»…
+  function daysText(days) {
+    const k = (days || ALL_DAYS).slice().sort((a, b) => a - b).join();
+    if (k === '0,1,2,3,4,5,6') return 'Todos los días';
+    if (k === '1,2,3,4,5') return 'De lunes a viernes';
+    if (k === '0,6') return 'Sábados y domingos';
+    const names = WEEK.filter(w => days.includes(w.d)).map(w => w.many);
+    return 'Los ' + (names.length > 1 ? names.slice(0, -1).join(', ') + ' y ' + names[names.length - 1] : names[0]);
+  }
+  function daysPicker(id, days) {
+    return `<div class="days-pick" id="${id}" role="group" aria-label="Días de la semana">${WEEK.map(w => `<button type="button" class="choice day-chip" data-wd="${w.d}" aria-pressed="${days.includes(w.d)}" aria-label="${w.one}">${w.s}</button>`).join('')}</div>
+      <div class="mini-chips" data-days-for="${id}"><button type="button" data-p="all">Todos los días</button><button type="button" data-p="week">Lunes a viernes</button><button type="button" data-p="weekend">Fines de semana</button></div>`;
+  }
+  const readDays = id => $$(`#${id} [data-wd]`).filter(b => b.getAttribute('aria-pressed') === 'true').map(b => Number(b.dataset.wd)).sort((a, b) => a - b);
+  // Tocar un día lo marca o lo desmarca; los atajos eligen varios a la vez.
+  document.addEventListener('click', e => {
+    const chip = e.target.closest('.days-pick [data-wd]');
+    if (chip) { chip.setAttribute('aria-pressed', String(chip.getAttribute('aria-pressed') !== 'true')); return; }
+    const p = e.target.closest('[data-days-for] [data-p]'); if (!p) return;
+    const want = { all: ALL_DAYS, week: [1, 2, 3, 4, 5], weekend: [0, 6] }[p.dataset.p];
+    $$(`#${p.parentElement.dataset.daysFor} [data-wd]`).forEach(b => b.setAttribute('aria-pressed', String(want.includes(Number(b.dataset.wd)))));
+  });
   const isDone = (t, ds) => !!(t.done && t.done[ds]);
   const hi = () => state.settings.name ? `, ${state.settings.name}` : '';
   const greetingAt = h => h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches';
@@ -315,7 +346,7 @@
     for (let i = 0; i < cells; i++) {
       const d = addDays(start, i), ds = ymd(d), list = tasksOn(ds);
       const cats = ORDER.filter(k => list.some(t => t.cat === k));
-      const hasFixed = state.fixed.some(f => ds >= f.start), hasKey = list.some(t => t.key), note = state.notes[ds];
+      const hasFixed = state.fixed.some(f => fixedOccurs(f, ds)), hasKey = list.some(t => t.key), note = state.notes[ds];
       const label = `${longDate(ds)}, ${list.length ? plural(list.length, 'tarea', 'tareas') : 'sin tareas'}${note ? ', tiene nota' : ''}`;
       h += `<div class="cell${d.getMonth() !== m.getMonth() ? ' out' : ''}${ds === today ? ' today' : ''}${ds === view.sel ? ' sel' : ''}">
         <button type="button" class="day" data-date="${ds}" aria-label="${esc(label)}" aria-pressed="${ds === view.sel}">
@@ -363,12 +394,12 @@
         <svg class="ic c-fija" style="margin-top:3px"><use href="#i-pin"/></svg>
         <div>
           <button type="button" class="task-title" data-fedit>${esc(f.title)}</button>
-          <div class="task-meta"><span>Todos los días a las ${esc(f.time)}</span></div>
-          <label class="switch small" style="margin-top:10px"><span>Avisarme todos los días</span><input type="checkbox" data-fdaily ${f.daily ? 'checked' : ''}></label>
+          <div class="task-meta"><span>${esc(daysText(f.days))} a las ${esc(f.time)}</span></div>
+          <label class="switch small" style="margin-top:10px"><span>Avisarme esos días</span><input type="checkbox" data-fdaily ${f.daily ? 'checked' : ''}></label>
         </div>
         <button type="button" class="del" data-fdel>Eliminar</button>
       </li>`).join('')}</ul>`
-      : `<div class="empty"><b>Sin tareas fijas</b>Cuando quieras, agrega lo que haces sí o sí cada día.</div>`;
+      : `<div class="empty"><b>Sin tareas fijas</b>Cuando quieras, agrega lo que haces sí o sí y elige los días de la semana en que te toca.</div>`;
     $('#fixed-clear').hidden = !list.length;
   }
 
@@ -506,7 +537,7 @@
         pushAfter(t, ds, evt, false);
       }
       for (const f of state.fixed) {
-        if (ds < f.start || isDone(f, ds) || !f.daily) continue;
+        if (!fixedOccurs(f, ds) || isDone(f, ds) || !f.daily) continue;
         const evt = +at(ds, f.time);
         push({ tid: f.id, at: evt, ds, kind: 'fixed', ch: 'fijas', title: `📌 Tarea fija: ${f.title}`, body: `Hoy a las ${f.time}. Es de las que sí o sí. ¡Tú puedes${hi()}!` });
         if (!S.after.skipFixed) pushAfter(f, ds, evt, true);
@@ -648,18 +679,21 @@
     $('#f-time').value = f ? f.time : '08:00';
     $('#f-error').textContent = '';
     setFDaily(f ? f.daily : true);
+    $('#f-days-box').innerHTML = daysPicker('f-days', f ? f.days : []);
     openSheet('fixed-sheet');
   }
   $('#f-daily').addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (b) setFDaily(b.dataset.v === '1'); });
   $('#fixed-form').addEventListener('submit', e => {
     e.preventDefault();
     const title = $('#f-title').value.trim(), time = $('#f-time').value || '08:00';
-    if (!title) { $('#f-error').textContent = 'Escribe qué haces sí o sí cada día.'; $('#f-title').focus(); return; }
-    if (fEdit) { const f = state.fixed.find(x => x.id === fEdit); if (f) Object.assign(f, { title, time, daily: fDaily }); }
-    else state.fixed.push({ id: uid(), title, time, daily: fDaily, start: todayS(), done: {} });
+    if (!title) { $('#f-error').textContent = 'Escribe qué tienes que hacer sí o sí.'; $('#f-title').focus(); return; }
+    const days = readDays('f-days');
+    if (!days.length) { $('#f-error').textContent = 'Elige al menos un día de la semana.'; return; }
+    if (fEdit) { const f = state.fixed.find(x => x.id === fEdit); if (f) Object.assign(f, { title, time, daily: fDaily, days }); }
+    else state.fixed.push({ id: uid(), title, time, daily: fDaily, days, start: todayS(), done: {} });
     state.settings.fixedAsked = true;
     save(); closeSheet('fixed-sheet'); renderAll();
-    toast(fEdit ? 'Tarea fija actualizada' : 'Tarea fija agregada', fDaily ? `Te aviso todos los días a las ${time}.` : 'Aparece todos los días en tu calendario, sin aviso.', 'fija', 4500);
+    toast(fEdit ? 'Tarea fija actualizada' : 'Tarea fija agregada', fDaily ? `${daysText(days)} a las ${time}. Te aviso esos días.` : `${daysText(days)} en tu calendario, sin aviso.`, 'fija', 4500);
   });
 
   /* ---------- Notas del día ---------- */
@@ -736,7 +770,7 @@
     if (el.matches('[data-fdaily]')) {
       const f = state.fixed.find(x => x.id === el.closest('[data-fid]').dataset.fid); if (!f) return;
       f.daily = el.checked; save();
-      toast(f.daily ? 'Aviso diario activado' : 'Aviso diario apagado', f.daily ? `Te aviso de «${f.title}» cada día a las ${f.time}.` : `«${f.title}» sigue en tu calendario, sin aviso.`, 'fija', 4000);
+      toast(f.daily ? 'Aviso diario activado' : 'Aviso diario apagado', f.daily ? `Te aviso de «${f.title}»: ${daysText(f.days).toLowerCase()} a las ${f.time}.` : `«${f.title}» sigue en tu calendario, sin aviso.`, 'fija', 4000);
     }
   });
 
@@ -807,7 +841,7 @@
     state.settings.fixedAsked = true; save(); renderFijas();
     toast('Está bien', 'Cuando quieras, toca «Agregar tarea fija».', 'fija', 4500);
   });
-  $('#fixed-clear').addEventListener('click', () => confirmSheet('¿Eliminar todas las tareas fijas?', 'Se quitarán de todos los días del calendario y dejarás de recibir sus avisos.', 'Eliminar todas', () => {
+  $('#fixed-clear').addEventListener('click', () => confirmSheet('¿Eliminar todas las tareas fijas?', 'Se quitarán del calendario y dejarás de recibir sus avisos.', 'Eliminar todas', () => {
     const old = state.fixed; state.fixed = []; save(); renderAll();
     toast('Tareas fijas eliminadas', `Se eliminaron ${plural(old.length, 'tarea fija', 'tareas fijas')}.`, 'fija', 8000, { label: 'Deshacer', fn: () => { state.fixed = old; save(); renderAll(); } });
   }));
@@ -901,18 +935,20 @@
       <p class="sub">Necesito tu permiso para enviarte recordatorios, incluso con la app cerrada. Puedes cambiarlo después.</p>
       <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="perm">Activar avisos</button><button class="btn btn-quiet btn-block" type="button" data-onb="next">Ahora no</button></div>${back()}`,
     'fijas-q': () => `${icon('i-pin')}<h2>¿Quieres fijar tareas que sí o sí tienes que hacer?</h2>
-      <p class="sub">Las tareas fijas aparecen todos los días en tu calendario. Por ejemplo: tomar tu pastilla o estudiar una hora. No es obligatorio.</p>
+      <p class="sub">Tú eliges los días de la semana en que te tocan, y se marcan en esos días de todo el año. Por ejemplo: los lunes a las 18:00, clases de baile. No es obligatorio.</p>
       <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="fixed-yes">Sí, quiero fijar</button><button class="btn btn-quiet btn-block" type="button" data-onb="fixed-no">No, por ahora</button></div>${back()}`,
     'fijas-add': () => `${icon('i-pin')}<h2>Agrega tus tareas fijas</h2>
-      <p class="sub">Escribe una y toca «Agregar». Puedes agregar varias.</p>
-      <div class="grid2" style="grid-template-columns:minmax(0,1fr) 110px"><input class="input" id="onb-ftitle" type="text" maxlength="90" placeholder="Ej. Tomar mi pastilla" aria-label="Tarea fija" autocomplete="off"><input class="input" id="onb-ftime" type="time" value="08:00" aria-label="Hora"></div>
+      <p class="sub">Escribe la tarea, elige la hora y los días en que te toca, y toca «Agregar». Puedes agregar varias.</p>
+      <div class="grid2" style="grid-template-columns:minmax(0,1fr) 110px"><input class="input" id="onb-ftitle" type="text" maxlength="90" placeholder="Ej. Clases de baile" aria-label="Tarea fija" autocomplete="off"><input class="input" id="onb-ftime" type="time" value="08:00" aria-label="Hora"></div>
+      <div class="field"><span class="lbl">¿Qué días te toca?</span>${daysPicker('onb-fdays', [])}</div>
+      <p class="error" id="onb-ferror"></p>
       <button class="btn btn-quiet" type="button" data-onb="fixed-add"><svg><use href="#i-plus"/></svg>Agregar</button>
-      <ul class="mini-list">${ONB.added.map(id => { const f = state.fixed.find(x => x.id === id); return f ? `<li><span>${esc(f.title)} · ${esc(f.time)}</span><button type="button" class="link-btn" data-onb-rm="${esc(f.id)}">Quitar</button></li>` : ''; }).join('')}</ul>
+      <ul class="mini-list">${ONB.added.map(id => { const f = state.fixed.find(x => x.id === id); return f ? `<li><span>${esc(f.title)} · ${esc(daysText(f.days).toLowerCase())} · ${esc(f.time)}</span><button type="button" class="link-btn" data-onb-rm="${esc(f.id)}">Quitar</button></li>` : ''; }).join('')}</ul>
       <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="next">${ONB.added.length ? 'Listo' : 'Saltar por ahora'}</button></div>${back()}`,
-    'fijas-daily': () => `${icon('i-bell')}<h2>¿Quieres que te avise todos los días de estas tareas?</h2>
-      <ul class="mini-list">${ONB.added.map(id => { const f = state.fixed.find(x => x.id === id); return f ? `<li><span>${esc(f.title)}</span><span class="muted">${esc(f.time)}</span></li>` : ''; }).join('')}</ul>
+    'fijas-daily': () => `${icon('i-bell')}<h2>¿Quieres que te avise los días que te tocan estas tareas?</h2>
+      <ul class="mini-list">${ONB.added.map(id => { const f = state.fixed.find(x => x.id === id); return f ? `<li><span>${esc(f.title)}</span><span class="muted">${esc(daysText(f.days))} · ${esc(f.time)}</span></li>` : ''; }).join('')}</ul>
       <p class="sub">Puedes cambiarlo para cada tarea en la pestaña «Fijas».</p>
-      <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="daily-yes">Sí, todos los días</button><button class="btn btn-quiet btn-block" type="button" data-onb="daily-no">No, solo mostrarlas</button></div>${back()}`,
+      <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="daily-yes">Sí, avísame</button><button class="btn btn-quiet btn-block" type="button" data-onb="daily-no">No, solo mostrarlas</button></div>${back()}`,
     lead: () => `${icon('i-clock')}<h2>¿Con cuánta anticipación te aviso?</h2>
       <p class="sub">Te aviso antes de la fecha y otra vez a la hora. Luego puedes ajustarlo por tipo de tarea, o en cada tarea.</p>
       <div class="choices">${[1440, 2880, 4320, 10080, 180, 60].map(v => `<button type="button" class="choice" data-onb-lead="${v}" aria-pressed="${ONB.lead === v}">${cap(fmtLead(v))} antes</button>`).join('')}</div>
@@ -947,7 +983,9 @@
   function onbAddFixed() {
     const t = $('#onb-ftitle'), title = t.value.trim(), time = $('#onb-ftime').value || '08:00';
     if (!title) { t.focus(); return; }
-    const f = { id: uid(), title, time, daily: true, start: todayS(), done: {} };
+    const days = readDays('onb-fdays');
+    if (!days.length) { $('#onb-ferror').textContent = 'Elige al menos un día de la semana.'; return; }
+    const f = { id: uid(), title, time, daily: true, days, start: todayS(), done: {} };
     state.fixed.push(f); ONB.added.push(f.id); persist(); renderOnb();
     setTimeout(() => { const n = $('#onb-ftitle'); if (n) n.focus(); }, 30);
   }
@@ -999,7 +1037,7 @@
     { tab: 'hoy', sel: '.fab', title: 'Más detalles', body: 'Con este botón eliges día, hora, cuánta anticipación quieres y si la tarea se repite.' },
     { tab: 'cal', sel: '#cal-grid', title: 'Tu calendario', body: 'Los puntitos son tus tareas, el alfiler marca las fijas y el papelito amarillo abre la nota del día.' },
     { tab: 'cal', sel: '#day-card', title: 'Notas en tus días', body: 'Toca un día para ver sus tareas y escribirle una nota. Si es larga, la abres completa con un toque.' },
-    { tab: 'fijas', sel: '#fixed-card', title: 'Tareas fijas', body: 'Lo que haces sí o sí cada día. Aparece en todo el calendario y puedes pedir un aviso diario.' },
+    { tab: 'fijas', sel: '#fixed-card', title: 'Tareas fijas', body: 'Lo que haces sí o sí, en los días de la semana que elijas. Se marca en esos días de todo el año y puedes pedir un aviso.' },
     { tab: 'avisos', sel: '#lead-card', title: 'Con cuánta anticipación', body: 'Elige cuándo te aviso antes de cada tipo de tarea: 2 días, 1 hora o lo que prefieras.' },
     { tab: 'avisos', sel: '#after-card', title: 'Cada cuánto te insisto', body: 'Si no marcas una tarea, te la recuerdo las horas que elijas después, de 1 a 24.' },
     { tab: 'hoy', sel: '.tabbar', title: 'Muévete por la app', body: 'Desde aquí pasas entre Hoy, Calendario, Fijas, Avisos y Más.' },
@@ -1166,7 +1204,7 @@
     $('#app-version').textContent = APP.version; $('#app-version-2').textContent = APP.version;
     // Novedades: se muestran una vez, solo a quien ya usaba la app antes de actualizar.
     if (state.settings.lastVersion !== APP.version) {
-      if (state.settings.onboarded) toast(`Novedades de la versión ${APP.version}`, 'Ahora me llamo Agendita y tengo logo nuevo. Toda la app es de vidrio líquido, también el calendario, y la barra de abajo se encoge al bajar. Tus tareas siguen igual.', null, 11000);
+      if (state.settings.onboarded) toast(`Novedades de la versión ${APP.version}`, 'Tus tareas fijas ahora tienen días: elige en qué días de la semana te tocan (por ejemplo, solo los lunes) y se marcan en esos días de todo el año. Las que ya tenías siguen en todos los días; para cambiarlas, toca su nombre en «Fijas».', null, 11000);
       state.settings.lastVersion = APP.version; persist();
     }
     if (AppP) {

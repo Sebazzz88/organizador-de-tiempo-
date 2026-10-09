@@ -27,7 +27,7 @@ Hay dos versiones:
 
 <p align="center">
   <b><a href="https://github.com/Sebazzz88/organizador-de-tiempo-/raw/main/apk/Agendita.apk">Descargar Agendita.apk</a></b><br>
-  Versión 1.1 · 3.6 MB
+  Versión 1.2 · 3.6 MB
 </p>
 
 **Antes de empezar**
@@ -78,8 +78,8 @@ Agendita te hace unas preguntas rápidas:
 
 1. **Tu nombre**, para saludarte.
 2. **Avisos:** toca **Activar avisos** y luego **Permitir** en el mensaje del teléfono. Sin este permiso no te puede recordar nada.
-3. **Tareas fijas:** lo que haces sí o sí cada día, como tomar una pastilla. Es opcional; puedes decir que no y agregarlas después en la pestaña **Fijas**.
-4. **Aviso diario de las tareas fijas:** elige si quieres que te avise todos los días.
+3. **Tareas fijas:** lo que haces sí o sí, en los días de la semana que elijas. Por ejemplo, clases de baile los lunes a las 18:00: se marca todos los lunes del año. Es opcional; puedes decir que no y agregarlas después en la pestaña **Fijas**.
+4. **Aviso de las tareas fijas:** elige si quieres que te avise los días que te tocan.
 5. **Anticipación:** cuánto antes quieres el aviso. Por defecto, 2 días antes y otra vez a la hora.
 6. **Después del evento:** si no marcas una tarea como hecha, cuántas horas después te la recuerda (de 1 a 24).
 
@@ -128,6 +128,11 @@ Mantén presionado el ícono de **Agendita** y toca **Desinstalar**. Ojo: se bor
 
 ## Novedades
 
+**Versión 1.2**
+
+- Las tareas fijas ahora tienen días. Al crear una, eliges en qué días de la semana te toca (L, M, X, J, V, S, D) o usas los atajos «Todos los días», «Lunes a viernes» y «Fines de semana». Se marca en esos días de todo el año y te avisa solo esos días.
+- Las tareas fijas que ya tenías siguen en todos los días. Para cambiarlas, toca su nombre en **Fijas** y elige sus días.
+
 **Versión 1.1**
 
 - La app ahora se llama **Agendita**, by Sebastian, y tiene logo nuevo: un gato serval entre hojas tropicales.
@@ -146,7 +151,7 @@ Mantén presionado el ícono de **Agendita** y toca **Desinstalar**. Ojo: se bor
 - **Avisos del teléfono**, aunque la app esté cerrada o el teléfono se haya reiniciado.
 - **Anticipación a tu gusto**: por defecto te avisa 2 días antes y a la hora. Puedes elegir otros momentos para cada tipo de tarea, o una anticipación propia en cada tarea (horas, días o semanas).
 - **Recordatorio después del evento**: si no marcas una tarea como hecha, te la recuerda las horas que elijas después (de 1 a 24). Puede repetirse hasta que la marques, durante un máximo de 24 horas. Este ajuste vale para todos los eventos, y puedes excluir las tareas fijas para que no sea molesto.
-- **Tareas fijas**: lo que haces sí o sí cada día. Aparecen en todo el calendario. Al empezar, la app te pregunta si quieres fijar alguna y si quieres un aviso diario de cada una. Puedes agregarlas, apagar su aviso o eliminarlas desde la pestaña **Fijas**.
+- **Tareas fijas**: lo que haces sí o sí, en los días de la semana que elijas (por ejemplo, solo los lunes). Se marcan en esos días de todo el año. Al empezar, la app te pregunta si quieres fijar alguna y si quieres que te avise esos días. Puedes agregarlas, apagar su aviso o eliminarlas desde la pestaña **Fijas**.
 - **Notas en los días**: escribe una nota en cualquier día del calendario. Si es larga y no cabe en el cuadro del día, toca el circulito verde del día para leerla completa.
 - **Fechas clave**: cumpleaños, aniversarios y pagos que se repiten cada mes o cada año.
 - **Resumen de la mañana** y **horas de descanso**, en las que solo suenan las urgentes y las tareas fijas.
