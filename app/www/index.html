@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b170d">
 <meta name="color-scheme" content="dark">
+<!-- Política de seguridad: solo se ejecuta código de la propia app; la única conexión permitida es la de buscar actualizaciones. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://raw.githubusercontent.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <title>Agendita</title>
 <link rel="icon" href="img/logo-96.png">
 <link rel="stylesheet" href="styles.css">
@@ -188,6 +191,16 @@
     </div>
 
     <div class="card">
+      <div class="card-head"><h3><svg><use href="#i-bell"/></svg>Pendientes del día</h3></div>
+      <p class="muted">Si te quedan tareas sin marcar, te aviso por la tarde con lo que falta. Si al final del día siguen pendientes, te mando un mensaje para que no te desanimes.</p>
+      <label class="switch" for="pend-on"><span>Avisarme de mis tareas pendientes</span><input type="checkbox" id="pend-on"></label>
+      <div class="grid2">
+        <div class="field"><label for="pend-afternoon">Recordatorio</label><input class="input" type="time" id="pend-afternoon"></div>
+        <div class="field"><label for="pend-evening">Cierre del día</label><input class="input" type="time" id="pend-evening"></div>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-head"><h3><svg><use href="#i-moon"/></svg>Horas de descanso</h3></div>
       <p class="muted">En estas horas solo suenan las urgentes y tus tareas fijas. Los demás avisos esperan a que termine tu descanso.</p>
       <div class="grid2">
@@ -216,7 +229,8 @@
       <div class="acc-body">
         <div class="field"><label for="s-name">Tu nombre</label><input class="input" id="s-name" type="text" maxlength="40" placeholder="¿Cómo te llamas?" autocomplete="off"></div>
         <h4>Copia de seguridad</h4>
-        <p>Tus tareas se guardan solo en este teléfono. Una vez al mes, copia tu respaldo y guárdalo en tus notas o envíatelo por mensaje.</p>
+        <p>Tus tareas se guardan cifradas y solo en este teléfono. Una vez al mes, copia tu respaldo y guárdalo en tus notas o envíatelo por mensaje. El respaldo se cifra con la contraseña que elijas: sin ella nadie puede leerlo, ni siquiera tú, así que guárdala bien.</p>
+        <div class="field"><label for="backup-pass">Contraseña del respaldo</label><input class="input" id="backup-pass" type="password" minlength="8" maxlength="128" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></div>
         <div class="row">
           <button class="btn btn-quiet btn-sm" type="button" id="copy-backup">Copiar mi respaldo</button>
           <button class="btn btn-quiet btn-sm" type="button" id="restore-backup">Restaurar desde el texto</button>
@@ -233,6 +247,7 @@
           <li><div><b>Anota tus tareas</b>En «Hoy», escribe la tarea y toca su categoría. Con el botón + eliges día, hora, anticipación y si se repite.</div></li>
           <li><div><b>Fija lo que sí o sí te toca</b>En «Fijas» agregas una tarea y eliges sus días, por ejemplo los lunes. Se marca en esos días de todo el año.</div></li>
           <li><div><b>Escribe notas en tus días</b>En el calendario, toca un día y luego «Agregar nota». Si la nota es larga, toca el papelito para leerla completa.</div></li>
+          <li><div><b>Pon el widget</b>Mantén presionada la pantalla de inicio, toca «Widgets» y elige Agendita. Verás tus tareas de hoy y podrás marcarlas con ✓. Pasan solas cada 4,5 segundos; tócalas para pausar.</div></li>
           <li><div><b>Marca lo que terminas</b>Toca el circulito. Dejo de recordarte esa tarea y tu plantita crece.</div></li>
         </ol>
         <button class="btn btn-sprout" type="button" data-action="tour">Ver el recorrido guiado</button>
@@ -281,8 +296,10 @@
         <div class="perm"><svg><use href="#i-bell"/></svg><div><b>Mostrar notificaciones</b><p>Para enviarte los recordatorios de tus tareas.</p></div></div>
         <div class="perm"><svg><use href="#i-clock"/></svg><div><b>Alarmas exactas</b><p>Para que cada aviso llegue a la hora justa y no con minutos de retraso.</p></div></div>
         <div class="perm"><svg><use href="#i-repeat"/></svg><div><b>Iniciar al encender el teléfono</b><p>Para volver a programar tus avisos si reinicias el teléfono.</p></div></div>
-        <div class="perm"><svg><use href="#i-sun"/></svg><div><b>Mantener activo el teléfono</b><p>Para que el aviso alcance a mostrarse aunque la pantalla esté apagada.</p></div></div>
-        <p>La app no usa tu ubicación, cámara, micrófono ni contactos. Tus tareas no salen de tu teléfono.</p>
+        <div class="perm"><svg><use href="#i-sun"/></svg><div><b>Internet</b><p>Solo para «Buscar actualizaciones», y solo cuando tocas ese botón. Tus datos no se envían a ningún lado.</p></div></div>
+        <p>La app no usa tu ubicación, cámara, micrófono ni contactos.</p>
+        <h4>Tus datos están cifrados</h4>
+        <p>Tareas, notas, ajustes y avisos programados se guardan cifrados con AES-256 con una llave guardada en el almacén de llaves de Android (en el chip de seguridad, si tu teléfono lo tiene), que no se puede sacar del teléfono. No se hacen copias en la nube. En la pantalla bloqueada, los avisos no muestran el nombre de la tarea.</p>
       </div>
     </details>
 
@@ -305,7 +322,7 @@
     <details class="acc" id="update-acc">
       <summary><svg><use href="#i-repeat"/></svg>Actualizaciones</summary>
       <div class="acc-body">
-        <p>Tienes la versión <b id="app-version-2" style="color:var(--pure-white);font-weight:600">1.2</b>. Toca el botón para ver si hay una nueva. Solo se consulta GitHub cuando lo tocas.</p>
+        <p>Tienes la versión <b id="app-version-2" style="color:var(--pure-white);font-weight:600">1.3</b>. Toca el botón para ver si hay una nueva. Solo se consulta GitHub cuando lo tocas.</p>
         <div class="row">
           <button class="btn btn-ghost btn-sm" type="button" id="check-update"><svg><use href="#i-repeat"/></svg>Buscar actualizaciones</button>
           <a class="btn btn-sprout btn-sm" id="get-update" href="#" hidden>Descargar la actualización</a>
@@ -314,7 +331,7 @@
       </div>
     </details>
 
-    <div class="about"><img class="logo-lg" src="img/logo-256.png" alt="Logo de Agendita"><b>Agendita</b>by Sebastian · hecho con cariño :) · versión <span id="app-version">1.2</span></div>
+    <div class="about"><img class="logo-lg" src="img/logo-256.png" alt="Logo de Agendita"><b>Agendita</b>by Sebastian · hecho con cariño :) · versión <span id="app-version">1.3</span></div>
   </section>
 </div>
 
@@ -469,9 +486,7 @@
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script src="vendor/capacitor.js"></script>
-<script src="vendor/local-notifications.js"></script>
 <script src="vendor/app.js"></script>
-<script src="vendor/preferences.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

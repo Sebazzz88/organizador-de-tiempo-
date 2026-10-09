@@ -3,17 +3,16 @@
   "appName": "Agendita",
   "webDir": "www",
   "android": {
-    "backgroundColor": "#0b170d"
+    "backgroundColor": "#0b170d",
+    "webContentsDebuggingEnabled": false,
+    "allowMixedContent": false
   },
   "plugins": {
     "SystemBars": {
       "insetsHandling": "css",
       "style": "DARK",
       "initialViewportFitValueHint": "cover"
-    },
-    "LocalNotifications": {
-      "smallIcon": "ic_stat_agendita",
-      "iconColor": "#B54134"
     }
-  }
+  },
+  "loggingBehavior": "none"
 }

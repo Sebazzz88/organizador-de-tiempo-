@@ -25,9 +25,9 @@
   /* ---------- Capacitor ---------- */
   const Cap = window.Capacitor;
   const NATIVE = !!(Cap && Cap.isNativePlatform && Cap.isNativePlatform());
-  const LN = NATIVE && window.capacitorLocalNotifications ? window.capacitorLocalNotifications.LocalNotifications : null;
   const AppP = NATIVE && window.capacitorApp ? window.capacitorApp.App : null;
-  const Prefs = NATIVE && window.capacitorPreferences ? window.capacitorPreferences.Preferences : null;
+  // Puente nativo: bóveda cifrada (Android Keystore), avisos, permisos y widget.
+  const AG = NATIVE && window.capacitorExports ? window.capacitorExports.registerPlugin('Agendita') : null;
 
   /* ---------- Datos ---------- */
   const CATS = {
@@ -46,16 +46,19 @@
   ];
   const REPEAT = { none: 'Una vez', daily: 'Cada día', weekly: 'Cada semana', monthly: 'Cada mes', yearly: 'Cada año' };
   const KEY = 'jardin-app-v1';
-  const APP = { version: '1.2', build: 3 };
+  const APP = { version: '1.3', build: 4 };
   const VERSION_URL = 'https://raw.githubusercontent.com/Sebazzz88/organizador-de-tiempo-/main/version.json';
-  const HORIZON_DAYS = 21, MAX_NOTIFS = 400, TEST_ID = 2000000001;
+  const APK_PREFIX = 'https://github.com/Sebazzz88/organizador-de-tiempo-/raw/main/apk/';
+  const HORIZON_DAYS = 21, MAX_NOTIFS = 400;
+  const LIMITS = { tasks: 3000, fixed: 300, notes: 3000 };
 
   const DEFAULT_SETTINGS = () => ({
     name: '', onboarded: false, fixedAsked: false, lastVersion: '',
     brief: { on: true, time: '08:00' },
     quiet: { from: '22:30', to: '07:00' },
     cats: { urgente: { offsets: [2880, 1440, 60, 0] }, importante: { offsets: [2880, 0] }, leve: { offsets: [2880, 0] } },
-    after: { hours: 1, repeat: false, skipFixed: true }
+    after: { hours: 1, repeat: false, skipFixed: true },
+    pend: { on: true, afternoon: '18:00', evening: '21:30' }
   });
   const fresh = () => ({ v: 2, settings: DEFAULT_SETTINGS(), tasks: [], fixed: [], notes: {}, sync: null });
 
@@ -79,27 +82,39 @@
       if (Number.isInteger(h) && h >= 0 && h <= 24) S.after.hours = h;
       S.after.repeat = !!st.after.repeat; S.after.skipFixed = st.after.skipFixed !== false;
     }
-    out.tasks = s.tasks.filter(t => t && !t.ex && typeof t.title === 'string' && isYmd(t.date) && CATS[t.cat]).map(t => ({
-      id: String(t.id || uid()), title: t.title.slice(0, 90), date: t.date, time: validTime(t.time) ? t.time : '09:00', cat: t.cat,
+    if (st.pend && typeof st.pend === 'object') {
+      S.pend.on = st.pend.on !== false;
+      if (validTime(st.pend.afternoon)) S.pend.afternoon = st.pend.afternoon;
+      if (validTime(st.pend.evening)) S.pend.evening = st.pend.evening;
+    }
+    out.tasks = s.tasks.filter(t => t && !t.ex && typeof t.title === 'string' && isYmd(t.date) && CATS[t.cat]).slice(0, LIMITS.tasks).map(t => ({
+      id: String(t.id || uid()).slice(0, 64), title: t.title.slice(0, 90), date: t.date, time: validTime(t.time) ? t.time : '09:00', cat: t.cat,
       repeat: REPEAT[t.repeat] ? t.repeat : 'none', key: !!t.key, note: typeof t.note === 'string' ? t.note.slice(0, 1000) : '',
       lead: Number.isInteger(t.lead) && t.lead >= 0 ? t.lead : null, done: t.done && typeof t.done === 'object' ? t.done : {}
     }));
-    out.fixed = (Array.isArray(s.fixed) ? s.fixed : []).filter(f => f && typeof f.title === 'string').map(f => ({
-      id: String(f.id || uid()), title: f.title.slice(0, 90), time: validTime(f.time) ? f.time : '08:00', daily: f.daily !== false,
+    out.fixed = (Array.isArray(s.fixed) ? s.fixed : []).filter(f => f && typeof f.title === 'string').slice(0, LIMITS.fixed).map(f => ({
+      id: String(f.id || uid()).slice(0, 64), title: f.title.slice(0, 90), time: validTime(f.time) ? f.time : '08:00', daily: f.daily !== false,
       days: Array.isArray(f.days) && f.days.length ? [...new Set(f.days.map(Number).filter(d => Number.isInteger(d) && d >= 0 && d <= 6))].sort((a, b) => a - b) : ALL_DAYS.slice(),
       start: isYmd(f.start) ? f.start : todayS(), done: f.done && typeof f.done === 'object' ? f.done : {}
     }));
-    if (s.notes && typeof s.notes === 'object') for (const [k, v] of Object.entries(s.notes)) if (isYmd(k) && typeof v === 'string' && v.trim()) out.notes[k] = v.slice(0, 3000);
+    if (s.notes && typeof s.notes === 'object') for (const [k, v] of Object.entries(s.notes).slice(0, LIMITS.notes)) if (isYmd(k) && typeof v === 'string' && v.trim()) out.notes[k] = v.slice(0, 3000);
     if (s.sync && typeof s.sync === 'object') out.sync = s.sync;
     return out;
   }
 
   function loadLocal() { try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
-  let state = normalize(loadLocal()) || fresh();
+  let state = (AG ? null : normalize(loadLocal())) || fresh();
+  // En el teléfono no se guarda nada hasta leer la bóveda, para no pisar los datos con un estado vacío.
+  let loaded = !AG, saveChain = Promise.resolve();
   function persist() {
+    if (!loaded) return;
     const raw = JSON.stringify(state);
+    if (AG) {
+      saveChain = saveChain.then(() => AG.saveState({ value: raw }))
+        .catch(() => toast('No se pudo guardar', 'Inténtalo de nuevo. Si sigue pasando, copia tu respaldo en «Más».', 'urgente', 7000));
+      return;
+    }
     try { localStorage.setItem(KEY, raw); } catch (e) {}
-    if (Prefs) Prefs.set({ key: KEY, value: raw }).catch(() => {});
   }
   function save() { persist(); scheduleSync(); }
 
@@ -434,7 +449,13 @@
     const S = state.settings;
     $('#brief-on').checked = S.brief.on; $('#brief-time').value = S.brief.time; $('#brief-time').disabled = !S.brief.on;
     $('#quiet-from').value = S.quiet.from; $('#quiet-to').value = S.quiet.to;
+    renderPend();
     renderSyncInfo();
+  }
+  function renderPend() {
+    const P = state.settings.pend;
+    $('#pend-on').checked = P.on; $('#pend-afternoon').value = P.afternoon; $('#pend-evening').value = P.evening;
+    $('#pend-afternoon').disabled = $('#pend-evening').disabled = !P.on;
   }
   function renderSyncInfo() {
     const s = state.sync, el = $('#sync-info');
@@ -447,9 +468,8 @@
   let permState = { disp: 'prompt', exact: null };
   async function refreshPerm() {
     let disp = 'prompt', exact = null;
-    if (LN) {
-      try { disp = (await LN.checkPermissions()).display; } catch (e) {}
-      try { exact = (await LN.checkExactNotificationSetting()).exact_alarm; } catch (e) {}
+    if (AG) {
+      try { const r = await AG.checkNotif(); disp = r.display; exact = r.exact ? 'granted' : 'denied'; } catch (e) {}
     } else if ('Notification' in window) disp = Notification.permission === 'default' ? 'prompt' : Notification.permission;
     else disp = 'unsupported';
     permState = { disp, exact };
@@ -466,7 +486,7 @@
     if (exact === 'denied') st.textContent += ' Para que lleguen a la hora justa, permite «Alarmas y recordatorios».';
   }
   async function requestPerm(silent) {
-    if (LN) { try { await LN.requestPermissions(); } catch (e) {} }
+    if (AG) { try { await AG.requestNotif(); } catch (e) {} }
     else if ('Notification' in window) { try { const r = Notification.requestPermission(); if (r && r.then) await r; } catch (e) {} }
     await refreshPerm();
     scheduleSync(true);
@@ -510,7 +530,7 @@
       for (let k = 1; k <= n; k++) {
         let when = evt + k * A.hours * 3600e3;
         if (!fixed && t.cat !== 'urgente' && inQuietAt(when)) when = quietEnd(when);
-        push({ tid: t.id, at: when, ds, kind: 'after', ch: 'insistir', title: `🔁 ¿Ya hiciste «${t.title}»?`,
+        push({ tid: t.id, src: fixed ? 'fixed' : 'task', at: when, ds, kind: 'after', ch: 'insistir', title: `🔁 ¿Ya hiciste «${t.title}»?`,
           body: `Era ${relDay(when, ds)} a las ${t.time}. Si ya la hiciste, márcala en la app y dejo de recordártela.` });
       }
     };
@@ -532,14 +552,14 @@
           const e = CATS[t.cat].emoji;
           const title = t.key ? (o ? `🌴 Fecha clave en ${fmtLead(o)}` : `🌴 Hoy: ${t.title}`) : (o ? `${e} ${CATS[t.cat].label} · faltan ${fmtLead(o)}` : `${e} Es hora: ${t.title}`);
           const body = (o ? `«${t.title}» es ${relDay(when, ds)} a las ${t.time}.` : NOW_PHRASE[t.cat]) + (t.note ? ` Nota: ${t.note.slice(0, 140)}` : '');
-          push({ tid: t.id, at: when, ds, kind: o ? 'lead' : 'now', ch: t.cat, title, body });
+          push({ tid: t.id, src: 'task', at: when, ds, kind: o ? 'lead' : 'now', ch: t.cat, title, body });
         }
         pushAfter(t, ds, evt, false);
       }
       for (const f of state.fixed) {
         if (!fixedOccurs(f, ds) || isDone(f, ds) || !f.daily) continue;
         const evt = +at(ds, f.time);
-        push({ tid: f.id, at: evt, ds, kind: 'fixed', ch: 'fijas', title: `📌 Tarea fija: ${f.title}`, body: `Hoy a las ${f.time}. Es de las que sí o sí. ¡Tú puedes${hi()}!` });
+        push({ tid: f.id, src: 'fixed', at: evt, ds, kind: 'fixed', ch: 'fijas', title: `📌 Tarea fija: ${f.title}`, body: `Hoy a las ${f.time}. Es de las que sí o sí. ¡Tú puedes${hi()}!` });
         if (!S.after.skipFixed) pushAfter(f, ds, evt, true);
       }
     }
@@ -554,26 +574,21 @@
   }
   async function doSync() {
     const list = buildSchedule(Date.now());
-    if (!LN) {
+    if (!AG) {
       webQueue = list;
       state.sync = { count: list.length, until: list.length ? list[list.length - 1].at : null, at: Date.now(), native: false };
       persist(); renderSyncInfo(); return;
     }
-    const perm = await LN.checkPermissions().catch(() => ({ display: 'denied' }));
-    const pend = await LN.getPending().catch(() => ({ notifications: [] }));
-    const ids = (pend.notifications || []).filter(n => n.id !== TEST_ID).map(n => ({ id: n.id }));
-    if (ids.length) await LN.cancel({ notifications: ids }).catch(() => {});
-    if (perm.display !== 'granted') { state.sync = { count: 0, until: null, at: Date.now(), native: true }; persist(); renderSyncInfo(); return; }
-    const notifs = list.map((x, i) => ({
-      id: i + 1, title: x.title, body: x.body, largeBody: x.body, channelId: x.ch,
-      schedule: { at: new Date(x.at), allowWhileIdle: true }, extra: { ds: x.ds, kind: x.kind }
-    }));
-    for (let i = 0; i < notifs.length; i += 50) await LN.schedule({ notifications: notifs.slice(i, i + 50) });
-    state.sync = { count: notifs.length, until: list.length ? list[list.length - 1].at : null, at: Date.now(), native: true };
+    let count = 0;
+    try {
+      const items = list.map((x, i) => ({ id: i + 1, at: x.at, kind: x.kind, ch: x.ch, src: x.src || 'task', tid: x.kind === 'brief' ? '' : x.tid, ds: x.ds, title: x.title, body: x.body }));
+      count = (await AG.setSchedule({ items: JSON.stringify(items) })).count || 0;
+    } catch (e) { count = 0; }
+    state.sync = { count, until: list.length ? list[list.length - 1].at : null, at: Date.now(), native: true };
     persist(); renderSyncInfo();
   }
   function webTick() {
-    if (LN) return;
+    if (AG) return;
     const now = Date.now();
     webQueue.filter(x => x.at > webLast && x.at <= now).forEach(x => {
       const cat = CATS[x.ch] ? x.ch : x.ch === 'fijas' ? 'fija' : null;
@@ -583,27 +598,11 @@
     webLast = now;
   }
 
-  async function setupChannels() {
-    if (!LN) return;
-    const ch = [
-      ['urgente', 'Tareas urgentes', 'Recordatorios de tareas urgentes', 5],
-      ['importante', 'Tareas importantes', 'Recordatorios de tareas importantes', 4],
-      ['leve', 'Tareas leves', 'Recordatorios suaves de tareas leves', 3],
-      ['fijas', 'Tareas fijas', 'Aviso diario de tus tareas fijas', 4],
-      ['insistir', 'Después del evento', 'Te recuerda las tareas que aún no marcas como hechas', 4],
-      ['resumen', 'Resumen de la mañana', 'Saludo con las tareas del día', 3],
-      ['prueba', 'Avisos de prueba', 'El aviso que envías desde la app para probar', 4]
-    ];
-    for (const [id, name, description, importance] of ch) {
-      try { await LN.createChannel({ id, name, description, importance, visibility: 1, vibration: true, lights: true, lightColor: '#68EF3F' }); } catch (e) {}
-    }
-  }
-
   async function testNotif() {
-    if (LN) {
+    if (AG) {
       if (permState.disp !== 'granted') { await requestPerm(true); if (permState.disp !== 'granted') { toast('Avisos sin activar', 'Primero activa los avisos para poder probarlos.', null, 5000); return; } }
       try {
-        await LN.schedule({ notifications: [{ id: TEST_ID, title: '🌺 Aviso de prueba', body: `Así te llegarán tus recordatorios${hi()}. ¡Todo funciona!`, channelId: 'prueba', schedule: { at: new Date(Date.now() + 5000), allowWhileIdle: true } }] });
+        await AG.testNotification({ title: '🌺 Aviso de prueba', body: `Así te llegarán tus recordatorios${hi()}. ¡Todo funciona!` });
         toast('Aviso en camino', 'Llega en 5 segundos. Puedes cerrar la app para ver cómo aparece.', null, 5000);
       } catch (e) { toast('No se pudo enviar', 'Revisa que los avisos estén permitidos en los ajustes del teléfono.', 'urgente', 6000); }
     } else {
@@ -753,6 +752,26 @@
 
   /* ---------- Interacciones generales ---------- */
   const CHEERS = ['Una flor más para tu plantita.', 'Pasito a pasito. Bien hecho.', 'Eso ya no te pesa. A respirar.', 'Lo lograste. Date un momento para notarlo.'];
+  const DONE_MSGS = [
+    '¡Bien hecho{n}! Completaste todo lo de hoy 🌺', '¡Lo lograste{n}! Hoy no quedó nada pendiente. A descansar 🌴',
+    'Día completo{n}. Cada tarea hecha es una flor nueva 🌸', '¡Qué orgullo{n}! Terminaste todas tus tareas de hoy ✨',
+    'Todo listo por hoy{n}. Te ganaste un rato para ti 🥭', '¡Misión cumplida{n}! Hoy fuiste imparable 🌿',
+    '¡Hoy brillaste{n}! No quedó ninguna tarea pendiente 🌞', 'Tareas completas{n}. Paso a paso se construyen grandes cosas 🌱',
+    '¡Excelente{n}! Cerraste el día con todo hecho 🌊', '¡Felicitaciones{n}! Tu lista de hoy quedó en cero 🎉'
+  ];
+  // Bolsa mezclada: no repite un mensaje hasta haber usado todos.
+  const bags = {};
+  function fromBag(name, list) {
+    let b = bags[name];
+    if (!b || !b.length) {
+      b = list.map((_, i) => i);
+      for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; }
+      if (bags[name + '_last'] === b[b.length - 1] && b.length > 1) [b[0], b[b.length - 1]] = [b[b.length - 1], b[0]];
+      bags[name] = b;
+    }
+    const i = b.pop(); bags[name + '_last'] = i;
+    return list[i];
+  }
   const findItem = li => (li.dataset.fixed === '1' ? state.fixed : state.tasks).find(x => x.id === li.dataset.id);
 
   document.addEventListener('change', e => {
@@ -763,7 +782,9 @@
       if (el.checked) {
         t.done[ds] = 1;
         const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2);
-        toast('¡Hecho!', CHEERS[Math.floor(Math.random() * CHEERS.length)], null, 3500);
+        const today = todayS(), all = [...tasksOn(today), ...fixedOn(today)];
+        if (ds === today && all.length && all.every(x => isDone(x, today))) toast('¡Bien hecho!', fromBag('logros', DONE_MSGS).replace('{n}', hi()), null, 6000);
+        else toast('¡Hecho!', fromBag('animo', CHEERS), null, 3500);
       } else delete t.done[ds];
       save(); renderAll(); return;
     }
@@ -779,7 +800,7 @@
     if (a) {
       const act = a.dataset.action;
       if (act === 'perm') requestPerm();
-      else if (act === 'exact' && LN) LN.changeExactNotificationSetting().then(refreshPerm).catch(() => {});
+      else if (act === 'exact' && AG) AG.openExactSettings().catch(() => {});
       else if (act === 'new-task') openTaskForm(null, view.tab === 'cal' ? view.sel : todayS());
       else if (act === 'new-fixed') openFixedForm(null);
       else if (act === 'tour') startTour();
@@ -878,22 +899,57 @@
   $('#quiet-from').addEventListener('change', e => { if (validTime(e.target.value)) { state.settings.quiet.from = e.target.value; save(); } });
   $('#quiet-to').addEventListener('change', e => { if (validTime(e.target.value)) { state.settings.quiet.to = e.target.value; save(); } });
   $('#test-notif').addEventListener('click', testNotif);
+  $('#pend-on').addEventListener('change', e => { state.settings.pend.on = e.target.checked; renderPend(); save(); });
+  $('#pend-afternoon').addEventListener('change', e => { if (validTime(e.target.value)) { state.settings.pend.afternoon = e.target.value; save(); } });
+  $('#pend-evening').addEventListener('change', e => { if (validTime(e.target.value)) { state.settings.pend.evening = e.target.value; save(); } });
 
   // Más
   $('#s-name').addEventListener('input', e => { state.settings.name = e.target.value.trim().slice(0, 40); persist(); renderNames(); scheduleSync(); });
-  $('#copy-backup').addEventListener('click', () => {
-    const text = JSON.stringify({ app: 'agendita', ...state, sync: null });
+  const BACKUP_TAG = 'AGENDITA-CIFRADO-1';
+  const te = new TextEncoder(), td = new TextDecoder();
+  const toB64 = bytes => { let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s); };
+  const fromB64 = str => Uint8Array.from(atob(str), ch => ch.charCodeAt(0));
+  async function backupKey(pass, salt) {
+    const base = await crypto.subtle.importKey('raw', te.encode(pass), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 310000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function encryptBackup(text, pass) {
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: te.encode(BACKUP_TAG) }, await backupKey(pass, salt), te.encode(text)));
+    const all = new Uint8Array(28 + ct.length); all.set(salt); all.set(iv, 16); all.set(ct, 28);
+    return BACKUP_TAG + '.' + toB64(all);
+  }
+  async function decryptBackup(text, pass) {
+    const all = fromB64(text.slice(BACKUP_TAG.length + 1));
+    if (all.length < 45) throw new Error('corto');
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: all.subarray(16, 28), additionalData: te.encode(BACKUP_TAG) }, await backupKey(pass, all.subarray(0, 16)), all.subarray(28));
+    return td.decode(plain);
+  }
+  $('#copy-backup').addEventListener('click', async () => {
+    const pass = $('#backup-pass').value;
+    if (pass.length < 8) { toast('Falta la contraseña', 'Escribe una contraseña de al menos 8 caracteres para cifrar tu respaldo.', null, 6000); $('#backup-pass').focus(); return; }
+    if (!window.crypto || !crypto.subtle) { toast('No se puede cifrar aquí', 'Este navegador no permite cifrar el respaldo.', 'urgente', 6000); return; }
+    let text;
+    try { text = await encryptBackup(JSON.stringify({ app: 'agendita', ...state, sync: null }), pass); }
+    catch (e) { toast('No se pudo cifrar', 'Inténtalo de nuevo.', 'urgente', 5000); return; }
     const ta = $('#backup-text');
-    const fallback = () => { ta.value = text; ta.focus(); ta.select(); toast('Respaldo listo', 'Quedó seleccionado en el recuadro. Cópialo y guárdalo en un lugar seguro.', null, 6000); };
-    try { navigator.clipboard.writeText(text).then(() => toast('Respaldo copiado', 'Pégalo en tus notas o envíatelo por mensaje.', null, 5000), fallback); }
+    const fallback = () => { ta.value = text; ta.focus(); ta.select(); toast('Respaldo cifrado listo', 'Quedó seleccionado en el recuadro. Cópialo y guárdalo. Sin tu contraseña nadie puede leerlo.', null, 7000); };
+    $('#backup-pass').value = '';
+    try { navigator.clipboard.writeText(text).then(() => toast('Respaldo cifrado copiado', 'Guárdalo en tus notas. Para restaurarlo necesitarás la misma contraseña.', null, 6000), fallback); }
     catch (e) { fallback(); }
   });
-  $('#restore-backup').addEventListener('click', () => {
+  $('#restore-backup').addEventListener('click', async () => {
     const raw = $('#backup-text').value.trim();
     if (!raw) { toast('Falta el respaldo', 'Pega primero el texto de tu respaldo en el recuadro.', null, 5000); return; }
-    let s = null; try { s = normalize(JSON.parse(raw)); } catch (e) {}
+    if (raw.length > 5000000) { toast('Respaldo demasiado grande', 'Revisa que hayas pegado solo tu respaldo de Agendita.', 'urgente', 6000); return; }
+    let json = raw;
+    if (raw.startsWith(BACKUP_TAG + '.')) {
+      try { json = await decryptBackup(raw, $('#backup-pass').value); }
+      catch (e) { toast('No se pudo abrir el respaldo', 'La contraseña no coincide o el texto está incompleto.', 'urgente', 7000); return; }
+    }
+    let s = null; try { s = normalize(JSON.parse(json)); } catch (e) {}
     if (!s) { toast('No se pudo restaurar', 'El texto no parece un respaldo de Agendita. Revisa que esté completo.', 'urgente', 7000); return; }
-    s.settings.onboarded = true; state = s; save(); renderAll(); renderAvisos(); $('#backup-text').value = '';
+    s.settings.onboarded = true; state = s; save(); renderAll(); renderAvisos(); $('#backup-text').value = ''; $('#backup-pass').value = '';
     toast('Respaldo restaurado', `Volvieron ${plural(state.tasks.length, 'tarea', 'tareas')} y ${plural(state.fixed.length, 'tarea fija', 'tareas fijas')}.`, null, 5000);
   });
 
@@ -939,7 +995,7 @@
       <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="fixed-yes">Sí, quiero fijar</button><button class="btn btn-quiet btn-block" type="button" data-onb="fixed-no">No, por ahora</button></div>${back()}`,
     'fijas-add': () => `${icon('i-pin')}<h2>Agrega tus tareas fijas</h2>
       <p class="sub">Escribe la tarea, elige la hora y los días en que te toca, y toca «Agregar». Puedes agregar varias.</p>
-      <div class="grid2" style="grid-template-columns:minmax(0,1fr) 110px"><input class="input" id="onb-ftitle" type="text" maxlength="90" placeholder="Ej. Clases de baile" aria-label="Tarea fija" autocomplete="off"><input class="input" id="onb-ftime" type="time" value="08:00" aria-label="Hora"></div>
+      <div class="grid2" style="grid-template-columns:minmax(0,1fr) 136px"><input class="input" id="onb-ftitle" type="text" maxlength="90" placeholder="Ej. Clases de baile" aria-label="Tarea fija" autocomplete="off"><input class="input" id="onb-ftime" type="time" value="08:00" aria-label="Hora"></div>
       <div class="field"><span class="lbl">¿Qué días te toca?</span>${daysPicker('onb-fdays', [])}</div>
       <p class="error" id="onb-ferror"></p>
       <button class="btn btn-quiet" type="button" data-onb="fixed-add"><svg><use href="#i-plus"/></svg>Agregar</button>
@@ -1099,8 +1155,8 @@
       const r = await fetch(`${VERSION_URL}?t=${Date.now()}`, { cache: 'no-store' });
       if (!r.ok) throw new Error('http ' + r.status);
       const v = await r.json();
-      if (Number(v.versionCode) > APP.build && typeof v.apk === 'string' && v.apk.startsWith('https://')) {
-        out.textContent = `Hay una versión nueva: ${v.versionName}. ${v.notes || ''} Al descargarla, ábrela y toca «Actualizar». Tus tareas se conservan.`;
+      if (Number(v.versionCode) > APP.build && typeof v.apk === 'string' && v.apk.startsWith(APK_PREFIX) && /^[\w./-]+$/.test(v.apk.slice(APK_PREFIX.length))) {
+        out.textContent = `Hay una versión nueva: ${String(v.versionName).slice(0, 20)}. ${String(v.notes || '').slice(0, 300)} Al descargarla, ábrela y toca «Actualizar». Tus tareas se conservan.`;
         get.href = v.apk; get.hidden = false;
       } else {
         out.textContent = `Ya tienes la versión más reciente (${APP.version}).`;
@@ -1174,23 +1230,43 @@
   }
 
   /* ---------- Inicio ---------- */
-  async function bootPrefs() {
-    if (!Prefs) return;
+  async function bootStore() {
+    if (!AG) return;
     try {
-      const had = !!loadLocal();
-      const { value } = await Prefs.get({ key: KEY });
-      if (!had && value) { const s = normalize(JSON.parse(value)); if (s) { state = s; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} } }
-      else if (had && !value) persist();
-    } catch (e) {}
+      // Si el Keystore falla un momento (por ejemplo, recién encendido el teléfono), se reintenta antes de rendirse,
+      // para no empezar vacío y sobrescribir los datos cifrados.
+      let r = null;
+      for (let i = 0; i < 4; i++) {
+        try { r = await AG.loadState(); } catch (e) { r = { unreadable: true }; }
+        if (!r || !r.unreadable) break;
+        await new Promise(ok => setTimeout(ok, 500 * (i + 1)));
+      }
+      let s = null, migrated = false;
+      try { s = r && r.value ? normalize(JSON.parse(r.value)) : null; } catch (e) { s = null; }
+      if (!s) {
+        // Versiones anteriores guardaban sin cifrar: se pasan a la bóveda y luego se borran.
+        let legacy = loadLocal();
+        if (!legacy) { try { const p = await AG.legacyPreferences(); legacy = p && p.value ? JSON.parse(p.value) : null; } catch (e) {} }
+        s = normalize(legacy); migrated = !!s;
+      }
+      if (r && r.unreadable && !s) toast('No pude leer tus datos', 'Tus datos guardados no se pudieron descifrar. Si tienes un respaldo, restáuralo en Más › Tus datos.', 'urgente', 12000);
+      state = s || fresh(); loaded = true;
+      if (migrated) await AG.saveState({ value: JSON.stringify(state) });
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      await AG.clearLegacy();
+    } catch (e) { loaded = true; }
+  }
+  async function reloadState() {
+    if (!AG || !loaded) return;
+    try { const r = await AG.loadState(); const s = r && r.value ? normalize(JSON.parse(r.value)) : null; if (s) state = s; } catch (e) {}
   }
 
   async function init() {
     jungle();
     renderAll(); renderAvisos(); showTab('hoy');
     $('#s-name').value = state.settings.name;
-    await Promise.race([bootPrefs(), new Promise(r => setTimeout(r, 1500))]);
+    await bootStore();
     renderAll(); renderAvisos(); $('#s-name').value = state.settings.name;
-    await setupChannels();
     await refreshPerm();
     if (!state.settings.onboarded) startOnb();
     scheduleSync(true);
@@ -1204,7 +1280,7 @@
     $('#app-version').textContent = APP.version; $('#app-version-2').textContent = APP.version;
     // Novedades: se muestran una vez, solo a quien ya usaba la app antes de actualizar.
     if (state.settings.lastVersion !== APP.version) {
-      if (state.settings.onboarded) toast(`Novedades de la versión ${APP.version}`, 'Tus tareas fijas ahora tienen días: elige en qué días de la semana te tocan (por ejemplo, solo los lunes) y se marcan en esos días de todo el año. Las que ya tenías siguen en todos los días; para cambiarlas, toca su nombre en «Fijas».', null, 11000);
+      if (state.settings.onboarded) toast(`Novedades de la versión ${APP.version}`, 'Ahora tienes un widget para la pantalla de inicio: muestra tus tareas de hoy y puedes marcarlas con ✓. Además, tus datos se guardan cifrados y te aviso por la tarde si te quedan pendientes. Para agregar el widget: mantén presionada la pantalla de inicio › Widgets › Agendita.', null, 11000);
       state.settings.lastVersion = APP.version; persist();
     }
     if (AppP) {
@@ -1213,11 +1289,14 @@
         if (view.tab !== 'hoy') { showTab('hoy'); return; }
         AppP.exitApp();
       });
-      AppP.addListener('resume', () => { renderAll(); refreshPerm(); scheduleSync(); });
+      AppP.addListener('resume', async () => { await reloadState(); renderAll(); refreshPerm(); scheduleSync(); });
     }
-    if (LN) {
-      LN.addListener('localNotificationActionPerformed', a => {
-        const ds = a && a.notification && a.notification.extra && a.notification.extra.ds;
+    if (AG) {
+      // El widget marcó una tarea: se vuelven a leer los datos.
+      AG.addListener('stateChanged', async () => { await reloadState(); renderAll(); scheduleSync(); });
+      // Se tocó un aviso: se abre el calendario en ese día.
+      AG.addListener('open', a => {
+        const ds = a && a.ds;
         if (!ds || !isYmd(ds)) return;
         view.sel = ds; const d = parseYmd(ds); view.month = new Date(d.getFullYear(), d.getMonth(), 1);
         showTab('cal'); renderCal(); renderDay(); markOverflow($('#day-card'));

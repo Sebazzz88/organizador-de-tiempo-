@@ -27,7 +27,7 @@ Hay dos versiones:
 
 <p align="center">
   <b><a href="https://github.com/Sebazzz88/organizador-de-tiempo-/raw/main/apk/Agendita.apk">Descargar Agendita.apk</a></b><br>
-  Versión 1.2 · 3.6 MB
+  Versión 1.3 · 3.6 MB
 </p>
 
 **Antes de empezar**
@@ -93,6 +93,14 @@ Todo esto se puede cambiar después en la pestaña **Avisos**.
 
 Si llega, ya está todo listo.
 
+### Paso 5b. Pon el widget (opcional)
+
+1. Mantén presionado un espacio vacío de la pantalla de inicio.
+2. Toca **Widgets**, busca **Agendita** y arrástralo a la pantalla.
+3. Puedes agrandarlo o achicarlo: mientras más alto, más tareas caben en cada página.
+
+En el widget ves las tareas de hoy y cuántas llevas hechas (por ejemplo, 2/5). Toca el circulito de una tarea para marcarla con ✓ o desmarcarla. Si hay muchas, pasan solas como páginas cada 4,5 segundos, sin parar. Toca una tarea o el botón de pausa para detenerlas: aparecen flechas para pasar a mano y, a los 15 segundos, siguen solas. Cuando completas todo, el widget te felicita.
+
 ### Paso 6. Evita que el teléfono apague los avisos
 
 Algunos teléfonos cierran las apps para ahorrar batería y los avisos dejan de llegar. Para evitarlo:
@@ -111,6 +119,8 @@ Abre la app al menos una vez cada dos semanas. Así deja programados los avisos 
 1. En la app, ve a **Más › Actualizaciones** y toca **Buscar actualizaciones**. Si hay una versión nueva, toca **Descargar la actualización**. También puedes descargarla con el mismo enlace o QR de arriba.
 2. Abre el archivo descargado y toca **Actualizar**. Tus tareas se conservan.
 
+Si vienes de la 1.2 o de una versión anterior, al actualizar a la 1.3 tus datos se cifran solos y se borran las copias sin cifrar.
+
 Si tenías instalada la versión 1.0 (se llamaba Jardín de Tareas), la 1.1 se instala encima: el nombre cambia a Agendita y tus tareas siguen ahí.
 
 ### Desinstalar
@@ -122,11 +132,22 @@ Mantén presionado el ícono de **Agendita** y toca **Desinstalar**. Ojo: se bor
 - **«No se instaló la app»:** revisa que tengas espacio libre y Android 7 o más reciente. Si ya tenías una versión que no se puede reemplazar, desinstálala primero (copia tu respaldo antes).
 - **No encuentro el archivo descargado:** abre la app **Archivos** y busca en **Descargas**.
 - **No llegan los avisos:** en **Avisos**, revisa que diga que están activados y repite el paso 6. Si el teléfono pide permitir **Alarmas y recordatorios**, actívalo.
-- **Perdí mis tareas:** en **Más › Tus datos**, pega tu último respaldo y toca **Restaurar desde el texto**.
+- **Perdí mis tareas:** en **Más › Tus datos**, escribe la contraseña del respaldo, pega tu último respaldo y toca **Restaurar desde el texto**.
+- **El widget dice «No se puede cargar»:** quítalo y vuelve a ponerlo. Si sigue igual, abre la app una vez.
 
 ---
 
 ## Novedades
+
+**Versión 1.3**
+
+- **Widget para la pantalla de inicio** con las tareas de hoy. Se marcan con ✓ desde ahí mismo, pasan solas como páginas y se pausan al tocarlas.
+- **Felicitaciones** cuando completas todas tus tareas del día, con mensajes distintos cada vez.
+- **Pendientes del día:** por la tarde (18:00) te recuerda lo que te falta y al cerrar el día (21:30) te avisa si quedó algo, con un mensaje de ánimo. Puedes cambiar las horas o apagarlo en **Avisos › Pendientes del día**. Los mensajes van rotando y no se repiten hasta usarlos todos.
+- **Tus datos ahora van cifrados** con AES-256 y una llave que no sale del teléfono. Al actualizar, los datos de la versión anterior se pasan al almacén cifrado y se borran las copias sin cifrar.
+- **El respaldo se cifra con una contraseña** que eliges tú (mínimo 8 caracteres). Para restaurarlo necesitas la misma contraseña: guárdala bien, porque sin ella no se puede abrir.
+- En la pantalla bloqueada, los avisos no muestran el nombre de la tarea.
+- Más detalles en [SECURITY.md](SECURITY.md).
 
 **Versión 1.2**
 
@@ -154,12 +175,24 @@ Mantén presionado el ícono de **Agendita** y toca **Desinstalar**. Ojo: se bor
 - **Tareas fijas**: lo que haces sí o sí, en los días de la semana que elijas (por ejemplo, solo los lunes). Se marcan en esos días de todo el año. Al empezar, la app te pregunta si quieres fijar alguna y si quieres que te avise esos días. Puedes agregarlas, apagar su aviso o eliminarlas desde la pestaña **Fijas**.
 - **Notas en los días**: escribe una nota en cualquier día del calendario. Si es larga y no cabe en el cuadro del día, toca el circulito verde del día para leerla completa.
 - **Fechas clave**: cumpleaños, aniversarios y pagos que se repiten cada mes o cada año.
+- **Widget** con las tareas de hoy: márcalas con ✓ sin abrir la app.
+- **Pendientes del día y felicitaciones**: un recordatorio por la tarde, otro al cerrar el día y un «¡bien hecho!» cuando completas todo.
 - **Resumen de la mañana** y **horas de descanso**, en las que solo suenan las urgentes y las tareas fijas.
 - **Fondo tropical** de hojas de palma y luciérnagas en toda la app.
 - **Diseño oscuro con vidrio líquido**, sobre la paleta Forest Depths y Electric Sprout: superficies translúcidas con brillo en el borde, botones verdes de vidrio y títulos grandes con una palabra en verde.
 - **Recorrido guiado** de un minuto, en **Más › Cómo se usa**.
 
-La app no usa tu ubicación, cámara, micrófono ni contactos. Tus tareas se guardan solo en tu teléfono. La app solo se conecta a internet cuando tocas **Buscar actualizaciones**.
+## Seguridad y privacidad
+
+- La app no usa tu ubicación, cámara, micrófono ni contactos, y no tiene cuentas, publicidad ni analítica.
+- Tus tareas, notas y ajustes se guardan **cifrados** (AES-256-GCM) y solo en tu teléfono, con una llave del almacén de llaves de Android que no se puede sacar del teléfono.
+- No se hacen copias en la nube ni se pueden copiar los datos por cable.
+- Los respaldos que copias se cifran con tu contraseña.
+- En la pantalla bloqueada, los avisos dicen solo «Tienes un recordatorio».
+- La app solo se conecta a internet, por HTTPS, cuando tocas **Buscar actualizaciones**.
+- Ojo: el widget muestra tus tareas en la pantalla de inicio. Si no quieres que se vean, no lo agregues.
+
+Los detalles técnicos y los límites están en [SECURITY.md](SECURITY.md).
 
 ---
 
@@ -199,7 +232,9 @@ Después, en el celular:
 
 Queda como un ícono más en tu pantalla. En el celular, los avisos de la página web aparecen solo mientras la página está abierta.
 
-Las tareas de la página web y las de la app no se sincronizan solas. Para pasarlas de una a otra, usa **Copiar mi respaldo** en una y **Restaurar desde el texto** en la otra.
+Las tareas de la página web y las de la app no se sincronizan solas. Puedes pasar las de la página web a la app con **Copiar mi respaldo** en la página y **Restaurar desde el texto** en la app. Al revés no se puede: desde la versión 1.3 el respaldo de la app va cifrado y la página web no lo abre.
+
+La página web guarda las tareas **sin cifrar** en el navegador. Para más privacidad, usa la app.
 
 ### Cómo se usa la página web
 
@@ -241,6 +276,8 @@ Para publicar una versión nueva:
 4. Sube los cambios a GitHub.
 
 **Muy importante:** la APK se firma con la llave de `app/firma/` (`jardin-release.jks` y `firma.properties`). Esa carpeta no se sube a GitHub. Guarda una copia en un lugar seguro. Sin esa llave no se puede instalar una actualización encima de la app; habría que desinstalarla y se perderían las tareas guardadas.
+
+Los avisos, el almacén cifrado y el widget están en código nativo propio (`app/android/app/src/main/java/com/sebas/jardindetareas/`). La app ya no usa los plugins `@capacitor/preferences` ni `@capacitor/local-notifications`.
 
 El identificador interno de la app sigue siendo `com.sebas.jardindetareas`. No lo cambies: si cambia, Android la trata como otra app y no se puede actualizar encima.
 

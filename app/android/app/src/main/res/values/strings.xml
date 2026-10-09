@@ -4,4 +4,14 @@
     <string name="title_activity_main">Agendita</string>
     <string name="package_name">com.sebas.jardindetareas</string>
     <string name="custom_url_scheme">com.sebas.jardindetareas</string>
+    <string name="widget_name">Agendita · Hoy</string>
+    <string name="widget_desc">Tus tareas de hoy. Márcalas con ✓ desde la pantalla de inicio.</string>
+    <string name="widget_titulo">Hoy en Agendita</string>
+    <string name="widget_titulo_pausa">En pausa · Agendita</string>
+    <string name="widget_pausar">Pausar</string>
+    <string name="widget_seguir">Seguir</string>
+    <string name="widget_atras">Página anterior</string>
+    <string name="widget_adelante">Página siguiente</string>
+    <string name="widget_flor">🌺</string>
+    <string name="widget_vacio">No tienes tareas para hoy 🌿\nToca para abrir Agendita</string>
 </resources>
