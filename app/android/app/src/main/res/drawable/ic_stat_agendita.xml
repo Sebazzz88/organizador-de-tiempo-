@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícono pequeño de las notificaciones: cabeza del gato de Agendita (Android lo pinta de un solo color). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd"
+        android:pathData="M4.6,9.8 L6.2,3.6 L10.1,7.1 C11.3,6.8 12.7,6.8 13.9,7.1 L17.8,3.6 L19.4,9.8 C20.3,11.2 20.7,12.7 20.7,14.2 C20.7,18.3 16.8,21 12,21 C7.2,21 3.3,18.3 3.3,14.2 C3.3,12.7 3.7,11.2 4.6,9.8 Z M7.8,13.5 A1.2,1.5 0 1,0 10.2,13.5 A1.2,1.5 0 1,0 7.8,13.5 Z M13.8,13.5 A1.2,1.5 0 1,0 16.2,13.5 A1.2,1.5 0 1,0 13.8,13.5 Z M11,16.6 L13,16.6 L12,17.8 Z"/>
+</vector>

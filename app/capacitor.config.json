@@ -1,6 +1,6 @@
 {
   "appId": "com.sebas.jardindetareas",
-  "appName": "Jardín de Tareas",
+  "appName": "Agendita",
   "webDir": "www",
   "android": {
     "backgroundColor": "#0b170d"
@@ -12,8 +12,8 @@
       "initialViewportFitValueHint": "cover"
     },
     "LocalNotifications": {
-      "smallIcon": "ic_stat_leaf",
-      "iconColor": "#68EF3F"
+      "smallIcon": "ic_stat_agendita",
+      "iconColor": "#B54134"
     }
   }
 }

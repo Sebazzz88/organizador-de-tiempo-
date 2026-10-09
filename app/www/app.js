@@ -1,4 +1,4 @@
-/* Jardín de Tareas — app para Android (Capacitor). Hecho con cariño por Sebas :) */
+/* Agendita — app para Android (Capacitor), by Sebastian. Hecho con cariño :) */
 (() => {
   'use strict';
 
@@ -39,10 +39,12 @@
   const LEAD_PRESETS = [10080, 4320, 2880, 1440, 180, 60, 30, 0];
   const REPEAT = { none: 'Una vez', daily: 'Cada día', weekly: 'Cada semana', monthly: 'Cada mes', yearly: 'Cada año' };
   const KEY = 'jardin-app-v1';
+  const APP = { version: '1.1', build: 2 };
+  const VERSION_URL = 'https://raw.githubusercontent.com/Sebazzz88/organizador-de-tiempo-/main/version.json';
   const HORIZON_DAYS = 21, MAX_NOTIFS = 400, TEST_ID = 2000000001;
 
   const DEFAULT_SETTINGS = () => ({
-    name: '', onboarded: false, fixedAsked: false,
+    name: '', onboarded: false, fixedAsked: false, lastVersion: '',
     brief: { on: true, time: '08:00' },
     quiet: { from: '22:30', to: '07:00' },
     cats: { urgente: { offsets: [2880, 1440, 60, 0] }, importante: { offsets: [2880, 0] }, leve: { offsets: [2880, 0] } },
@@ -55,6 +57,7 @@
     const out = fresh(), S = out.settings, st = s.settings || {};
     if (typeof st.name === 'string') S.name = st.name.trim().slice(0, 40);
     S.onboarded = !!st.onboarded; S.fixedAsked = !!st.fixedAsked;
+    if (typeof st.lastVersion === 'string') S.lastVersion = st.lastVersion.slice(0, 20);
     if (st.brief) { S.brief.on = st.brief.on !== false; if (validTime(st.brief.time)) S.brief.time = st.brief.time; }
     else if (validTime(st.morning)) S.brief.time = st.morning;
     const q = st.quiet || { from: st.quietFrom, to: st.quietTo };
@@ -272,12 +275,12 @@
   }
   function renderMocks() {
     const next = buildSchedule(Date.now()).slice(0, 2);
-    const card = (x, cls) => `<div class="mock ${cls}"><div class="m-head"><span class="m-ic"><svg><use href="#i-leaf"/></svg></span>Jardín de Tareas · ${esc(whenShort(x.at))}</div>
+    const card = (x, cls) => `<div class="mock ${cls}"><div class="m-head"><img class="m-logo" src="img/logo-96.png" alt="">Agendita · ${esc(whenShort(x.at))}</div>
       <p class="m-title">${esc(x.title)}</p><p class="m-body">${esc(x.body)}</p></div>`;
     const box = $('#mock-stack');
     box.classList.toggle('single', next.length < 2);
     box.innerHTML = !next.length
-      ? `<div class="mock front"><div class="m-head"><span class="m-ic"><svg><use href="#i-leaf"/></svg></span>Jardín de Tareas</div><p class="m-title">Sin avisos por ahora</p><p class="m-body">Anota una tarea y aquí verás cuándo te la voy a recordar.</p></div>`
+      ? `<div class="mock front"><div class="m-head"><img class="m-logo" src="img/logo-96.png" alt="">Agendita</div><p class="m-title">Sin avisos por ahora</p><p class="m-body">Anota una tarea y aquí verás cuándo te la voy a recordar.</p></div>`
       : (next[1] ? card(next[1], 'back') : '') + card(next[0], 'front');
   }
 
@@ -297,7 +300,7 @@
     let total = 0; const on = {};
     [...state.tasks, ...state.fixed].forEach(t => days.forEach(ds => { if (isDone(t, ds)) { total++; on[ds] = 1; } }));
     const stage = total === 0 ? 'Semillita' : total <= 3 ? 'Brote' : total <= 8 ? 'Plantita' : total <= 14 ? 'Hibisco en flor' : 'Palmera';
-    $('#garden').innerHTML = `<p class="eyebrow">Tu jardín de la semana</p>${plantSVG(total)}<p class="stage">${stage}</p>
+    $('#garden').innerHTML = `<p class="eyebrow">Tu plantita de la semana</p>${plantSVG(total)}<p class="stage">${stage}</p>
       <p class="muted">${total ? `${plural(total, 'tarea hecha', 'tareas hechas')} en los últimos 7 días.` : 'Marca tu primera tarea y verás cómo brota.'}</p>
       <div class="week" aria-label="Días con tareas hechas">${days.map(ds => `<span class="${on[ds] ? 'on' : ''}">${parseYmd(ds).toLocaleDateString('es', { weekday: 'narrow' })}</span>`).join('')}</div>`;
   }
@@ -422,7 +425,7 @@
     $('#perm-banner').hidden = disp === 'granted' || disp === 'unsupported';
     const st = $('#perm-status'), act = $('#perm-actions');
     if (disp === 'granted') st.textContent = NATIVE ? 'Los avisos están activados. Te llegan aunque la app esté cerrada.' : 'Los avisos están activados mientras esta página esté abierta.';
-    else if (disp === 'denied') st.textContent = 'Los avisos están bloqueados. Actívalos en los ajustes del teléfono: Ajustes › Aplicaciones › Jardín de Tareas › Notificaciones.';
+    else if (disp === 'denied') st.textContent = 'Los avisos están bloqueados. Actívalos en los ajustes del teléfono: Ajustes › Aplicaciones › Agendita › Notificaciones.';
     else if (disp === 'unsupported') st.textContent = 'Aquí los avisos aparecen dentro de la app.';
     else st.textContent = 'Todavía no activas los avisos. Sin ellos no puedo recordarte tus tareas.';
     let h = '';
@@ -715,7 +718,7 @@
   });
 
   /* ---------- Interacciones generales ---------- */
-  const CHEERS = ['Una flor más en tu jardín.', 'Pasito a pasito. Bien hecho.', 'Eso ya no te pesa. A respirar.', 'Lo lograste. Date un momento para notarlo.'];
+  const CHEERS = ['Una flor más para tu plantita.', 'Pasito a pasito. Bien hecho.', 'Eso ya no te pesa. A respirar.', 'Lo lograste. Date un momento para notarlo.'];
   const findItem = li => (li.dataset.fixed === '1' ? state.fixed : state.tasks).find(x => x.id === li.dataset.id);
 
   document.addEventListener('change', e => {
@@ -845,7 +848,7 @@
   // Más
   $('#s-name').addEventListener('input', e => { state.settings.name = e.target.value.trim().slice(0, 40); persist(); renderNames(); scheduleSync(); });
   $('#copy-backup').addEventListener('click', () => {
-    const text = JSON.stringify({ app: 'jardin-de-tareas', ...state, sync: null });
+    const text = JSON.stringify({ app: 'agendita', ...state, sync: null });
     const ta = $('#backup-text');
     const fallback = () => { ta.value = text; ta.focus(); ta.select(); toast('Respaldo listo', 'Quedó seleccionado en el recuadro. Cópialo y guárdalo en un lugar seguro.', null, 6000); };
     try { navigator.clipboard.writeText(text).then(() => toast('Respaldo copiado', 'Pégalo en tus notas o envíatelo por mensaje.', null, 5000), fallback); }
@@ -855,7 +858,7 @@
     const raw = $('#backup-text').value.trim();
     if (!raw) { toast('Falta el respaldo', 'Pega primero el texto de tu respaldo en el recuadro.', null, 5000); return; }
     let s = null; try { s = normalize(JSON.parse(raw)); } catch (e) {}
-    if (!s) { toast('No se pudo restaurar', 'El texto no parece un respaldo de Jardín de Tareas. Revisa que esté completo.', 'urgente', 7000); return; }
+    if (!s) { toast('No se pudo restaurar', 'El texto no parece un respaldo de Agendita. Revisa que esté completo.', 'urgente', 7000); return; }
     s.settings.onboarded = true; state = s; save(); renderAll(); renderAvisos(); $('#backup-text').value = '';
     toast('Respaldo restaurado', `Volvieron ${plural(state.tasks.length, 'tarea', 'tareas')} y ${plural(state.fixed.length, 'tarea fija', 'tareas fijas')}.`, null, 5000);
   });
@@ -866,6 +869,8 @@
     view.tab = name;
     for (const [k, id] of Object.entries(TABS)) $('#' + id).hidden = k !== name;
     $$('.tab').forEach(b => { if (b.dataset.tab === name) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    $('.tabbar .tabs').style.setProperty('--i', Object.keys(TABS).indexOf(name));
+    $('.tabbar').classList.remove('compact');
     $('.fab').hidden = !(name === 'hoy' || name === 'cal');
     if (!keepScroll) window.scrollTo(0, 0);
     requestAnimationFrame(() => markOverflow(document));
@@ -887,9 +892,9 @@
   const icon = id => `<div class="big-ic"><svg><use href="#${id}"/></svg></div>`;
   const back = () => ONB.i > 0 ? `<button type="button" class="link-btn" data-onb="back" style="align-self:flex-start">Atrás</button>` : '';
   const ONB_VIEWS = {
-    hola: () => `${icon('i-hib')}<h2>¡Hola! Qué bueno tenerte aquí</h2>
-      <p class="sub">Este jardín te recuerda tus tareas con cariño y sin agobios. Te haré unas preguntas rápidas para dejarlo a tu gusto.</p>
-      <p class="greeting" style="font-size:20px">Hecho con cariño por Sebas :)</p>
+    hola: () => `<img class="logo-lg" src="img/logo-256.png" alt="Logo de Agendita"><h2>¡Hola! Qué bueno tenerte aquí</h2>
+      <p class="sub">Agendita te recuerda tus tareas con cariño y sin agobios. Te haré unas preguntas rápidas para dejarla a tu gusto.</p>
+      <p class="greeting" style="font-size:20px">Agendita, by Sebastian · hecho con cariño :)</p>
       <div class="field"><label for="onb-name">¿Cómo te llamas?</label><input class="input" id="onb-name" type="text" maxlength="40" autocomplete="off" value="${esc(state.settings.name)}" placeholder="Tu nombre"></div>
       <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="name">Siguiente</button></div>`,
     avisos: () => `${icon('i-bell')}<h2>¿Te aviso de tus tareas?</h2>
@@ -922,7 +927,7 @@
       <label class="switch" for="onb-skip"><span>No insistir con mis tareas fijas</span><input type="checkbox" id="onb-skip" ${ONB.skipFixed ? 'checked' : ''}></label>
       <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="after-ok">Siguiente</button></div>${back()}`,
     listo: () => `${icon('i-spark')}<h2>¡Todo listo${esc(hi())}!</h2>
-      <p class="sub">Tu jardín ya está sembrado. ¿Quieres que te muestre cómo se usa en un minuto?</p>
+      <p class="sub">Tu agendita ya está lista. ¿Quieres que te muestre cómo se usa en un minuto?</p>
       <div class="onb-actions"><button class="btn btn-sprout btn-block" type="button" data-onb="finish-tour">Ver el recorrido</button><button class="btn btn-quiet btn-block" type="button" data-onb="finish">Empezar</button></div>${back()}`
   };
   function renderOnb() {
@@ -935,7 +940,7 @@
   const onbNext = () => { ONB.i++; renderOnb(); };
   function finishOnb(tour) {
     const S = state.settings;
-    S.onboarded = true;
+    S.onboarded = true; S.lastVersion = APP.version;
     save(); $('#onb').hidden = true; renderAll(); renderAvisos(); showTab('hoy');
     if (tour) startTour();
   }
@@ -1037,6 +1042,38 @@
   window.addEventListener('scroll', replaceTour, { passive: true });
   window.addEventListener('resize', replaceTour);
 
+  /* ---------- Barra de pestañas: se encoge al bajar y se expande al subir ---------- */
+  let lastScrollY = window.scrollY;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY, dy = y - lastScrollY;
+    if (Math.abs(dy) < 8) return;
+    $('.tabbar').classList.toggle('compact', dy > 0 && y > 80);
+    lastScrollY = y;
+  }, { passive: true });
+  // Permite el efecto de presionar (:active) en los botones de vidrio al tocarlos.
+  document.addEventListener('touchstart', () => {}, { passive: true });
+
+  /* ---------- Actualizaciones ---------- */
+  async function checkUpdate() {
+    const btn = $('#check-update'), out = $('#update-status'), get = $('#get-update');
+    btn.disabled = true; get.hidden = true; out.textContent = 'Buscando…';
+    try {
+      const r = await fetch(`${VERSION_URL}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error('http ' + r.status);
+      const v = await r.json();
+      if (Number(v.versionCode) > APP.build && typeof v.apk === 'string' && v.apk.startsWith('https://')) {
+        out.textContent = `Hay una versión nueva: ${v.versionName}. ${v.notes || ''} Al descargarla, ábrela y toca «Actualizar». Tus tareas se conservan.`;
+        get.href = v.apk; get.hidden = false;
+      } else {
+        out.textContent = `Ya tienes la versión más reciente (${APP.version}).`;
+      }
+    } catch (e) {
+      out.textContent = 'No pude revisar. Comprueba tu conexión a internet e inténtalo de nuevo.';
+    }
+    btn.disabled = false;
+  }
+  $('#check-update').addEventListener('click', checkUpdate);
+
   /* ---------- Botón atrás de Android ---------- */
   function closeTop() {
     if (!tour.el.hidden) { endTour(); return true; }
@@ -1120,7 +1157,19 @@
     if (!state.settings.onboarded) startOnb();
     scheduleSync(true);
     if (AppP) {
-      AppP.getInfo().then(i => { $('#app-version').textContent = i.version; }).catch(() => {});
+      try {
+        const info = await AppP.getInfo();
+        if (info.version) APP.version = info.version;
+        if (Number(info.build)) APP.build = Number(info.build);
+      } catch (e) {}
+    }
+    $('#app-version').textContent = APP.version; $('#app-version-2').textContent = APP.version;
+    // Novedades: se muestran una vez, solo a quien ya usaba la app antes de actualizar.
+    if (state.settings.lastVersion !== APP.version) {
+      if (state.settings.onboarded) toast(`Novedades de la versión ${APP.version}`, 'Ahora me llamo Agendita y tengo logo nuevo. Toda la app es de vidrio líquido, también el calendario, y la barra de abajo se encoge al bajar. Tus tareas siguen igual.', null, 11000);
+      state.settings.lastVersion = APP.version; persist();
+    }
+    if (AppP) {
       AppP.addListener('backButton', () => {
         if (closeTop()) return;
         if (view.tab !== 'hoy') { showTab('hoy'); return; }

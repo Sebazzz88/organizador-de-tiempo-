@@ -1,4 +1,4 @@
-/* Jardín de Tareas (app). Hecho con cariño por Sebas :) */
+/* Agendita (app), by Sebastian. Hecho con cariño :) */
 
 @font-face{font-family:'Boldonse';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/boldonse-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:'Boldonse';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/boldonse-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -359,3 +359,156 @@ details.acc[open] > summary::after{content:"–"}
 @keyframes petal{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
 
 @media (prefers-reduced-motion:reduce){.toast,.sheet-panel{animation:none}.btn,.switch input,.switch input::after,.tab-ic{transition:none}.quick.pulse .qcat{animation:none}.tour-spot{transition:none}}
+
+/* =====================================================================
+   Liquid Glass
+   Capa de vidrio sobre el estilo base: sin bordes sólidos, superficies
+   translúcidas con desenfoque, brillo fino arriba y sombra suave.
+   ===================================================================== */
+:root{
+  --glass:rgba(22,40,24,.42);
+  --glass-strong:rgba(22,40,24,.66);
+  --glass-soft:rgba(255,255,255,.045);
+  --glass-press:rgba(255,255,255,.09);
+  --glass-sheen:linear-gradient(160deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.02) 38%,rgba(255,255,255,0) 60%);
+  --glass-edge:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(255,255,255,.03),inset 0 0 0 1px rgba(255,255,255,.04);
+  --glass-shadow:0 10px 30px rgba(0,0,0,.28);
+  --glass-blur:blur(22px) saturate(160%);
+  --sprout-glass:linear-gradient(180deg,rgba(104,239,63,.42) 0%,rgba(38,162,0,.38) 100%);
+  --sprout-glass-edge:inset 0 1px 0 rgba(231,249,221,.45),inset 0 -1px 0 rgba(0,0,0,.18),0 6px 20px rgba(104,239,63,.18);
+  --ring:inset 0 0 0 1.5px var(--electric-sprout);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --hairline:rgba(255,255,255,.06);
+}
+
+/* Superficies grandes: vidrio con desenfoque */
+.card,details.acc,.topbar,.tabbar,.toast,.tour-pop,.onb-card,.sheet-panel,.mock{
+  background:var(--glass-sheen),var(--glass);
+  backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+  border:0;
+  box-shadow:var(--glass-edge),var(--glass-shadow);
+}
+.topbar,.tabbar,.toast,.tour-pop,.onb-card,.sheet-panel{background:var(--glass-sheen),var(--glass-strong)}
+.mock{background:var(--glass-sheen),rgba(22,40,24,.9);box-shadow:var(--glass-edge),var(--shadow-float)}
+.tabbar,.topbar{background:var(--glass-sheen),rgba(22,40,24,.88);backdrop-filter:blur(30px) saturate(170%);-webkit-backdrop-filter:blur(30px) saturate(170%)}
+.banner{border:0;box-shadow:var(--glass-edge),var(--glass-shadow)}
+
+/* Elementos dentro de tarjetas: vidrio suave sin blur (más ligero para el teléfono) */
+.task,.note-card,.quad,.qcat,.cat-pick button,.chip,.choice,.mini-chips button,.week span,.empty,.announce,.icon-btn{
+  border-color:transparent;
+  background:var(--glass-soft);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
+}
+.empty{border-style:solid}
+.announce{background:rgba(255,255,255,.06)}
+.chip.fija,.chip.key,.badge{background:var(--sprout-dim);box-shadow:none}
+
+/* Estados seleccionados: anillo interior en lugar de borde */
+.qcat:active,.cat-pick button[aria-pressed="true"],.cell.sel .day,.icon-btn:active{border-color:transparent;background:var(--sprout-dim);box-shadow:var(--ring)}
+.cell.sel .day{border-color:transparent}
+
+/* Botones */
+.btn{border:0;transition:transform .35s var(--spring),background-color .15s ease,box-shadow .15s ease,color .15s ease}
+.btn:active{transform:scale(.94)}
+.btn-sprout,.fab,.toast .t-act,.tab[aria-current="page"] .tab-ic{
+  background:var(--sprout-glass);
+  color:var(--pure-white);
+  box-shadow:var(--sprout-glass-edge);
+  backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);
+  text-shadow:0 1px 2px rgba(0,0,0,.25);
+}
+.btn-quiet,.btn-danger,.btn-ghost{background:var(--glass-soft);color:var(--mist-green);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.btn-ghost{color:var(--pure-white)}
+.btn-quiet:active,.btn-ghost:active,.btn-danger:active{background:var(--glass-press);color:var(--pure-white)}
+.fab{width:58px;height:58px}
+
+/* Opciones elegidas: vidrio verde en vez de verde sólido */
+.choice[aria-pressed="true"],.mini-chips button[aria-pressed="true"],.week span.on,.steps li::before,.cell.today .num{
+  background:var(--sprout-glass);color:var(--pure-white);border-color:transparent;box-shadow:var(--sprout-glass-edge)
+}
+
+/* Campos */
+.input{background:rgba(0,0,0,.22);border-color:transparent;box-shadow:inset 0 1px 2px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.05)}
+.input:focus{border-color:transparent;box-shadow:inset 0 1px 2px rgba(0,0,0,.3),var(--ring)}
+
+/* Interruptor */
+.switch input{border-color:transparent;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.switch input:checked{background:var(--sprout-glass);border-color:transparent;box-shadow:var(--sprout-glass-edge)}
+.switch input::after{box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.switch input:checked::after{background:var(--pure-white)}
+
+/* Separadores más tenues */
+.tip{border-left-color:rgba(255,255,255,.08)}
+.sheet-panel::before{background:rgba(255,255,255,.25)}
+.note-dot{border-color:transparent;box-shadow:0 0 0 2px rgba(14,28,16,.8)}
+
+/* Hoja inferior y fondo oscurecido */
+.sheet{background:rgba(4,9,5,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.sheet-panel{animation:up .38s var(--spring)}
+
+/* Accesibilidad: menos transparencia si el sistema lo pide, y respaldo sin blur */
+@media (prefers-reduced-transparency:reduce){
+  :root{--glass:rgba(18,35,20,.96);--glass-strong:rgba(18,35,20,.98);--glass-sheen:none}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  :root{--glass:rgba(18,35,20,.92);--glass-strong:rgba(18,35,20,.96)}
+}
+@media (prefers-reduced-motion:reduce){.sheet-panel{animation:none}}
+
+/* =====================================================================
+   Agendita 1.1: la capa de vidrio en las piezas nuevas
+   Logo, pestaña activa que se desliza, barra que se encoge al bajar,
+   botones de texto de vidrio y el calendario con baldosas de vidrio.
+   ===================================================================== */
+
+/* Logo y marca */
+.brand img{width:28px;height:28px;border-radius:999px;box-shadow:0 0 0 1px rgba(255,255,255,.14)}
+.logo-lg{display:block;width:88px;height:88px;border-radius:999px;box-shadow:var(--glass-edge),0 12px 30px rgba(0,0,0,.35)}
+.about .logo-lg{width:72px;height:72px;margin:0 auto 8px}
+.mock .m-logo{width:24px;height:24px;border-radius:999px;flex:none}
+
+/* Pestañas: la píldora de vidrio verde se desliza hasta la pestaña activa */
+.tabbar{transition:max-width .35s var(--spring),padding .35s var(--spring)}
+.tabbar .tabs{position:relative}
+.tab{position:relative;z-index:1;justify-content:flex-start;padding-top:2px;transition:transform .35s var(--spring),color .15s ease,min-height .35s cubic-bezier(.22,1,.36,1)}
+.tab:active{transform:scale(.94)}
+.tab[aria-current="page"] .tab-ic{background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;color:var(--pure-white)}
+.tab-indicator{position:absolute;top:2px;left:0;width:calc((100% - 16px) / 5);height:28px;display:flex;justify-content:center;pointer-events:none;transform:translateX(calc(var(--i, 0) * (100% + 4px)));transition:transform .35s var(--spring)}
+.tab-indicator::before{content:"";width:48px;height:28px;border-radius:999px;background:var(--sprout-glass);box-shadow:var(--sprout-glass-edge)}
+.tab-label{display:block;line-height:1.3;max-height:16px;overflow:hidden;transition:max-height .35s cubic-bezier(.22,1,.36,1),opacity .15s ease}
+/* Al bajar, la barra se encoge y deja solo los íconos */
+.tabbar.compact{max-width:300px;padding:6px}
+.tabbar.compact .tab{min-height:32px}
+.tabbar.compact .tab-label{max-height:0;opacity:0}
+
+/* Botones de texto pequeños: vidrio suave */
+.link-btn,.more,.del,.toast .t-x{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:999px;background:var(--glass-soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);text-decoration:none;font-weight:600;cursor:pointer;transition:transform .35s var(--spring),background-color .15s ease,color .15s ease}
+.link-btn{min-height:36px;padding:6px 14px;font-size:14px;color:var(--mist-green)}
+.more{min-height:32px;padding:4px 14px;margin-top:8px;font-size:13px;color:var(--electric-sprout)}
+.del{min-height:32px;padding:4px 12px;font-size:13px;color:var(--pale-fern)}
+.toast .t-x{width:32px;height:32px;padding:0;font-size:18px;line-height:1;color:var(--pale-fern)}
+.link-btn:active,.more:active,.del:active,.toast .t-x:active{background:var(--glass-press);color:var(--pure-white);transform:scale(.94)}
+
+/* Rebote suave al tocar cualquier control de vidrio */
+.choice,.mini-chips button,.cat-pick button,.qcat,.announce,.icon-btn,.fab,.note-dot,.toast .t-act{transition:transform .35s var(--spring),background-color .15s ease,box-shadow .15s ease,color .15s ease}
+.choice:active,.mini-chips button:active,.cat-pick button:active,.qcat:active,.announce:active,.icon-btn:active,.fab:active,.note-dot:active,.toast .t-act:active{transform:scale(.94)}
+.icon-btn{width:44px;height:44px}
+.btn:disabled{opacity:.5}
+a.btn{text-decoration:none}
+.cat-pick button[aria-pressed="true"] small{color:var(--mist-green)}
+
+/* Calendario de vidrio: cada día es una baldosa de vidrio suave */
+.cal-top h3{text-align:center;font-size:18px}
+.legend{align-items:center}
+.legend .btn{margin-left:auto;min-height:36px;padding:6px 14px;font-size:13px}
+.cal-dow{color:var(--pale-fern)}
+.day{background:var(--glass-soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.07);transition:transform .35s var(--spring),background-color .15s ease,box-shadow .15s ease}
+.day:active{transform:scale(.94);background:var(--glass-press)}
+.cell.out .day{background:transparent;box-shadow:none}
+.cell.sel .day{background:var(--sprout-dim);box-shadow:var(--ring)}
+.cell.sel:not(.today) .num{color:var(--electric-sprout);font-weight:700}
+.note-dot{width:22px;height:22px;background:var(--sprout-glass);color:var(--pure-white);box-shadow:var(--sprout-glass-edge),0 0 0 2px rgba(14,28,16,.8)}
+
+@media (prefers-reduced-motion:reduce){
+  .tab-indicator,.tab,.tabbar,.tab-label,.day,.btn,.link-btn,.more,.del,.choice,.mini-chips button,.cat-pick button,.qcat,.announce,.icon-btn,.fab,.note-dot,.toast .t-act{transition:none}
+}

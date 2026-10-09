@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b170d">
 <meta name="color-scheme" content="dark">
-<title>Jardín de Tareas</title>
+<title>Agendita</title>
+<link rel="icon" href="img/logo-96.png">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -40,8 +41,8 @@
 
 <div class="shell">
   <header class="topbar">
-    <span class="brand"><svg><use href="#i-leaf"/></svg>jardín</span>
-    <span class="tag">hecho con cariño por Sebas :)</span>
+    <span class="brand"><img src="img/logo-96.png" alt="" width="28" height="28">Agendita</span>
+    <span class="tag">by Sebastian</span>
   </header>
 
   <!-- HOY -->
@@ -105,12 +106,12 @@
       <div class="cal-top">
         <button class="icon-btn" type="button" id="prev-m" aria-label="Mes anterior"><svg class="flip"><use href="#i-chev"/></svg></button>
         <h3 id="month-label"></h3>
-        <button class="btn btn-quiet btn-sm" type="button" id="go-today">Hoy</button>
         <button class="icon-btn" type="button" id="next-m" aria-label="Mes siguiente"><svg><use href="#i-chev"/></svg></button>
       </div>
       <div class="legend">
         <span><i class="dot urgente"></i>Urgente</span><span><i class="dot importante"></i>Importante</span><span><i class="dot leve"></i>Leve</span>
-        <span><svg class="c-fija"><use href="#i-pin"/></svg>Fijas</span><span><svg style="color:var(--mango)"><use href="#i-note"/></svg>Nota</span>
+        <span><svg class="c-fija"><use href="#i-pin"/></svg>Fijas</span><span><svg class="c-fija"><use href="#i-note"/></svg>Nota</span>
+        <button class="btn btn-quiet btn-sm btn-compact" type="button" id="go-today">Ir a hoy</button>
       </div>
       <div class="cal-grid" id="cal-grid"></div>
     </div>
@@ -207,7 +208,7 @@
   <section class="screen" id="s-mas" aria-label="Más" hidden>
     <div class="screen-head">
       <p class="eyebrow">Más</p>
-      <h2>Tu jardín, a tu manera</h2>
+      <h2>Tu agendita, a tu manera</h2>
     </div>
 
     <details class="acc" open>
@@ -236,7 +237,7 @@
         </ol>
         <button class="btn btn-sprout" type="button" data-action="tour">Ver el recorrido guiado</button>
         <h4>Preguntas frecuentes</h4>
-        <div class="tip"><b>No me llegan los avisos</b>Revisa en «Avisos» que los permisos estén activos. En algunos teléfonos también hay que quitar el ahorro de batería para Jardín de Tareas: Ajustes › Aplicaciones › Jardín de Tareas › Batería › Sin restricciones.</div>
+        <div class="tip"><b>No me llegan los avisos</b>Revisa en «Avisos» que los permisos estén activos. En algunos teléfonos también hay que quitar el ahorro de batería para Agendita: Ajustes › Aplicaciones › Agendita › Batería › Sin restricciones.</div>
         <div class="tip"><b>¿Tengo que abrir la app?</b>No para recibir avisos. Igual ábrela al menos una vez cada dos semanas, así dejo programados los avisos que vienen.</div>
         <div class="tip"><b>¿Cómo dejo de recibir avisos de una tarea?</b>Márcala como hecha, o bórrala. Para las fijas, apaga su aviso diario en «Fijas».</div>
         <div class="tip"><b>¿Qué categoría elijo?</b>Urgente si tiene fecha límite hoy o mañana. Importante si te hace crecer o es especial. Leve si puede esperar.</div>
@@ -288,12 +289,12 @@
     <details class="acc" id="licenses-acc">
       <summary><svg><use href="#i-scale"/></svg>Licencias</summary>
       <div class="acc-body">
-        <div class="tip"><b>Jardín de Tareas</b>Licencia MIT. Copyright (c) 2026 Sebas.</div>
+        <div class="tip"><b>Agendita</b>Licencia MIT. Copyright (c) 2026 Sebastian.</div>
         <div class="tip"><b>Capacitor y sus complementos</b>Licencia MIT. Copyright Drifty Co. (Ionic).</div>
         <div class="tip"><b>Bibliotecas AndroidX</b>Apache License 2.0. Copyright The Android Open Source Project.</div>
         <div class="tip"><b>Tipografías Boldonse, Geist e Instrument Serif</b>SIL Open Font License 1.1. Copyright de los autores de cada proyecto.</div>
         <div class="row">
-          <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/MIT-jardin.txt">Licencia MIT (app)</button>
+          <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/MIT-agendita.txt">Licencia MIT (app)</button>
           <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/MIT-capacitor.txt">Licencia MIT (Capacitor)</button>
           <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/Apache-2.0.txt">Apache 2.0</button>
           <button class="btn btn-quiet btn-sm" type="button" data-license="licenses/OFL-1.1.txt">SIL OFL 1.1</button>
@@ -301,7 +302,19 @@
       </div>
     </details>
 
-    <div class="about"><b>Hecho con cariño por Sebas :)</b>Jardín de Tareas · versión <span id="app-version">1.0</span></div>
+    <details class="acc" id="update-acc">
+      <summary><svg><use href="#i-repeat"/></svg>Actualizaciones</summary>
+      <div class="acc-body">
+        <p>Tienes la versión <b id="app-version-2" style="color:var(--pure-white);font-weight:600">1.1</b>. Toca el botón para ver si hay una nueva. Solo se consulta GitHub cuando lo tocas.</p>
+        <div class="row">
+          <button class="btn btn-ghost btn-sm" type="button" id="check-update"><svg><use href="#i-repeat"/></svg>Buscar actualizaciones</button>
+          <a class="btn btn-sprout btn-sm" id="get-update" href="#" hidden>Descargar la actualización</a>
+        </div>
+        <p class="muted" id="update-status" aria-live="polite"></p>
+      </div>
+    </details>
+
+    <div class="about"><img class="logo-lg" src="img/logo-256.png" alt="Logo de Agendita"><b>Agendita</b>by Sebastian · hecho con cariño :) · versión <span id="app-version">1.1</span></div>
   </section>
 </div>
 
@@ -309,11 +322,12 @@
 
 <nav class="tabbar" aria-label="Secciones">
   <div class="tabs">
-    <button class="tab" type="button" data-tab="hoy" aria-current="page"><span class="tab-ic"><svg><use href="#i-home"/></svg></span>Hoy</button>
-    <button class="tab" type="button" data-tab="cal"><span class="tab-ic"><svg><use href="#i-cal"/></svg></span>Calendario</button>
-    <button class="tab" type="button" data-tab="fijas"><span class="tab-ic"><svg><use href="#i-pin"/></svg></span>Fijas</button>
-    <button class="tab" type="button" data-tab="avisos"><span class="tab-ic"><svg><use href="#i-bell"/></svg></span>Avisos</button>
-    <button class="tab" type="button" data-tab="mas"><span class="tab-ic"><svg><use href="#i-more"/></svg></span>Más</button>
+    <span class="tab-indicator" aria-hidden="true"></span>
+    <button class="tab" type="button" data-tab="hoy" aria-current="page"><span class="tab-ic"><svg><use href="#i-home"/></svg></span><span class="tab-label">Hoy</span></button>
+    <button class="tab" type="button" data-tab="cal"><span class="tab-ic"><svg><use href="#i-cal"/></svg></span><span class="tab-label">Calendario</span></button>
+    <button class="tab" type="button" data-tab="fijas"><span class="tab-ic"><svg><use href="#i-pin"/></svg></span><span class="tab-label">Fijas</span></button>
+    <button class="tab" type="button" data-tab="avisos"><span class="tab-ic"><svg><use href="#i-bell"/></svg></span><span class="tab-label">Avisos</span></button>
+    <button class="tab" type="button" data-tab="mas"><span class="tab-ic"><svg><use href="#i-more"/></svg></span><span class="tab-label">Más</span></button>
   </div>
 </nav>
 

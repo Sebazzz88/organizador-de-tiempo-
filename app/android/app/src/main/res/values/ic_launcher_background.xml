@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#122314</color>
+    <!-- Terracota del logo de Agendita -->
+    <color name="ic_launcher_background">#B54134</color>
 </resources>

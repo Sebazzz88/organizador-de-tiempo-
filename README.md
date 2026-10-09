@@ -1,8 +1,12 @@
-# Jardín de Tareas
+<p align="center">
+  <img src="docs/agendita-logo.png" width="140" alt="Logo de Agendita: un gato serval entre hojas tropicales">
+</p>
 
-Hecho con cariño por Sebas :)
+<h1 align="center">Agendita</h1>
 
-Calendario de recordatorios con estilo tropical oscuro. Cada tarea va en una de tres categorías, y cada una avisa a su ritmo:
+<p align="center"><b>by Sebastian</b> · hecho con cariño :)</p>
+
+Calendario de recordatorios con estilo tropical oscuro y vidrio líquido. Cada tarea va en una de tres categorías, y cada una avisa a su ritmo:
 
 - **Urgente · Hibisco**: varios avisos antes de la hora y, si quieres, insiste hasta que la marques.
 - **Importante · Mango**: avisa con días de anticipación.
@@ -11,19 +15,19 @@ Calendario de recordatorios con estilo tropical oscuro. Cada tarea va en una de 
 Hay dos versiones:
 
 - **App para Android (APK)**. Es la recomendada: los avisos llegan aunque la app esté cerrada.
-- **Página web**, el archivo `jardin-de-tareas.html`. Se abre en cualquier navegador.
+- **Página web**, el archivo `jardin-de-tareas.html`. Es la versión web anterior, con el nombre Jardín de Tareas. Se abre en cualquier navegador.
 
 ---
 
 ## Guía para instalar la app en Android
 
 <p align="center">
-  <img src="docs/qr-descargar-apk.svg" width="200" alt="Código QR para descargar la app Jardín de Tareas">
+  <img src="docs/qr-descargar-apk.svg" width="200" alt="Código QR para descargar Agendita">
 </p>
 
 <p align="center">
-  <b><a href="https://github.com/Sebazzz88/organizador-de-tiempo-/raw/main/apk/JardinDeTareas.apk">Descargar JardinDeTareas.apk</a></b><br>
-  Versión 1.0 · 3.2 MB
+  <b><a href="https://github.com/Sebazzz88/organizador-de-tiempo-/raw/main/apk/Agendita.apk">Descargar Agendita.apk</a></b><br>
+  Versión 1.1 · 3.6 MB
 </p>
 
 **Antes de empezar**
@@ -37,14 +41,14 @@ Hay dos versiones:
 Elige una de estas formas:
 
 - **Con el QR:** abre la cámara del teléfono, apunta al código de arriba y toca el enlace que aparece.
-- **Con el enlace:** en el teléfono, abre esta página y toca **Descargar JardinDeTareas.apk**.
-- **Desde la computadora:** descarga el archivo `apk/JardinDeTareas.apk` y envíalo al teléfono por WhatsApp, Telegram, correo o Drive. También puedes copiarlo por cable a la carpeta **Descargas** del teléfono.
+- **Con el enlace:** en el teléfono, abre esta página y toca **Descargar Agendita.apk**.
+- **Desde la computadora:** descarga el archivo `apk/Agendita.apk` y envíalo al teléfono por WhatsApp, Telegram, correo o Drive. También puedes copiarlo por cable a la carpeta **Descargas** del teléfono.
 
 Si el navegador avisa que el archivo puede ser dañino, toca **Descargar de todas formas**. Lo dice con todas las apps que no vienen de la Play Store.
 
 ### Paso 2. Abre el archivo y da permiso para instalar
 
-1. Abre el archivo `JardinDeTareas.apk`. Lo encuentras en la notificación de descarga, en el chat donde te lo enviaron o en la app **Archivos › Descargas**.
+1. Abre el archivo `Agendita.apk`. Lo encuentras en la notificación de descarga, en el chat donde te lo enviaron o en la app **Archivos › Descargas**.
 2. La primera vez, Android dice que no puede instalar apps de esa fuente. Toca **Configuración**.
 3. Activa **Permitir de esta fuente**.
 4. Vuelve atrás con la flecha del teléfono.
@@ -62,7 +66,7 @@ Los nombres pueden variar un poco según el teléfono. Si no lo encuentras, busc
 
 ### Paso 3. Instala
 
-1. Toca **Instalar**.
+1. Toca **Instalar** (o **Actualizar**, si ya tenías la app).
 2. Si aparece **Play Protect** diciendo que no conoce la app, toca **Más detalles** y luego **Instalar de todas formas**. Sale porque la app no viene de la Play Store. Si pregunta si quieres enviarla para que la revisen, puedes decir que no.
 3. Cuando termine, toca **Abrir**.
 
@@ -70,7 +74,7 @@ Ya puedes volver a apagar **Permitir de esta fuente** si quieres. La app queda i
 
 ### Paso 4. Configura la app (solo la primera vez)
 
-La app te hace unas preguntas rápidas:
+Agendita te hace unas preguntas rápidas:
 
 1. **Tu nombre**, para saludarte.
 2. **Avisos:** toca **Activar avisos** y luego **Permitir** en el mensaje del teléfono. Sin este permiso no te puede recordar nada.
@@ -85,7 +89,7 @@ Todo esto se puede cambiar después en la pestaña **Avisos**.
 
 1. Ve a la pestaña **Avisos** y toca **Enviar aviso de prueba**.
 2. Cierra la app o bloquea el teléfono.
-3. En 5 segundos debe llegar un aviso de **Jardín de Tareas**.
+3. En 5 segundos debe llegar un aviso de **Agendita**.
 
 Si llega, ya está todo listo.
 
@@ -95,29 +99,45 @@ Algunos teléfonos cierran las apps para ahorrar batería y los avisos dejan de 
 
 | Teléfono | Qué hacer |
 |---|---|
-| Samsung | Ajustes › Aplicaciones › Jardín de Tareas › Batería › **Sin restricciones** |
-| Xiaomi, Redmi, POCO | Ajustes › Aplicaciones › Administrar aplicaciones › Jardín de Tareas › Ahorro de batería › **Sin restricciones**. En esa misma pantalla, activa **Inicio automático** |
-| Huawei | Ajustes › Batería › Inicio de aplicaciones › Jardín de Tareas › **Administrar manualmente** y deja todo activado |
-| Otros | Ajustes › Aplicaciones › Jardín de Tareas › Batería › **Sin restricciones** o **No optimizar** |
+| Samsung | Ajustes › Aplicaciones › Agendita › Batería › **Sin restricciones** |
+| Xiaomi, Redmi, POCO | Ajustes › Aplicaciones › Administrar aplicaciones › Agendita › Ahorro de batería › **Sin restricciones**. En esa misma pantalla, activa **Inicio automático** |
+| Huawei | Ajustes › Batería › Inicio de aplicaciones › Agendita › **Administrar manualmente** y deja todo activado |
+| Otros | Ajustes › Aplicaciones › Agendita › Batería › **Sin restricciones** o **No optimizar** |
 
 Abre la app al menos una vez cada dos semanas. Así deja programados los avisos de las semanas siguientes.
 
 ### Actualizar a una versión nueva
 
-1. Por si acaso, en la app ve a **Más › Tus datos** y toca **Copiar mi respaldo**. Guarda ese texto en tus notas.
-2. Descarga la APK nueva con el mismo enlace o QR.
-3. Ábrela y toca **Actualizar**. Tus tareas se conservan.
+1. En la app, ve a **Más › Actualizaciones** y toca **Buscar actualizaciones**. Si hay una versión nueva, toca **Descargar la actualización**. También puedes descargarla con el mismo enlace o QR de arriba.
+2. Abre el archivo descargado y toca **Actualizar**. Tus tareas se conservan.
+
+Si tenías instalada la versión 1.0 (se llamaba Jardín de Tareas), la 1.1 se instala encima: el nombre cambia a Agendita y tus tareas siguen ahí.
 
 ### Desinstalar
 
-Mantén presionado el ícono de **Jardín de Tareas** y toca **Desinstalar**. Ojo: se borran las tareas guardadas. Copia tu respaldo antes si quieres conservarlas.
+Mantén presionado el ícono de **Agendita** y toca **Desinstalar**. Ojo: se borran las tareas guardadas. Antes, copia tu respaldo en **Más › Tus datos** si quieres conservarlas.
 
 ### Si algo sale mal
 
-- **«No se instaló la app»:** revisa que tengas espacio libre y Android 7 o más reciente. Si ya tenías otra versión que no se puede reemplazar, desinstálala primero (copia tu respaldo antes).
+- **«No se instaló la app»:** revisa que tengas espacio libre y Android 7 o más reciente. Si ya tenías una versión que no se puede reemplazar, desinstálala primero (copia tu respaldo antes).
 - **No encuentro el archivo descargado:** abre la app **Archivos** y busca en **Descargas**.
 - **No llegan los avisos:** en **Avisos**, revisa que diga que están activados y repite el paso 6. Si el teléfono pide permitir **Alarmas y recordatorios**, actívalo.
 - **Perdí mis tareas:** en **Más › Tus datos**, pega tu último respaldo y toca **Restaurar desde el texto**.
+
+---
+
+## Novedades
+
+**Versión 1.1**
+
+- La app ahora se llama **Agendita**, by Sebastian, y tiene logo nuevo: un gato serval entre hojas tropicales.
+- **Vidrio líquido en toda la app**: tarjetas, botones, campos, interruptores, barras, hojas inferiores y el calendario, donde cada día es una baldosa de vidrio.
+- La barra de pestañas tiene una píldora de vidrio verde que se desliza a la pestaña activa, y se encoge al bajar para dejar más espacio.
+- Nuevo botón **Buscar actualizaciones** en **Más › Actualizaciones**.
+
+**Versión 1.0**
+
+- Primera versión para Android: avisos del teléfono, tareas fijas, notas en los días, recordatorio después del evento y diseño oscuro tropical.
 
 ---
 
@@ -131,16 +151,16 @@ Mantén presionado el ícono de **Jardín de Tareas** y toca **Desinstalar**. Oj
 - **Fechas clave**: cumpleaños, aniversarios y pagos que se repiten cada mes o cada año.
 - **Resumen de la mañana** y **horas de descanso**, en las que solo suenan las urgentes y las tareas fijas.
 - **Fondo tropical** de hojas de palma y luciérnagas en toda la app.
-- **Diseño oscuro** basado en el sistema de diseño del proyecto (paleta Forest Depths y Electric Sprout): barras en píldora flotante, botones en píldora verde, títulos grandes con una palabra en verde y tarjetas inclinadas con tus próximos avisos.
+- **Diseño oscuro con vidrio líquido**, sobre la paleta Forest Depths y Electric Sprout: superficies translúcidas con brillo en el borde, botones verdes de vidrio y títulos grandes con una palabra en verde.
 - **Recorrido guiado** de un minuto, en **Más › Cómo se usa**.
 
-La app no usa tu ubicación, cámara, micrófono ni contactos. Tus tareas se guardan solo en tu teléfono.
+La app no usa tu ubicación, cámara, micrófono ni contactos. Tus tareas se guardan solo en tu teléfono. La app solo se conecta a internet cuando tocas **Buscar actualizaciones**.
 
 ---
 
 ## Página web
 
-Sirve para usar el calendario en la computadora o en un iPhone. No hace falta instalar programas ni crear una cuenta: es un solo archivo que se abre en el navegador.
+Sirve para usar el calendario en la computadora o en un iPhone. Es la versión web anterior y todavía se llama Jardín de Tareas. No hace falta instalar programas ni crear una cuenta: es un solo archivo que se abre en el navegador.
 
 ### En la computadora
 
@@ -176,12 +196,6 @@ Queda como un ícono más en tu pantalla. En el celular, los avisos de la págin
 
 Las tareas de la página web y las de la app no se sincronizan solas. Para pasarlas de una a otra, usa **Copiar mi respaldo** en una y **Restaurar desde el texto** en la otra.
 
-### Actualizar la página web
-
-1. Antes de actualizar, abre la página y toca **Copiar mi respaldo** (sección **Tus datos**, al final). Guarda ese texto en tus notas.
-2. Descarga el ZIP nuevo y reemplaza `jardin-de-tareas.html` en la misma carpeta.
-3. Si tus tareas no aparecen, pega el respaldo y toca **Restaurar desde el texto**.
-
 ### Cómo se usa la página web
 
 La primera vez que la abras, te pide tu nombre y te ofrece un recorrido guiado de un minuto. Puedes repetirlo cuando quieras con el botón **¿Cómo se usa?**, abajo a la izquierda.
@@ -195,9 +209,9 @@ Para cambiar una tarea, toca su nombre. Para borrarla, toca **Borrar**. Si te eq
 
 ---
 
-## Para Sebas: compilar la APK
+## Para Sebastian: compilar y publicar la APK
 
-La APK se arma con [Capacitor](https://capacitorjs.com). El código de la app está en `app/www/` y el proyecto de Android en `app/android/`.
+La APK se arma con [Capacitor](https://capacitorjs.com). El código de la app está en `app/www/`, el proyecto de Android en `app/android/` y el logo original en `app/brand/`.
 
 Necesitas Node.js, Java 21 y el Android SDK (plataforma 36). En esta computadora están en `C:\Users\sebas_k6g3i41\android-dev`.
 
@@ -212,12 +226,19 @@ export ANDROID_HOME="C:/Users/sebas_k6g3i41/android-dev/android-sdk"
 ./gradlew assembleRelease
 ```
 
-La APK queda en `app/android/app/build/outputs/apk/release/app-release.apk`. Cópiala a `apk/JardinDeTareas.apk`.
+La APK queda en `app/android/app/build/outputs/apk/release/app-release.apk`. Cópiala a `apk/Agendita.apk`.
+
+Para publicar una versión nueva:
+
+1. Sube `versionCode` y `versionName` en `app/android/app/build.gradle`, y la versión en `APP` dentro de `app/www/app.js`.
+2. Compila y copia la APK a `apk/Agendita.apk`.
+3. Actualiza `version.json` con el mismo `versionCode`, el `versionName` y una nota corta. El botón **Buscar actualizaciones** de la app lee ese archivo.
+4. Sube los cambios a GitHub.
 
 **Muy importante:** la APK se firma con la llave de `app/firma/` (`jardin-release.jks` y `firma.properties`). Esa carpeta no se sube a GitHub. Guarda una copia en un lugar seguro. Sin esa llave no se puede instalar una actualización encima de la app; habría que desinstalarla y se perderían las tareas guardadas.
 
-Antes de cada versión nueva, sube `versionCode` y `versionName` en `app/android/app/build.gradle`.
+El identificador interno de la app sigue siendo `com.sebas.jardindetareas`. No lo cambies: si cambia, Android la trata como otra app y no se puede actualizar encima.
 
 ## Licencia
 
-MIT. Consulta el archivo `LICENSE`. Las tipografías incluidas usan la SIL Open Font License 1.1; sus textos están en `app/www/licenses/`.
+MIT, copyright 2026 Sebastian. Consulta el archivo `LICENSE`. Las tipografías incluidas usan la SIL Open Font License 1.1; sus textos están en `app/www/licenses/`.
